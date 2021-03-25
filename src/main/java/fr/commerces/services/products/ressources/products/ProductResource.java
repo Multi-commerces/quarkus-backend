@@ -2,7 +2,6 @@ package fr.commerces.services.products.ressources.products;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.function.Function;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -39,26 +38,24 @@ public class ProductResource extends GenericResource<GenericResponse<ProductData
 	ProductManager manager;
 	
 	@Context HttpHeaders headers;
-	
-
 
 	@Hypermedia
 	@Override
-	public GenericResponse<ProductData, Long> getProductById(LanguageCode acceptLanguage, Long id) {
-		return manager.findById(id);
+	public GenericResponse<ProductData, Long> getProductById(final LanguageCode languageCode, final Long idProduct) {
+		return manager.findByIdProductAndLanguageCode(idProduct, languageCode);
 	}
 
 	@Hypermedia
 	@Override
-	public Collection<GenericResponse<ProductData, Long>> getProducts(Optional<LanguageCode> lang, Integer page,
-			Integer size) {
-		var langCode = lang.orElse(LanguageCode.getByLocale(headers.getAcceptableLanguages().get(0)));
+	public Collection<GenericResponse<ProductData, Long>> getProducts(final Optional<LanguageCode> languageCode,
+			final Integer page, final Integer size) {
+		var langCode = languageCode.orElse(LanguageCode.getByLocale(headers.getAcceptableLanguages().get(0)));
 		return manager.list(langCode, Optional.ofNullable(page), Optional.ofNullable(size));
 	}
 
 	@Override
-	public Response createProduct(LanguageCode language, ProductData data) {
-		Long newId = manager.create(language, data);
+	public Response createProduct(ProductData data) {
+		Long newId = manager.create(data);
 		return buildResponse.apply(newId);
 	}
 

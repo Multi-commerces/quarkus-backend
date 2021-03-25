@@ -20,6 +20,10 @@ public abstract class ProductMapper {
 
 	public abstract Product toEntity(ProductData data);
 
+	/*
+	 * READ
+	 */
+	
 	/**
 	 * Utilisation opération de lecture de Product
 	 * 
@@ -43,6 +47,9 @@ public abstract class ProductMapper {
 	@Mapping(target = "data", source = "entity")
 	public abstract GenericResponse<ProductData, Long> toResponse(ProductLang entity);
 	
+	/*
+	 * CREATE
+	 */
 
 	/**
 	 * Utilisation création d'un nouveau ProductLang
@@ -52,8 +59,13 @@ public abstract class ProductMapper {
 	 */
 	@Mapping(target = ".", source = ".")
 	@Mapping(target = "product", source = ".")
+	@Mapping(target = "identity.language", source = "languageCode")
 	public abstract ProductLang toProductLang(ProductData data);
 
+	/*
+	 * UPDATE
+	 */
+	
 	/**
 	 * Utilisation mise à jour ProductLang
 	 * 

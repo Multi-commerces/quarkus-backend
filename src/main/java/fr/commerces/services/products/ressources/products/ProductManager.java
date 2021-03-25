@@ -28,7 +28,7 @@ public class ProductManager implements ProductService {
 
 	//private static final Logger logger = LoggerFactory.getLogger(ProductManager.class);
 
-	private static final int SIZE = 100;
+	private static final int SIZE = 10;
 
 	@Inject
 	ProductMapper mapper;
@@ -41,18 +41,19 @@ public class ProductManager implements ProductService {
 	@Transactional
 	@Override
 	public final List<GenericResponse<ProductData, Long>> list(final LanguageCode language,
-			final Optional<Integer> page, 
-			final Optional<Integer> size) {
-		try (final Stream<ProductLang> streamEntity = ProductLang.findByLanguageCode(language).page(Page.of(page.orElse(1) - 1, size.orElse(SIZE)))		
-				.stream()) {
+			final Optional<Integer> page, final Optional<Integer> size) {
+		try (final Stream<ProductLang> streamEntity = ProductLang.findByLanguageCode(language)
+				.page(Page.of(page.orElse(1) - 1, size.orElse(SIZE))).stream()) {
 			return streamEntity.map(bind).collect(Collectors.toList());
 		}
 	}
 
 	@Override
-	public final GenericResponse<ProductData, Long> findById(final Long id) {
-		return ProductLang.<ProductLang>findByIdOptional(new ProductLangPK(id, LanguageCode.fr)).map(mapper::toResponse)
-				.orElseThrow(NotFoundException::new);
+	public final GenericResponse<ProductData, Long> findByIdProductAndLanguageCode(final Long id,
+			final LanguageCode language) {
+		var pojo = ProductLang.findByIdProductAndLanguageCode(id, language).orElseThrow(NotFoundException::new);
+		return bind.apply(pojo);
+
 	}
 
 	@Transactional
@@ -64,9 +65,8 @@ public class ProductManager implements ProductService {
 
 	@Transactional
 	@Override
-	public final Long create(final LanguageCode language, final ProductData data) {
+	public final Long create(final ProductData data) {
 		final ProductLang productLang = mapper.toProductLang(data);
-		productLang.setLanguage(language);
 		productLang.persistAndFlush();
 
 

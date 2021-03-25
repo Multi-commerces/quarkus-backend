@@ -10,14 +10,13 @@ import fr.commerces.services.products.data.ProductData;
 
 public interface ProductService {
 
-	Collection<GenericResponse<ProductData, Long>> list(LanguageCode language, Optional<Integer> page, Optional<Integer> size);
+	Collection<GenericResponse<ProductData, Long>> list(LanguageCode language, Optional<Integer> page,
+			Optional<Integer> size);
 
-	GenericResponse<ProductData, Long> findById(Long id);
+	GenericResponse<ProductData, Long> findByIdProductAndLanguageCode(Long idProduct, LanguageCode languageCode);
 
 	void update(Long id, ProductData data);
 
-	Long create(LanguageCode language, ProductData data);
-	
-	
+	Long create(ProductData data);
 
 }

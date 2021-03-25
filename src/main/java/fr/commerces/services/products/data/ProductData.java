@@ -14,18 +14,17 @@ public class ProductData implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String reference;
-	
+
 	private LanguageCode languageCode;
-	
+
 	private String name;
 
 	private String summary;
-	
-	private String Description;
+
+	private String description;
 
 	private double priceHT;
-	
+
 	private double taxRule;
-	
-	
+
 }
