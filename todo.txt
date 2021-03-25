@@ -1,0 +1,97 @@
+#Postgres suivre le lien suivant pour créer un groupe de base de données 
+https://docs.postgresql.fr/10/creating-cluster.html
+
+
+
+#CERBOT pour la génération d'un certicat 
+https://blog.eleven-labs.com/fr/https-part-2/
+
+docker run -it --rm --name certbot -p 80:80 -p 443:443 -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" certbot/certbot certonly --standalone --email "julien.ilari@gmail.com" -d "jilari.fr"
+Une fois la commande exécutée, si tout s’est bien déroulé, vous trouverez le certificat dans le dossier 
+“/etc/letsencrypt/live/”.
+
+
+-Djboss.socket.binding.port-offset=100
+# Execution en mode dev avec activation du remote debug sur le port 5003
+./mvnw compile quarkus:dev -DdebugHost=0.0.0.0
+
+# hazelcast céer un nouveau membre
+sudo docker run --rm --network host --name member1 -p 5701:5701 hazelcast/hazelcast
+
+
+# hazelcast Client
+sudo docker run -it --rm --network host --name client hazelcast/hazelcast java -cp '/opt/hazelcast/lib/*' com.hazelcast.client.console.ClientConsoleApp
+
+
+
+docker run -v `pwd`:/mnt --rm --name member1 -e "JAVA_OPTS=-Dhazelcast.local.publicAddress=192.168.1.29 -Dhazelcast.config=./docker/hazelcast.yml" -p 5701:5701 hazelcast/hazelcast
+
+#https://medium.com/faun/setting-up-ssl-certificates-for-nginx-in-docker-environ-e7eec5ebb418
+docker-compose -f keycloak-postgres.yml up
+
+docker system prune -a
+
+## Créer une volume
+docker volume create <VOLUME NAME>
+
+# Lister les volumes
+docker volume ls
+
+## Supprimer un ou plusieurs volume(s)
+docker volume rm <VOLUME NAME>
+    -f ou --force : forcer la suppression
+
+## Récolter des informations sur une volume
+docker volume inspect <VOLUME NAME>
+
+## Supprimer tous les volumes locaux non inutilisés
+docker volume prune
+    -f ou --force : forcer la suppression
+
+## Supprimer un conteneur Docker avec le/les volumes associés
+docker rm -v <CONTAINER_ID ou CONTAINER_NAME>
+    -f ou --force : forcer la suppression
+    -v ou --volume : supprime les volumes associés au conteneur
+    
+    
+    
+Limitation de débit
+
+La limitation de débit est une approche intéressante pour contrôler le nombre de requêtes par client. 
+Voici les en-têtes de limitation de débit que votre serveur peut renvoyer:
+
+    X-Rate-Limit-Limit: indique le nombre de requêtes qu'un client peut envoyer dans un intervalle de temps spécifié.
+    X-Rate-Limit-Remaining: Indique le nombre de demandes que le client peut encore envoyer dans l'intervalle de temps actuel.
+    X-Rate-Limit-Reset: Indique au client quand la limite de débit sera réinitialisée. 
+    
+    
+    
+{
+    "statut": 400,
+    "message": "Les livres de ressources n'existent pas",
+    "code": 24801,
+    "more_info": "api.com/docs/errors/24801"
+}
+    
+#DOCKER   
+cd ~/workspace/jilari/multi-commerce/docker
+sudo docker-compose -f keycloak-postgres-dev.yml up
+
+
+#POSTGRES
+psql -U postgres_user -d multicommerces -h localhost -p 5435
+    
+#APP
+cd ~/workspace/jilari/multi-commerce
+./mvnw compile quarkus:dev -DdebugHost=0.0.0.0 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
