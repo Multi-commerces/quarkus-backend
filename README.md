@@ -1,4 +1,4 @@
-# Projet
+# Projet (quarkus, lombok + mapstruct + RESTEasy + Jackson pour la sérialisation JSON + hibernate orm panache et plus encore)
 
 Le projet utilise Quarkus, Le Framework Java Supersonic Subatomic.
 Website: https://quarkus.io/ .
@@ -93,7 +93,7 @@ Dans ce guide, vous apprendrez à activer la mise en cache des données d'applic
 
 Guide: https://quarkus.io/guides/cache
 
-#CERBOT pour la génération d'un certicat 
+# CERBOT pour la génération d'un certicat 
 
 Nous utiliserons Docker, Certbot et Nginx sur un serveur Linux.
 Suivre le guide pour déployer des certificats gratuits, valables 90 jours et délivrés par une autorité certifiée.
