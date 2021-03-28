@@ -1,4 +1,4 @@
-package fr.commerces.services.products.ressources.seo;
+package fr.commerces.services.products.mapper;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -14,7 +14,7 @@ import fr.commerces.services.products.entity.ProductLang;
 
 @ApplicationScoped
 @Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public abstract class ProductMapper {
+public abstract class ProductSeoMapper {
 
 	public abstract ProductLang toEntity(ProductSeoData data);
 

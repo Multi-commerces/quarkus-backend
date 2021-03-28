@@ -41,9 +41,14 @@ public interface ProductResourceApi {
 	@GET
 	@Operation(operationId = "getProductById", summary = "Recherche un produit", description = "Retourne les informations du produit.")
 	@Tag(ref = "Resource Produits")
-	@APIResponses(value = { @APIResponse(responseCode = "200", description = "Produit trouvé"),
-			@APIResponse(responseCode = "404", description = "Aucun porduit trouvé avec l'identifiant fourni") })
+	@APIResponses(value = { 
+			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
+			@APIResponse(responseCode = "404", description = "[NOK] - Aucun porduit trouvé avec les paramètres fournis") 
+	})
 	GenericResponse<ProductData, Long> getProductById(
+			/*
+			 * Langue
+			 */
 			@Parameter(description = "Langue du produit") 
 			@PathParam("languageCode") 
 			@DefaultValue("fr") String languageCode,
@@ -56,21 +61,22 @@ public interface ProductResourceApi {
 	/* ############################################################################################################# */
 
 	@GET
-	@Path("/languages/{languageCode}") 
+	@Path("/") 
 	@Operation(operationId = "getProducts", summary = "Recherche un produit", 
 		description = "Retourne les informations des produits dans un langue précise (par défaut celle du client).")
 	@Tag(ref = "Resource Produits")
 	@APIResponses(value = { 
-			@APIResponse(responseCode = "200", description = "Produits trouvés"),
-			@APIResponse(responseCode = "404", description = "Aucun porduit trouvé avec les critères de recherche") 
+			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
+			@APIResponse(responseCode = "404", description = "[NOK] - Aucun porduit trouvé avec les critères de recherche") 
 	})
 	Collection<GenericResponse<ProductData, Long>> getProducts(
 			/*
 			 * language
 			 */
-			@Parameter(description = "Langue des produits (par défaut langue du client)") 
-			@PathParam("languageCode") 
-			@DefaultValue("fr") String languageCode,
+			@Parameter(description = "Langue des produits (langue par défaut 'français')") 
+			@QueryParam("languageCode") 
+			@DefaultValue("fr") 
+			@NotNull String languageCode,
 			/*
 			 * page
 			 */
@@ -93,7 +99,7 @@ public interface ProductResourceApi {
 	@Path("/languages/{languageCode}") 
 	@Operation(operationId = "createProduct", summary = "Création produit", description = "Demande la création d'un nouveau produit .")
 	@Tag(ref = "Resource Produits")
-	@APIResponses(value = { @APIResponse(responseCode = "201", description = "Création du produit [OK]") })
+	@APIResponses(value = { @APIResponse(responseCode = "201", description = "[OK] - Opération de création effectuée avec succès") })
 	Response createProduct(
 			/*
 			 * language
@@ -130,6 +136,7 @@ public interface ProductResourceApi {
 			 */
 			ProductData data);
 
+	@RolesAllowed({ "gestionnaire" })
 	@DELETE
 	@Path("/{productId}/languages/{languageCode}")
 	@Operation(operationId = "deleteProductLang", summary = "Suppression produit d'une langue", description = "Demande la suppression d'un produit existant dans une langue spécifique.")
@@ -137,7 +144,7 @@ public interface ProductResourceApi {
 	@APIResponses(value = { 
 			@APIResponse(responseCode = "204", description = "[OK] - Opération de suppression effectuée avec succès"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Suppression du produit impossible car introuvable")
-			})
+	})
 	Response deleteProductLang(
 			/*
 			 * language

@@ -1,4 +1,4 @@
-package fr.commerces.services.products.ressources.products;
+package fr.commerces.services.products.manager;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,13 +17,14 @@ import fr.commerces.logged.Logged;
 import fr.commerces.services._transverse.GenericResponse;
 import fr.commerces.services.products.data.ProductData;
 import fr.commerces.services.products.entity.ProductLang;
+import fr.commerces.services.products.mapper.ProductMapper;
 import io.quarkus.panache.common.Page;
 
 @Logged
 @ApplicationScoped
 
 //@AlternativePriority(Interceptor.Priority.APPLICATION)
-public class ProductManager implements ProductService {
+public class ProductManager {
 
 	//private static final Logger logger = LoggerFactory.getLogger(ProductManager.class);
 
@@ -37,8 +38,6 @@ public class ProductManager implements ProductService {
 		return mapper.toResponse(pojo.getProduct(), response);
 	};
 
-	@Transactional
-	@Override
 	public final List<GenericResponse<ProductData, Long>> list(final LanguageCode language,
 			final Optional<Integer> page, final Optional<Integer> size) {
 		try (final Stream<ProductLang> streamEntity = ProductLang.findByLanguageCode(language)
@@ -47,7 +46,6 @@ public class ProductManager implements ProductService {
 		}
 	}
 
-	@Override
 	public final GenericResponse<ProductData, Long> findByIdProductAndLanguageCode(final Long productId,
 			final LanguageCode language) {
 		ProductLang pojo = ProductLang.findByIdProductAndLanguageCode(productId, language).orElseThrow(NotFoundException::new);
@@ -56,14 +54,12 @@ public class ProductManager implements ProductService {
 	}
 
 	@Transactional
-	@Override
 	public final void update(final LanguageCode language, final Long id, final ProductData data) {
 		ProductLang.findByIdProductAndLanguageCode(id, language).map(pojo -> mapper.dataIntoEntity(data, pojo))
 				.orElseThrow(NotFoundException::new);
 	}
 
 	@Transactional
-	@Override
 	public final Long create(final LanguageCode languageCode, final ProductData data) {
 		final ProductLang productLang = mapper.toProductLang(data);
 		productLang.setLanguage(languageCode);
@@ -73,7 +69,6 @@ public class ProductManager implements ProductService {
 	}
 
 	@Transactional
-	@Override
 	public void delete(final LanguageCode languageCode, final Long productId) {
 		boolean isOK = ProductLang.deleteByIdProductAndLanguageCode(productId, languageCode);
 		if (!isOK) {

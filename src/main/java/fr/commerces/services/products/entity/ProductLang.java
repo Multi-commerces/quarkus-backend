@@ -43,11 +43,11 @@ public class ProductLang extends PanacheEntityBase {
 	public Product product;
 
 	/*
-	 * ###################################################################
-	 * Produit dans une langue
+	 * ################################################################### Produit
+	 * dans une langue
 	 * ###################################################################
 	 */
-	
+
 	/**
 	 * Nom du produit
 	 */
@@ -78,7 +78,6 @@ public class ProductLang extends PanacheEntityBase {
 	@Column(name = "META_TITLE", length = 128)
 	public String metaTitle;
 
-
 	/**
 	 * 0 of 160 characters used (recommended).
 	 */
@@ -91,7 +90,10 @@ public class ProductLang extends PanacheEntityBase {
 	@Column(name = "FRIENDLY_URL", length = 128)
 	public String friendlyURL;
 
-	/* ################################ METHODES PanacheQuery ################################ */
+	/*
+	 * ################################ METHODES PanacheQuery
+	 * ################################
+	 */
 
 	/**
 	 * Recherche de produits dans une langue
@@ -100,23 +102,25 @@ public class ProductLang extends PanacheEntityBase {
 	 * @return
 	 */
 	public static PanacheQuery<ProductLang> findByLanguageCode(final LanguageCode languageCode) {
-		return find("identity.language", languageCode);
+		return find("identity.language = ?1", languageCode);
 	}
-	
+
 	/**
 	 * Recherche un produit dans une langue
-	 * @param idProduct identifiant du produit
+	 * 
+	 * @param idProduct    identifiant du produit
 	 * @param languageCode code langue
 	 * @return
 	 */
-	public static Optional<ProductLang> findByIdProductAndLanguageCode(final Long idProduct, final LanguageCode languageCode) {
-		return Optional.ofNullable(find("identity.idProduct = ?1 and identity.language =?2", idProduct, languageCode)
-				.firstResult());
+	public static Optional<ProductLang> findByIdProductAndLanguageCode(final Long idProduct,
+			final LanguageCode languageCode) {
+		return findByIdOptional(new ProductLangPK(idProduct, languageCode));
 	}
-	
+
 	/**
 	 * Supression d'un produit dans une langue
-	 * @param idProduct idProduct de l'entity à supprimer.
+	 * 
+	 * @param idProduct    idProduct de l'entity à supprimer.
 	 * @param languageCode languageCode de l'entity à supprimer.
 	 * @return false si l'entité n'a pas été supprimée (introuvable).
 	 */
@@ -124,7 +128,10 @@ public class ProductLang extends PanacheEntityBase {
 		return deleteById(new ProductLangPK(idProduct, languageCode));
 	}
 
-	/* ################################ METHODES Transient ################################ */
+	/*
+	 * ################################ METHODES Transient
+	 * ################################
+	 */
 
 	@Transient
 	public Long getId() {
@@ -134,7 +141,7 @@ public class ProductLang extends PanacheEntityBase {
 			return identity.getIdProduct();
 		}
 	}
-	
+
 	@Transient
 	public void setLanguage(LanguageCode language) {
 		if (identity == null) {

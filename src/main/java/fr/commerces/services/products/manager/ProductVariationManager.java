@@ -1,4 +1,4 @@
-package fr.commerces.services.products.ressources.variations;
+package fr.commerces.services.products.manager;
 
 import java.util.List;
 import java.util.Optional;

@@ -5,9 +5,10 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.neovisionaries.i18n.LanguageCode;
 
@@ -16,6 +17,7 @@ import fr.commerces.hypermedia.HypermediaSelf;
 import fr.commerces.services._transverse.GenericResource;
 import fr.commerces.services._transverse.GenericResponse;
 import fr.commerces.services.products.data.ProductData;
+import fr.commerces.services.products.manager.ProductManager;
 import fr.commerces.services.products.ressources.deliveries.ProductDeliveryResource;
 import fr.commerces.services.products.ressources.pricing.ProductPricingResource;
 import fr.commerces.services.products.ressources.seo.ProductSeoResource;
@@ -33,10 +35,10 @@ links = {
 @RequestScoped
 public class ProductResource extends GenericResource<GenericResponse<ProductData, Long>> implements ProductResourceApi {
 
+	private static final Logger logger = LoggerFactory.getLogger(ProductResource.class);
+	
 	@Inject
 	ProductManager manager;
-	
-	@Context HttpHeaders headers;
 
 	@Override
 	public GenericResponse<ProductData, Long> getProductById(final String languageCode, final Long idProduct) {
@@ -46,6 +48,9 @@ public class ProductResource extends GenericResource<GenericResponse<ProductData
 	@Override
 	public Collection<GenericResponse<ProductData, Long>> getProducts(final String languageCode,
 			final Integer page, final Integer size) {
+		logger.info("languageCode {}", languageCode);
+		logger.info("page {}", page);
+		logger.info("size {}", size);
 		return manager.list(LanguageCode.getByCode(languageCode), Optional.ofNullable(page), Optional.ofNullable(size));
 	}
 
