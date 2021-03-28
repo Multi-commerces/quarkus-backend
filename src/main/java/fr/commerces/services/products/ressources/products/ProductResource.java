@@ -11,7 +11,6 @@ import javax.ws.rs.core.Response;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.commerces.hypermedia.Hypermedia;
 import fr.commerces.hypermedia.HypermediaLink;
 import fr.commerces.hypermedia.HypermediaSelf;
 import fr.commerces.services._transverse.GenericResource;
@@ -39,13 +38,11 @@ public class ProductResource extends GenericResource<GenericResponse<ProductData
 	
 	@Context HttpHeaders headers;
 
-	@Hypermedia
 	@Override
 	public GenericResponse<ProductData, Long> getProductById(final String languageCode, final Long idProduct) {
 		return manager.findByIdProductAndLanguageCode(idProduct, LanguageCode.getByCode(languageCode));
 	}
 
-	@Hypermedia
 	@Override
 	public Collection<GenericResponse<ProductData, Long>> getProducts(final String languageCode,
 			final Integer page, final Integer size) {
@@ -59,8 +56,8 @@ public class ProductResource extends GenericResource<GenericResponse<ProductData
 	}
 
 	@Override
-	public Response updateProduct(Long productId, ProductData data) {
-		manager.update(productId, data);
+	public Response updateProduct(final String languageCode, final Long productId, final ProductData data) {
+		manager.update(LanguageCode.getByCode(languageCode), productId, data);
 		return Response.noContent().build();
 	}
 

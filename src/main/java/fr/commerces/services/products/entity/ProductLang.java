@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -33,7 +32,6 @@ import lombok.Setter;
 @Setter
 @Cacheable(false)
 @Table(name = "PRODUCT_LANG")
-@NamedQuery(name = "ProductLang.getByIdAndLanguage", query = "from ProductLang where identity.language = :language and identity.idProduct = :idProduct")
 public class ProductLang extends PanacheEntityBase {
 
 	@EmbeddedId
@@ -101,7 +99,7 @@ public class ProductLang extends PanacheEntityBase {
 	 * @param codeLang code langue
 	 * @return
 	 */
-	public static PanacheQuery<ProductLang> findByLanguageCode(LanguageCode languageCode) {
+	public static PanacheQuery<ProductLang> findByLanguageCode(final LanguageCode languageCode) {
 		return find("identity.language", languageCode);
 	}
 	
@@ -111,7 +109,7 @@ public class ProductLang extends PanacheEntityBase {
 	 * @param languageCode code langue
 	 * @return
 	 */
-	public static Optional<ProductLang> findByIdProductAndLanguageCode(Long idProduct, LanguageCode languageCode) {
+	public static Optional<ProductLang> findByIdProductAndLanguageCode(final Long idProduct, final LanguageCode languageCode) {
 		return Optional.ofNullable(find("identity.idProduct = ?1 and identity.language =?2", idProduct, languageCode)
 				.firstResult());
 	}

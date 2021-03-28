@@ -49,7 +49,7 @@ public interface ProductResourceApi {
 	@APIResponses(value = { @APIResponse(responseCode = "200", description = "Produit trouvé"),
 			@APIResponse(responseCode = "404", description = "Aucun porduit trouvé avec l'identifiant fourni") })
 	GenericResponse<ProductData, Long> getProductById(
-			@Parameter(description = "Langue du produit (par défaut langue du client)") 
+			@Parameter(description = "Langue du produit") 
 			@PathParam("languageCode") 
 			@DefaultValue("fr") String languageCode,
 			/*
@@ -139,10 +139,19 @@ public interface ProductResourceApi {
 	@Tag(ref = "Resource Produits")
 	Response updateProduct(
 			/*
+			 * language
+			 */
+			@Parameter(description = "Code de la langue") 
+			@PathParam("languageCode") 
+			@DefaultValue("fr") String languageCode,
+			/*
 			 * Identifiant
 			 */
 			@Parameter(description = "Identifiant du produit") 
 			@PathParam(value = "productId") Long productId, 
-			ProductData variation);
+			/*
+			 * Data
+			 */
+			ProductData data);
 
 }

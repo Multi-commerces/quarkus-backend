@@ -15,7 +15,7 @@ public interface ProductService {
 
 	GenericResponse<ProductData, Long> findByIdProductAndLanguageCode(Long idProduct, LanguageCode languageCode);
 
-	void update(Long id, ProductData data);
+	void update(LanguageCode language, Long id, ProductData data);
 
 	Long create(LanguageCode languageCode, ProductData data);
 

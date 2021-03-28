@@ -17,7 +17,6 @@ import fr.commerces.logged.Logged;
 import fr.commerces.services._transverse.GenericResponse;
 import fr.commerces.services.products.data.ProductData;
 import fr.commerces.services.products.entity.ProductLang;
-import fr.commerces.services.products.entity.ProductLangPK;
 import io.quarkus.panache.common.Page;
 
 @Logged
@@ -51,16 +50,16 @@ public class ProductManager implements ProductService {
 	@Override
 	public final GenericResponse<ProductData, Long> findByIdProductAndLanguageCode(final Long id,
 			final LanguageCode language) {
-		var pojo = ProductLang.findByIdProductAndLanguageCode(id, language).orElseThrow(NotFoundException::new);
+		ProductLang pojo = ProductLang.findByIdProductAndLanguageCode(id, language).orElseThrow(NotFoundException::new);
 		return bind.apply(pojo);
 
 	}
 
 	@Transactional
 	@Override
-	public final void update(final Long id, final ProductData data) {
-		ProductLang.<ProductLang>findByIdOptional(new ProductLangPK(id, LanguageCode.fr))
-				.map(pojo -> mapper.dataIntoEntity(data, pojo)).orElseThrow(NotFoundException::new);
+	public final void update(final LanguageCode language, final Long id, final ProductData data) {
+		ProductLang.findByIdProductAndLanguageCode(id, language).map(pojo -> mapper.dataIntoEntity(data, pojo))
+				.orElseThrow(NotFoundException::new);
 	}
 
 	@Transactional
