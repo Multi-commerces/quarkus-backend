@@ -48,9 +48,9 @@ public class ProductManager implements ProductService {
 	}
 
 	@Override
-	public final GenericResponse<ProductData, Long> findByIdProductAndLanguageCode(final Long id,
+	public final GenericResponse<ProductData, Long> findByIdProductAndLanguageCode(final Long productId,
 			final LanguageCode language) {
-		ProductLang pojo = ProductLang.findByIdProductAndLanguageCode(id, language).orElseThrow(NotFoundException::new);
+		ProductLang pojo = ProductLang.findByIdProductAndLanguageCode(productId, language).orElseThrow(NotFoundException::new);
 		return bind.apply(pojo);
 
 	}
@@ -70,6 +70,16 @@ public class ProductManager implements ProductService {
 		productLang.persistAndFlush();
 
 		return productLang.getProduct().getId();
+	}
+
+	@Transactional
+	@Override
+	public void delete(final LanguageCode languageCode, final Long productId) {
+		boolean isOK = ProductLang.deleteByIdProductAndLanguageCode(productId, languageCode);
+		if (!isOK) {
+			throw new NotFoundException(String.format("Suppression impossible, produit introuvable avec idProduct=%s, languageCode=%s",
+					String.valueOf(productId), languageCode.toString()));
+		}
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -30,19 +31,13 @@ import fr.commerces.services.products.data.ProductData;
  * @author Julien ILARI
  *
  */
-@Path("/lang/{languageCode}/products")
+@Path("/products")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Resource Produits", description = "Resource de gestion des produits")
 public interface ProductResourceApi {
 
-	/**
-	 * Opération de recherche par identifant
-	 * @param acceptLanguage
-	 * @param id
-	 * @return
-	 */
-	@Path("/{productId}")
+	@Path("/{productId}/languages/{languageCode}")
 	@GET
 	@Operation(operationId = "getProductById", summary = "Recherche un produit", description = "Retourne les informations du produit.")
 	@Tag(ref = "Resource Produits")
@@ -59,16 +54,9 @@ public interface ProductResourceApi {
 			@PathParam("productId") Long id);
 
 	/* ############################################################################################################# */
-	
-	/**
-	 * Opération de recherche
-	 * @param language
-	 * @param page
-	 * @param size
-	 * @return
-	 */
+
 	@GET
-	@Path("/") 
+	@Path("/languages/{languageCode}") 
 	@Operation(operationId = "getProducts", summary = "Recherche un produit", 
 		description = "Retourne les informations des produits dans un langue précise (par défaut celle du client).")
 	@Tag(ref = "Resource Produits")
@@ -99,16 +87,10 @@ public interface ProductResourceApi {
 			@NotNull Integer size);
 
 	/* ############################################################################################################# */
-	
-	/**
-	 * Opération de création
-	 * @param language
-	 * @param data
-	 * @return
-	 */
+
 	@RolesAllowed({ "gestionnaire" })
 	@POST
-	@Path("/") 
+	@Path("/languages/{languageCode}") 
 	@Operation(operationId = "createProduct", summary = "Création produit", description = "Demande la création d'un nouveau produit .")
 	@Tag(ref = "Resource Produits")
 	@APIResponses(value = { @APIResponse(responseCode = "201", description = "Création du produit [OK]") })
@@ -125,16 +107,10 @@ public interface ProductResourceApi {
 			@NotNull ProductData data);
 
 	/* ############################################################################################################# */
-	
-	/**
-	 * Opération de mise à jour
-	 * @param productId
-	 * @param variation
-	 * @return
-	 */
+
 	@RolesAllowed({ "gestionnaire" })
 	@PUT
-	@Path("/{productId}")
+	@Path("/{productId}/languages/{languageCode}")
 	@Operation(operationId = "updateProduct", summary = "Modification produit", description = "Demande la modification d'un produit existant.")
 	@Tag(ref = "Resource Produits")
 	Response updateProduct(
@@ -153,5 +129,26 @@ public interface ProductResourceApi {
 			 * Data
 			 */
 			ProductData data);
+
+	@DELETE
+	@Path("/{productId}/languages/{languageCode}")
+	@Operation(operationId = "deleteProductLang", summary = "Suppression produit d'une langue", description = "Demande la suppression d'un produit existant dans une langue spécifique.")
+	@Tag(ref = "Resource Produits")
+	@APIResponses(value = { 
+			@APIResponse(responseCode = "204", description = "[OK] - Opération de suppression effectuée avec succès"),
+			@APIResponse(responseCode = "404", description = "[NOK] - Suppression du produit impossible car introuvable")
+			})
+	Response deleteProductLang(
+			/*
+			 * language
+			 */
+			@Parameter(description = "Code de la langue") 
+			@PathParam("languageCode") 
+			@DefaultValue("fr") String languageCode,
+			/*
+			 * Identifiant
+			 */
+			@Parameter(description = "Identifiant du produit") 
+			@PathParam(value = "productId") Long productId);
 
 }

@@ -61,4 +61,10 @@ public class ProductResource extends GenericResource<GenericResponse<ProductData
 		return Response.noContent().build();
 	}
 
+	@Override
+	public Response deleteProductLang(final String languageCode, final Long productId) {
+		manager.delete(LanguageCode.getByCode(languageCode), productId);
+		return Response.noContent().build();
+	}
+
 }

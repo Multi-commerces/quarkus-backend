@@ -113,6 +113,16 @@ public class ProductLang extends PanacheEntityBase {
 		return Optional.ofNullable(find("identity.idProduct = ?1 and identity.language =?2", idProduct, languageCode)
 				.firstResult());
 	}
+	
+	/**
+	 * Supression d'un produit dans une langue
+	 * @param idProduct idProduct de l'entity à supprimer.
+	 * @param languageCode languageCode de l'entity à supprimer.
+	 * @return false si l'entité n'a pas été supprimée (introuvable).
+	 */
+	public static boolean deleteByIdProductAndLanguageCode(final Long idProduct, final LanguageCode languageCode) {
+		return deleteById(new ProductLangPK(idProduct, languageCode));
+	}
 
 	/* ################################ METHODES Transient ################################ */
 
