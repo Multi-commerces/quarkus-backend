@@ -17,6 +17,6 @@ public interface ProductService {
 
 	void update(Long id, ProductData data);
 
-	Long create(ProductData data);
+	Long create(LanguageCode languageCode, ProductData data);
 
 }

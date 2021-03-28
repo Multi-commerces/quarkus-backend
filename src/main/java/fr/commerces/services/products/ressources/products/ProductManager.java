@@ -65,10 +65,10 @@ public class ProductManager implements ProductService {
 
 	@Transactional
 	@Override
-	public final Long create(final ProductData data) {
+	public final Long create(final LanguageCode languageCode, final ProductData data) {
 		final ProductLang productLang = mapper.toProductLang(data);
+		productLang.setLanguage(languageCode);
 		productLang.persistAndFlush();
-
 
 		return productLang.getProduct().getId();
 	}

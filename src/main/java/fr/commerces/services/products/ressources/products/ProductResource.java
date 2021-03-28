@@ -41,21 +41,20 @@ public class ProductResource extends GenericResource<GenericResponse<ProductData
 
 	@Hypermedia
 	@Override
-	public GenericResponse<ProductData, Long> getProductById(final LanguageCode languageCode, final Long idProduct) {
-		return manager.findByIdProductAndLanguageCode(idProduct, languageCode);
+	public GenericResponse<ProductData, Long> getProductById(final String languageCode, final Long idProduct) {
+		return manager.findByIdProductAndLanguageCode(idProduct, LanguageCode.getByCode(languageCode));
 	}
 
 	@Hypermedia
 	@Override
-	public Collection<GenericResponse<ProductData, Long>> getProducts(final Optional<LanguageCode> languageCode,
+	public Collection<GenericResponse<ProductData, Long>> getProducts(final String languageCode,
 			final Integer page, final Integer size) {
-		var langCode = languageCode.orElse(LanguageCode.getByLocale(headers.getAcceptableLanguages().get(0)));
-		return manager.list(langCode, Optional.ofNullable(page), Optional.ofNullable(size));
+		return manager.list(LanguageCode.getByCode(languageCode), Optional.ofNullable(page), Optional.ofNullable(size));
 	}
 
 	@Override
-	public Response createProduct(ProductData data) {
-		Long newId = manager.create(data);
+	public Response createProduct(final String languageCode, final ProductData data) {
+		Long newId = manager.create(LanguageCode.getByCode(languageCode), data);
 		return buildResponse.apply(newId);
 	}
 

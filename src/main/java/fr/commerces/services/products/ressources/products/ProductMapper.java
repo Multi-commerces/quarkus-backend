@@ -59,7 +59,6 @@ public abstract class ProductMapper {
 	 */
 	@Mapping(target = ".", source = ".")
 	@Mapping(target = "product", source = ".")
-	@Mapping(target = "identity.language", source = "languageCode")
 	public abstract ProductLang toProductLang(ProductData data);
 
 	/*
@@ -74,6 +73,7 @@ public abstract class ProductMapper {
 	 * @return
 	 */
 	@Mapping(target = "identity.idProduct", ignore = true)
+	@Mapping(target = "identity.language", ignore = true)
 	@InheritConfiguration
 	public abstract ProductLang dataIntoEntity(ProductData data, @MappingTarget ProductLang entity);
 

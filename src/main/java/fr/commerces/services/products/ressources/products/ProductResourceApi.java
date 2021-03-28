@@ -1,7 +1,6 @@
 package fr.commerces.services.products.ressources.products;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
@@ -23,8 +22,6 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import com.neovisionaries.i18n.LanguageCode;
-
 import fr.commerces.services._transverse.GenericResponse;
 import fr.commerces.services.products.data.ProductData;
 
@@ -33,7 +30,7 @@ import fr.commerces.services.products.data.ProductData;
  * @author Julien ILARI
  *
  */
-@Path("/products")
+@Path("/lang/{languageCode}/products")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Resource Produits", description = "Resource de gestion des produits")
@@ -53,7 +50,8 @@ public interface ProductResourceApi {
 			@APIResponse(responseCode = "404", description = "Aucun porduit trouvé avec l'identifiant fourni") })
 	GenericResponse<ProductData, Long> getProductById(
 			@Parameter(description = "Langue du produit (par défaut langue du client)") 
-			@QueryParam("lang") LanguageCode acceptLanguage,
+			@PathParam("languageCode") 
+			@DefaultValue("fr") String languageCode,
 			/*
 			 * Identifiant
 			 */
@@ -83,7 +81,8 @@ public interface ProductResourceApi {
 			 * language
 			 */
 			@Parameter(description = "Langue des produits (par défaut langue du client)") 
-			@QueryParam("lang")  Optional<LanguageCode> language,
+			@PathParam("languageCode") 
+			@DefaultValue("fr") String languageCode,
 			/*
 			 * page
 			 */
@@ -113,7 +112,17 @@ public interface ProductResourceApi {
 	@Operation(operationId = "createProduct", summary = "Création produit", description = "Demande la création d'un nouveau produit .")
 	@Tag(ref = "Resource Produits")
 	@APIResponses(value = { @APIResponse(responseCode = "201", description = "Création du produit [OK]") })
-	Response createProduct(ProductData data);
+	Response createProduct(
+			/*
+			 * language
+			 */
+			@Parameter(description = "Code de la langue") 
+			@PathParam("languageCode") 
+			@DefaultValue("fr") String languageCode,
+			/*
+			 * Product Data
+			 */
+			@NotNull ProductData data);
 
 	/* ############################################################################################################# */
 	
