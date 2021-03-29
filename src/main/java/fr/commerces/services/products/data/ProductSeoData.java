@@ -16,14 +16,8 @@ public class ProductSeoData implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 0 of 70 characters used (recommended)
-	 */
 	private String metatitle;
 
-	/**
-	 * 0 of 160 characters used (recommended)
-	 */
 	private String metaDescription;
 
 	private String friendlyURL;

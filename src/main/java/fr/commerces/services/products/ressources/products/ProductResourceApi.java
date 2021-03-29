@@ -99,7 +99,9 @@ public interface ProductResourceApi {
 	@Path("/languages/{languageCode}") 
 	@Operation(operationId = "createProduct", summary = "Création produit", description = "Demande la création d'un nouveau produit .")
 	@Tag(ref = "Resource Produits")
-	@APIResponses(value = { @APIResponse(responseCode = "201", description = "[OK] - Opération de création effectuée avec succès") })
+	@APIResponses(value = { 
+			@APIResponse(responseCode = "201", description = "[OK] - Opération de création effectuée avec succès") 
+	})
 	Response createProduct(
 			/*
 			 * language
