@@ -7,14 +7,14 @@ import javax.ws.rs.Path;
 import fr.commerces.services._transverse.GenericResource;
 import fr.commerces.services._transverse.GenericResponse;
 import fr.commerces.services.products.data.ProductStockData;
-import fr.commerces.services.products.ressources.products.ProductService;
+import fr.commerces.services.products.manager.ProductManager;
 
 @Path("products/{productId}/stocks")
 @RequestScoped
 public class ProductStockResource extends GenericResource<GenericResponse<ProductStockData, Long>> {
 
 	@Inject
-	ProductService manager;
+	ProductManager manager;
 	 	
 	public static final String resourceName = "stocks"; 
 

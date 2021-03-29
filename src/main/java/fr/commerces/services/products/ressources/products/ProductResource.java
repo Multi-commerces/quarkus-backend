@@ -2,22 +2,22 @@ package fr.commerces.services.products.ressources.products;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.function.Function;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.commerces.hypermedia.Hypermedia;
 import fr.commerces.hypermedia.HypermediaLink;
 import fr.commerces.hypermedia.HypermediaSelf;
 import fr.commerces.services._transverse.GenericResource;
 import fr.commerces.services._transverse.GenericResponse;
 import fr.commerces.services.products.data.ProductData;
+import fr.commerces.services.products.manager.ProductManager;
 import fr.commerces.services.products.ressources.deliveries.ProductDeliveryResource;
 import fr.commerces.services.products.ressources.pricing.ProductPricingResource;
 import fr.commerces.services.products.ressources.seo.ProductSeoResource;
@@ -35,36 +35,40 @@ links = {
 @RequestScoped
 public class ProductResource extends GenericResource<GenericResponse<ProductData, Long>> implements ProductResourceApi {
 
+	private static final Logger logger = LoggerFactory.getLogger(ProductResource.class);
+	
 	@Inject
 	ProductManager manager;
-	
-	@Context HttpHeaders headers;
-	
 
-
-	@Hypermedia
 	@Override
-	public GenericResponse<ProductData, Long> getProductById(LanguageCode acceptLanguage, Long id) {
-		return manager.findById(id);
-	}
-
-	@Hypermedia
-	@Override
-	public Collection<GenericResponse<ProductData, Long>> getProducts(Optional<LanguageCode> lang, Integer page,
-			Integer size) {
-		var langCode = lang.orElse(LanguageCode.getByLocale(headers.getAcceptableLanguages().get(0)));
-		return manager.list(langCode, Optional.ofNullable(page), Optional.ofNullable(size));
+	public GenericResponse<ProductData, Long> getProductById(final String languageCode, final Long idProduct) {
+		return manager.findByIdProductAndLanguageCode(idProduct, LanguageCode.getByCode(languageCode));
 	}
 
 	@Override
-	public Response createProduct(LanguageCode language, ProductData data) {
-		Long newId = manager.create(language, data);
+	public Collection<GenericResponse<ProductData, Long>> getProducts(final String languageCode,
+			final Integer page, final Integer size) {
+		logger.info("languageCode {}", languageCode);
+		logger.info("page {}", page);
+		logger.info("size {}", size);
+		return manager.list(LanguageCode.getByCode(languageCode), Optional.ofNullable(page), Optional.ofNullable(size));
+	}
+
+	@Override
+	public Response createProduct(final String languageCode, final ProductData data) {
+		Long newId = manager.create(LanguageCode.getByCode(languageCode), data);
 		return buildResponse.apply(newId);
 	}
 
 	@Override
-	public Response updateProduct(Long productId, ProductData data) {
-		manager.update(productId, data);
+	public Response updateProduct(final String languageCode, final Long productId, final ProductData data) {
+		manager.update(LanguageCode.getByCode(languageCode), productId, data);
+		return Response.noContent().build();
+	}
+
+	@Override
+	public Response deleteProductLang(final String languageCode, final Long productId) {
+		manager.delete(LanguageCode.getByCode(languageCode), productId);
 		return Response.noContent().build();
 	}
 

@@ -1,14 +1,13 @@
 package fr.commerces.services.products.ressources.products;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -24,44 +23,60 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import com.neovisionaries.i18n.LanguageCode;
-
 import fr.commerces.services._transverse.GenericResponse;
 import fr.commerces.services.products.data.ProductData;
 
+/**
+ * Interface resource API pour les produits
+ * @author Julien ILARI
+ *
+ */
 @Path("/products")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Resource Produits", description = "Resource de gestion des produits")
 public interface ProductResourceApi {
 
-	@Path("/{productId}")
+	@Path("/{productId}/languages/{languageCode}")
 	@GET
 	@Operation(operationId = "getProductById", summary = "Recherche un produit", description = "Retourne les informations du produit.")
 	@Tag(ref = "Resource Produits")
-	@APIResponses(value = { @APIResponse(responseCode = "200", description = "Produit trouvé"),
-			@APIResponse(responseCode = "404", description = "Aucun porduit trouvé avec l'identifiant fourni") })
+	@APIResponses(value = { 
+			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
+			@APIResponse(responseCode = "404", description = "[NOK] - Aucun porduit trouvé avec les paramètres fournis") 
+	})
 	GenericResponse<ProductData, Long> getProductById(
-			@PathParam("lang") LanguageCode acceptLanguage,
+			/*
+			 * Langue
+			 */
+			@Parameter(description = "Langue du produit") 
+			@PathParam("languageCode") 
+			@DefaultValue("fr") String languageCode,
+			/*
+			 * Identifiant
+			 */
+			@Parameter(description = "Identifiant du produit") 
 			@PathParam("productId") Long id);
 
 	/* ############################################################################################################# */
-	
+
 	@GET
 	@Path("/") 
 	@Operation(operationId = "getProducts", summary = "Recherche un produit", 
 		description = "Retourne les informations des produits dans un langue précise (par défaut celle du client).")
 	@Tag(ref = "Resource Produits")
 	@APIResponses(value = { 
-			@APIResponse(responseCode = "200", description = "Produits trouvés"),
-			@APIResponse(responseCode = "404", description = "Aucun porduit trouvé avec les critères de recherche") 
+			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
+			@APIResponse(responseCode = "404", description = "[NOK] - Aucun porduit trouvé avec les critères de recherche") 
 	})
 	Collection<GenericResponse<ProductData, Long>> getProducts(
 			/*
 			 * language
 			 */
-			@Parameter(description = "Langue des produits sélectionnés (par défaut langue du client)") 
-			@QueryParam("lang")  Optional<LanguageCode> language,
+			@Parameter(description = "Langue des produits (langue par défaut 'français')") 
+			@QueryParam("languageCode") 
+			@DefaultValue("fr") 
+			@NotNull String languageCode,
 			/*
 			 * page
 			 */
@@ -78,22 +93,69 @@ public interface ProductResourceApi {
 			@NotNull Integer size);
 
 	/* ############################################################################################################# */
-	
+
 	@RolesAllowed({ "gestionnaire" })
 	@POST
-	@Path("/") 
+	@Path("/languages/{languageCode}") 
 	@Operation(operationId = "createProduct", summary = "Création produit", description = "Demande la création d'un nouveau produit .")
 	@Tag(ref = "Resource Produits")
-	@APIResponses(value = { @APIResponse(responseCode = "201", description = "Création du produit [OK]") })
-	Response createProduct(@HeaderParam("language") LanguageCode language, ProductData data);
+	@APIResponses(value = { @APIResponse(responseCode = "201", description = "[OK] - Opération de création effectuée avec succès") })
+	Response createProduct(
+			/*
+			 * language
+			 */
+			@Parameter(description = "Code de la langue") 
+			@PathParam("languageCode") 
+			@DefaultValue("fr") String languageCode,
+			/*
+			 * Product Data
+			 */
+			@NotNull ProductData data);
 
 	/* ############################################################################################################# */
-	
+
 	@RolesAllowed({ "gestionnaire" })
 	@PUT
-	@Path("/{productId}")
+	@Path("/{productId}/languages/{languageCode}")
 	@Operation(operationId = "updateProduct", summary = "Modification produit", description = "Demande la modification d'un produit existant.")
 	@Tag(ref = "Resource Produits")
-	Response updateProduct(@PathParam(value = "productId") Long productId, ProductData variation);
+	Response updateProduct(
+			/*
+			 * language
+			 */
+			@Parameter(description = "Code de la langue") 
+			@PathParam("languageCode") 
+			@DefaultValue("fr") String languageCode,
+			/*
+			 * Identifiant
+			 */
+			@Parameter(description = "Identifiant du produit") 
+			@PathParam(value = "productId") Long productId, 
+			/*
+			 * Data
+			 */
+			ProductData data);
+
+	@RolesAllowed({ "gestionnaire" })
+	@DELETE
+	@Path("/{productId}/languages/{languageCode}")
+	@Operation(operationId = "deleteProductLang", summary = "Suppression produit d'une langue", description = "Demande la suppression d'un produit existant dans une langue spécifique.")
+	@Tag(ref = "Resource Produits")
+	@APIResponses(value = { 
+			@APIResponse(responseCode = "204", description = "[OK] - Opération de suppression effectuée avec succès"),
+			@APIResponse(responseCode = "404", description = "[NOK] - Suppression du produit impossible car introuvable")
+	})
+	Response deleteProductLang(
+			/*
+			 * language
+			 */
+			@Parameter(description = "Code de la langue") 
+			@PathParam("languageCode") 
+			@DefaultValue("fr") String languageCode,
+			/*
+			 * Identifiant
+			 */
+			@Parameter(description = "Identifiant du produit") 
+			@PathParam(value = "productId") Long productId);
 
 }

@@ -42,22 +42,28 @@ public class ProductLang extends PanacheEntityBase {
 	@JoinColumn(name = "PRODUCT_ID")
 	public Product product;
 
+	/*
+	 * ################################################################### Produit
+	 * dans une langue
+	 * ###################################################################
+	 */
+
 	/**
 	 * Nom du produit
 	 */
-	@Column(name = "NAME", length = 128)
+	@Column(name = "NAME", length = 128, nullable = false)
 	public String name;
 
 	/**
 	 * Description détaillée
 	 */
-	@Column(name = "DESCRIPTION", length = 9999)
+	@Column(name = "DESCRIPTION", length = 9999, nullable = false)
 	public String description;
 
 	/**
 	 * Description courte
 	 */
-	@Column(name = "DESCRIPTION_SHORT", length = 255)
+	@Column(name = "DESCRIPTION_SHORT", length = 256, nullable = false)
 	public String summary;
 
 	/*
@@ -72,13 +78,10 @@ public class ProductLang extends PanacheEntityBase {
 	@Column(name = "META_TITLE", length = 128)
 	public String metaTitle;
 
-	@Column(name = "META_KEYWORDS", length = 255)
-	public String metaKeywords;
-
 	/**
-	 * 0 of 160 characters used (recommended)
+	 * 0 of 160 characters used (recommended).
 	 */
-	@Column(name = "META_DESCRIPTION", length = 255)
+	@Column(name = "META_DESCRIPTION", length = 256)
 	public String metaDescription;
 
 	/**
@@ -87,23 +90,48 @@ public class ProductLang extends PanacheEntityBase {
 	@Column(name = "FRIENDLY_URL", length = 128)
 	public String friendlyURL;
 
-	/* ################################ METHODES PanacheQuery ################################ */
+	/*
+	 * ################################ METHODES PanacheQuery
+	 * ################################
+	 */
 
 	/**
-	 * Recherche un produit dans une langue en utilisant le code langue
+	 * Recherche de produits dans une langue
 	 * 
 	 * @param codeLang code langue
 	 * @return
 	 */
-	public static PanacheQuery<ProductLang> findByLanguageCode(LanguageCode languageCode) {
-		return find("identity.language", languageCode);
+	public static PanacheQuery<ProductLang> findByLanguageCode(final LanguageCode languageCode) {
+		return find("identity.language = ?1", languageCode);
 	}
 
-	public Optional<PanacheEntityBase> findByIdOptional(Long Id) {
-		return super.findByIdOptional(new ProductLangPK(Id, LanguageCode.fr));
+	/**
+	 * Recherche un produit dans une langue
+	 * 
+	 * @param idProduct    identifiant du produit
+	 * @param languageCode code langue
+	 * @return
+	 */
+	public static Optional<ProductLang> findByIdProductAndLanguageCode(final Long idProduct,
+			final LanguageCode languageCode) {
+		return findByIdOptional(new ProductLangPK(idProduct, languageCode));
 	}
 
-	/* ################################ METHODES Transient ################################ */
+	/**
+	 * Supression d'un produit dans une langue
+	 * 
+	 * @param idProduct    idProduct de l'entity à supprimer.
+	 * @param languageCode languageCode de l'entity à supprimer.
+	 * @return false si l'entité n'a pas été supprimée (introuvable).
+	 */
+	public static boolean deleteByIdProductAndLanguageCode(final Long idProduct, final LanguageCode languageCode) {
+		return deleteById(new ProductLangPK(idProduct, languageCode));
+	}
+
+	/*
+	 * ################################ METHODES Transient
+	 * ################################
+	 */
 
 	@Transient
 	public Long getId() {
@@ -113,7 +141,7 @@ public class ProductLang extends PanacheEntityBase {
 			return identity.getIdProduct();
 		}
 	}
-	
+
 	@Transient
 	public void setLanguage(LanguageCode language) {
 		if (identity == null) {

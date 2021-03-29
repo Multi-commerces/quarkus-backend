@@ -1,4 +1,4 @@
-package fr.commerces.services.products.ressources.variations;
+package fr.commerces.services.products.mapper;
 
 import javax.enterprise.context.ApplicationScoped;
 
