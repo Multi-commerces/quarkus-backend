@@ -73,13 +73,13 @@ public class ProductLang extends PanacheEntityBase {
 	 */
 
 	/**
-	 * 0 of 70 characters used (recommended)
+	 * SEO metaTitle
 	 */
 	@Column(name = "META_TITLE", length = 256)
 	public String metaTitle;
 
 	/**
-	 * 0 of 160 characters used (recommended).
+	 * SEO metaDescription
 	 */
 	@Column(name = "META_DESCRIPTION", length = 256)
 	public String metaDescription;

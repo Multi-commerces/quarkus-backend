@@ -23,7 +23,6 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -43,23 +42,27 @@ import fr.commerces.services.products.data.ProductSeoData;
 @Path("/products/{productId}/seo")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "Resource Produits SEO (Search Engine Optimization)", description = "Resource de gestion des produits (SEO)")
+@Tag(name = "Resource Produits - SEO (Search Engine Optimization)", description = "Resource pour la gestion SEO des produits (multi-langues)")
 public interface ProductSeoApi {
 
 	/* ############################################################################################################# */
 	
+	/**
+	 * GET Resource Produits - SEO
+	 * @param productId
+	 * @return
+	 */
 	@GET
 	@Path("/")
 	@Operation(operationId = "getProductSeoById", 
 		summary = "Recherche les informations SEO d'un produit (dans toutes les langues).", 
 		description = "Retourne les informations SEO du produit.")
-	@Tag(ref = "Resource Produits SEO")
 	@APIResponses(value = { 
 			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
 			@APIResponse(responseCode = "401", description = "[NOK] - Une identification est nécessaire"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun produit ne correspond aux paramètres fournis") 
 	})
-	GenericResponse<ProductSeoData, Long> getProductSeoById(
+	Collection<GenericResponse<ProductSeoData, Long>> getProductSeos(
 			/*
 			 * Identifiant du produit
 			 */
@@ -68,18 +71,23 @@ public interface ProductSeoApi {
 
 	/* ############################################################################################################# */
 	
+	/**
+	 * GET Resource Produits - SEO
+	 * @param languageCode
+	 * @param productId
+	 * @return
+	 */
 	@GET
 	@Path("/languages/{languageCode}")
 	@Operation(operationId = "getProductSEOs", 
 		summary = "Recherche les informations SEO d'un produit (dans une seule langue).", 
-		description = "Retourne les informations du SEO produit.")
-	@Tag(ref = "Resource Produits SEO")
+		description = "Retourne les informations SEO propre au produit pour une langue.")
 	@APIResponses(value = { 
 			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
 			@APIResponse(responseCode = "401", description = "[NOK] - Une identification est nécessaire"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun produit trouvé avec les critères de sélection fournis") 
 	})
-	Collection<GenericResponse<ProductSeoData, Long>> getProductSEOs(
+	GenericResponse<ProductSeoData, Long> getProductSeo(
 			/*
 			 * language
 			 */
@@ -95,31 +103,20 @@ public interface ProductSeoApi {
 
 	/* ############################################################################################################# */
 	
-	@POST
-	@Path("/languages/{languageCode}")
-	@Operation(operationId = "createProductSeo", 
-		summary = "Création SEO produit (dans une seule langue)", 
-		description = "Demande la création SEO pour le produit.")
-	@Tag(ref = "Resource Produits SEO")
-	@APIResponses(value = { 
-			@APIResponse(responseCode = "200", description = "[OK] - Opération d'enregistrement effectuée avec succès"),
-			@APIResponse(responseCode = "401", description = "[NOK] - Une identification est nécessaire"),
-			@APIResponse(responseCode = "404", description = "[NOK] - Aucun produit trouvé avec les critères de sélection fournis"),
-			@APIResponse(responseCode = "409", description = "[NOK] - Un SEO existe déjà pour le produit sur la langue cible") 
-	})
-	Response createProductSeo(
-			@NotNull @Valid ProductSeoData data);
-
-	/* ############################################################################################################# */
-	
+	/**
+	 * PUT Resource Produits - SEO
+	 * @param languageCode
+	 * @param productId
+	 * @param seo
+	 * @return
+	 */
 	@PUT
 	@Path("/languages/{languageCode}")
 	@Operation(operationId = "updateProductSeo", 
 		summary = "Modification SEO produit (dans une seule langue)", 
 		description = "Demande la modification SEO d'un produit.")
-	@Tag(ref = "Resource Produits SEO")
 	@APIResponses(value = { 
-			@APIResponse(responseCode = "200", description = "[OK] - Opération d'enregistrement effectuée avec succès"),
+			@APIResponse(responseCode = "204", description = "[OK] - Opération d'enregistrement effectuée avec succès"),
 			@APIResponse(responseCode = "401", description = "[NOK] - Une identification est nécessaire"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun produit trouvé avec les critères de sélection fournis") 
 	})

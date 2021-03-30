@@ -3,6 +3,7 @@ package fr.commerces.services.products.ressources.products;
 import java.util.Collection;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -112,7 +113,7 @@ public interface ProductResourceApi {
 			/*
 			 * Product Data
 			 */
-			@NotNull ProductData data);
+			@NotNull @Valid ProductData data);
 
 	/* ############################################################################################################# */
 
@@ -136,7 +137,7 @@ public interface ProductResourceApi {
 			/*
 			 * Data
 			 */
-			ProductData data);
+			@NotNull @Valid ProductData data);
 
 	@RolesAllowed({ "gestionnaire" })
 	@DELETE
