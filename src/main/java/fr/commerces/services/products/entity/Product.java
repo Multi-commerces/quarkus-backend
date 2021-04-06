@@ -18,7 +18,9 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity @Getter @Setter
+@Entity
+@Getter
+@Setter
 @Table(name = "PRODUCT", uniqueConstraints = { @UniqueConstraint(columnNames = { "product_id" }) })
 public class Product extends PanacheEntityBase {
 
@@ -38,7 +40,7 @@ public class Product extends PanacheEntityBase {
 
 	@Column(name = "price_HT")
 	public Double priceHT;
-	
+
 //	@Column(name = "tax_Rule")
 //	public Double taxRule;
 
@@ -56,10 +58,10 @@ public class Product extends PanacheEntityBase {
 
 	@Column(name = "package_Weight")
 	public Integer packageWeight;
-	
+
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 	private List<ProductCategory> categories = new ArrayList<>();
-	
+
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = ProductLang.class, mappedBy = "product", cascade = {
 			CascadeType.REMOVE }, orphanRemoval = true)
 	private List<ProductLang> productLang = new ArrayList<>();
@@ -71,11 +73,7 @@ public class Product extends PanacheEntityBase {
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = ProductImage.class, mappedBy = "product", cascade = {
 			CascadeType.REMOVE }, orphanRemoval = true)
 	private List<ProductImage> images = new ArrayList<>();
-	
-	public static List<ProductLang> findAlive(){
-        return list("identity.codeLang", "FR");
-    }
-	
+
 //	@Transient
 //	public double getPriceTTC()
 //	{

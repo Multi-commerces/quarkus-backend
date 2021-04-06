@@ -43,9 +43,9 @@ public class ProductLang extends PanacheEntityBase {
 	public Product product;
 
 	/*
-	 * ################################################################### Produit
-	 * dans une langue
-	 * ###################################################################
+	 * #######################################################################
+	 * ############################ DETAIL PRODUIT ###########################
+	 * #######################################################################
 	 */
 
 	/**
@@ -61,38 +61,39 @@ public class ProductLang extends PanacheEntityBase {
 	public String description;
 
 	/**
-	 * Description courte
+	 * Description courte (résumé)
 	 */
 	@Column(name = "DESCRIPTION_SHORT", length = 256, nullable = false)
 	public String summary;
 
 	/*
 	 * ###################################################################
-	 * REFERENCEMENT
+	 * ########################## REFERENCEMENT ##########################
 	 * ###################################################################
 	 */
 
 	/**
-	 * 0 of 70 characters used (recommended)
+	 * SEO metaTitle
 	 */
-	@Column(name = "META_TITLE", length = 128)
+	@Column(name = "META_TITLE", length = 256)
 	public String metaTitle;
 
 	/**
-	 * 0 of 160 characters used (recommended).
+	 * SEO metaDescription
 	 */
 	@Column(name = "META_DESCRIPTION", length = 256)
 	public String metaDescription;
 
 	/**
-	 * Récriture de url
+	 * URL destinées à améliorer la convivialité et l'accessibilité d'un site Web
 	 */
-	@Column(name = "FRIENDLY_URL", length = 128)
+	@Column(name = "FRIENDLY_URL", length = 256)
 	public String friendlyURL;
 
 	/*
-	 * ################################ METHODES PanacheQuery
-	 * ################################
+	 * ###################################################################
+	 * ###################### METHODES PanacheQuery ######################
+	 * ###################################################################
 	 */
 
 	/**
@@ -129,8 +130,9 @@ public class ProductLang extends PanacheEntityBase {
 	}
 
 	/*
-	 * ################################ METHODES Transient
-	 * ################################
+	 * ###################################################################
+	 * ####################### METHODES Transient ########################
+	 * ###################################################################
 	 */
 
 	@Transient
@@ -143,7 +145,7 @@ public class ProductLang extends PanacheEntityBase {
 	}
 
 	@Transient
-	public void setLanguage(LanguageCode language) {
+	public void setLanguage(final LanguageCode language) {
 		if (identity == null) {
 			identity = new ProductLangPK(null, language);
 		} else {
