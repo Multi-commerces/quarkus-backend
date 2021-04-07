@@ -18,7 +18,7 @@ import fr.commerces.services._transverse.GenericResource;
 import fr.commerces.services._transverse.GenericResponse;
 import fr.commerces.services.products.data.ProductData;
 import fr.commerces.services.products.manager.ProductManager;
-import fr.commerces.services.products.ressources.deliveries.ProductDeliveryResource;
+import fr.commerces.services.products.ressources.deliveries.ProductShippingResource;
 import fr.commerces.services.products.ressources.pricing.ProductPricingResource;
 import fr.commerces.services.products.ressources.seo.ProductSeoResource;
 import fr.commerces.services.products.ressources.stock.ProductStockResource;
@@ -30,7 +30,7 @@ links = {
 		@HypermediaLink(resource = ProductSeoResource.class, title = "Informations du produit pour le référencement SEO"),
 		@HypermediaLink(resource = ProductStockResource.class, title = "Stock du produit"),
 		@HypermediaLink(resource = ProductPricingResource.class, title = "Prix du produit"),
-		@HypermediaLink(resource = ProductDeliveryResource.class, title = "Mode de livraison du produit"),
+		@HypermediaLink(resource = ProductShippingResource.class, title = "Mode de livraison du produit"),
 		@HypermediaLink(resource = ProductVariationApi.class, title = "Les différentes déclinaisons du produit") })
 @RequestScoped
 public class ProductResource extends GenericResource<GenericResponse<ProductData, Long>> implements ProductResourceApi {
