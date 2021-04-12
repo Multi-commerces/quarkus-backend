@@ -1,17 +1,20 @@
 package fr.commerces.services.products.data;
 
 import java.io.Serializable;
+import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
- * Données relatif au transport du produit
+ * Données relatif à l'expédition du produit
  * @author julien ILARI
  *
  */
 @NoArgsConstructor
-@Data
+@Getter @Setter @ToString
 public class ProductShippingData implements Serializable {
 
 	/**
@@ -33,7 +36,7 @@ public class ProductShippingData implements Serializable {
 	 * unité centimètre (cm)
 	 * </p>
 	 */
-	private int packageWidth;
+	private double packageWidth;
 
 	/**
 	 * <h1>hauteur</h1>
@@ -41,7 +44,7 @@ public class ProductShippingData implements Serializable {
 	 * unité centimètre (cm)
 	 * </p>
 	 */
-	private int packageHeight;
+	private double packageHeight;
 
 	/**
 	 * <h1>profondeur</h1>
@@ -49,29 +52,37 @@ public class ProductShippingData implements Serializable {
 	 * unité centimètre (cm)
 	 * </p>
 	 */
-	private int packageDepth;
+	private double packageDepth;
 
 	/**
 	 * <h1>poids</h1>
 	 * <p>
-	 * unité centimètre (kg)
+	 * unité kilo gramme (kg)
 	 * </p>
 	 */
-	private int packageWeight;
+	private double packageWeight;
 
 	/*
-	 * Delivery
+	 * Delivery Time (Date de livraison)
 	 * -----------------------------------------------------------------------------
 	 * L'affichage du délai de livraison d'un produit est conseillé aux
 	 * commerçants vendant en Europe afin de se conformer aux lois locales.
 	 * -----------------------------------------------------------------------------
 	 */
 
-	private int deliveryTime;
+	/**
+	 * Délai de livraison des produits en stock
+	 */
+	private int deliveryTimeQuantityOK;
+	
+	/**
+	 * Délai de livraison des produits en rupture de stock (pour les commandes autorisées)
+	 */
+	private int deliveryTimeQuantityNOK;
 	
 	
 	/*
-	 * Shipping fees
+	 * Shipping fees (Frais de port)
 	 * -----------------------------------------------------------------------------
 	 * Si un transporteur a une taxe, elle sera ajoutée aux frais d'expédition. Ne
 	 * s'applique pas à la livraison gratuite.
@@ -79,21 +90,21 @@ public class ProductShippingData implements Serializable {
 	 */
 	
 	/**
-	 * Ce produit entraîne-t-il des frais d'expédition supplémentaires?
+	 * Frais d'expédition supplémentaires
 	 */
 	private double shippingfees;
 	
 	/*
 	 * Available carriers
 	 * -----------------------------------------------------------------------------
-	 * Si aucun transporteur n'est sélectionné, tous les transporteurs seront
-	 * disponibles pour les commandes des clients.
+	 * transporteur disponibles pour les commandes sur le produit.
 	 * -----------------------------------------------------------------------------
 	 */
 	
 	/**
-	 * Transporter disponible pour le produit
+	 * 
+	 * Transporteurs disponibles pour le produit
 	 */
-	private String transporter;
+	private List<?> transporters;
 
 }
