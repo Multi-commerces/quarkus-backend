@@ -1,57 +1,97 @@
 package fr.commerces.services.products.ressources.products;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.neovisionaries.i18n.LanguageCode;
 
+import fr.commerces.hypermedia.Hypermedia;
 import fr.commerces.hypermedia.HypermediaLink;
-import fr.commerces.hypermedia.HypermediaSelf;
+import fr.commerces.hypermedia.HypermediaApi;
 import fr.commerces.services._transverse.GenericResource;
-import fr.commerces.services._transverse.GenericResponse;
+import fr.commerces.services._transverse.data.PagingData;
+import fr.commerces.services._transverse.response.CollectionResponse;
+import fr.commerces.services._transverse.response.SingleResponse;
 import fr.commerces.services.products.data.ProductData;
 import fr.commerces.services.products.manager.ProductManager;
-import fr.commerces.services.products.ressources.deliveries.ProductShippingResource;
+import fr.commerces.services.products.ressources.deliveries.ProductShippingApi;
 import fr.commerces.services.products.ressources.pricing.ProductPricingResource;
-import fr.commerces.services.products.ressources.seo.ProductSeoResource;
+import fr.commerces.services.products.ressources.seo.ProductSeoApi;
 import fr.commerces.services.products.ressources.stock.ProductStockResource;
 import fr.commerces.services.products.ressources.variations.ProductVariationApi;
+import lombok.extern.slf4j.Slf4j;
 
-
-@HypermediaSelf(resource = ProductResourceApi.class, title = "Informations basiques du produit", 
-links = {
-		@HypermediaLink(resource = ProductSeoResource.class, title = "Informations du produit pour le référencement SEO"),
-		@HypermediaLink(resource = ProductStockResource.class, title = "Stock du produit"),
-		@HypermediaLink(resource = ProductPricingResource.class, title = "Prix du produit"),
-		@HypermediaLink(resource = ProductShippingResource.class, title = "Mode de livraison du produit"),
-		@HypermediaLink(resource = ProductVariationApi.class, title = "Les différentes déclinaisons du produit") })
+@Slf4j
+@HypermediaApi(
+	resource = ProductResourceApi.class, title = "Informations basiques du produit", 
+	links = {
+		@HypermediaLink(resource = ProductSeoApi.class, methode = "getProductSeo", rel = "seo"),
+		@HypermediaLink(resource = ProductStockResource.class, rel = "stock"),
+		@HypermediaLink(resource = ProductPricingResource.class, rel = "price"),
+		@HypermediaLink(resource = ProductShippingApi.class, methode = "getProductShipping", rel = "shipping"),
+		@HypermediaLink(resource = ProductVariationApi.class, rel = "variation") 
+	})
 @RequestScoped
-public class ProductResource extends GenericResource<GenericResponse<ProductData, Long>> implements ProductResourceApi {
+public class ProductResource extends GenericResource<CollectionResponse<ProductData, Long>>
+		implements ProductResourceApi {
 
-	private static final Logger logger = LoggerFactory.getLogger(ProductResource.class);
-	
 	@Inject
 	ProductManager manager;
 
 	@Override
-	public GenericResponse<ProductData, Long> getProductById(final String languageCode, final Long idProduct) {
-		return manager.findByIdProductAndLanguageCode(idProduct, LanguageCode.getByCode(languageCode));
+	public Response getProductById(final String languageCode, final Long idProduct) {
+		// Data API
+		final ProductData data = manager.findByIdProductAndLanguageCode(idProduct, LanguageCode.getByCode(languageCode));
+
+		// Réponse API
+		final SingleResponse<ProductData, Long> singleResponse = new SingleResponse<ProductData, Long>();
+		singleResponse.setId(idProduct);
+		singleResponse.setData(data);
+
+		if(log.isDebugEnabled())
+		{
+			log.debug(singleResponse.toString());
+		}
+		return Response.ok(singleResponse).build();
 	}
 
+	@Hypermedia
 	@Override
-	public Collection<GenericResponse<ProductData, Long>> getProducts(final String languageCode,
-			final Integer page, final Integer size) {
-		logger.info("languageCode {}", languageCode);
-		logger.info("page {}", page);
-		logger.info("size {}", size);
-		return manager.list(LanguageCode.getByCode(languageCode), Optional.ofNullable(page), Optional.ofNullable(size));
+	public CollectionResponse<ProductData, Long> getProducts(final String languageCode, final Integer page,
+			final Integer size) {	
+		/*
+		 * Data API
+		 */
+		final Map<Long, ProductData> items = manager.list(LanguageCode.getByCode(languageCode),
+				Optional.ofNullable(page), Optional.ofNullable(size));
+
+		/*
+		 *  Réponse API
+		 */
+		final CollectionResponse<ProductData, Long> reponse = new CollectionResponse<ProductData, Long>();
+		
+		// embedded
+		final List<SingleResponse<ProductData, Long>> embedded = new ArrayList<>();
+		items.entrySet().stream().forEach(entry -> {
+			SingleResponse<ProductData, Long> singleResponse = new SingleResponse<ProductData, Long>();
+			singleResponse.setId(entry.getKey());
+			singleResponse.setData(entry.getValue());
+
+			embedded.add(singleResponse);
+		});
+		reponse.setEmbedded(embedded);
+		
+		// Pagination
+		final PagingData pagingData = manager.getPagingData(LanguageCode.getByCode(languageCode), Optional.ofNullable(size));
+		reponse.setPaging(pagingData);
+
+		return reponse;
 	}
 
 	@Override

@@ -36,7 +36,6 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import fr.commerces.services._transverse.GenericResponse;
 import fr.commerces.services.products.data.ProductShippingData;
 
 
@@ -58,8 +57,7 @@ public interface ProductShippingApi {
 	 * @param productId
 	 * @return
 	 */
-	@GET
-	@Path("/")
+	@GET @Path("/")
 	@Operation(operationId = "getProductShipping", 
 		summary = "Recherche les informations d'expédition d'un produit.", 
 		description = "Retourne les informations d'expédition du produit.")
@@ -68,7 +66,7 @@ public interface ProductShippingApi {
 			@APIResponse(responseCode = "401", description = "[NOK] - Une identification est nécessaire"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun transporteur ne correspond aux paramètres fournis") 
 	})
-	GenericResponse<ProductShippingData, Long> getProductShipping(
+	Response getProductShipping(
 			@Parameter(description = "Identifiant du produit") 
 			@PathParam("productId") Long productId, 
 			
@@ -82,8 +80,7 @@ public interface ProductShippingApi {
 	 * PUT Resource - Produit Expédition
 	 */
 	@RolesAllowed({ "gestionnaire" })
-	@PUT 
-	@Path("/")
+	@PUT
 	@Operation(operationId = "postProductShipping", 
 		summary = "Enregistrement un nouveau transporteur pour le produit", 
 		description = "Demande l'enregistrement d'un transporteur supplémentaire sur le produit.")

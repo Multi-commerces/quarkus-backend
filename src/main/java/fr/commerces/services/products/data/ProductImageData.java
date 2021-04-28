@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fr.commerces.services._transverse.LinkData;
+import fr.commerces.services._transverse.data.LinkData;
 import lombok.Data;
 
 @Data

@@ -5,13 +5,13 @@ import javax.inject.Inject;
 import javax.ws.rs.Path;
 
 import fr.commerces.services._transverse.GenericResource;
-import fr.commerces.services._transverse.GenericResponse;
+import fr.commerces.services._transverse.response.CollectionResponse;
 import fr.commerces.services.products.data.ProductStockData;
 import fr.commerces.services.products.manager.ProductManager;
 
 @Path("products/{productId}/stocks")
 @RequestScoped
-public class ProductStockResource extends GenericResource<GenericResponse<ProductStockData, Long>> {
+public class ProductStockResource extends GenericResource<CollectionResponse<ProductStockData, Long>> {
 
 	@Inject
 	ProductManager manager;

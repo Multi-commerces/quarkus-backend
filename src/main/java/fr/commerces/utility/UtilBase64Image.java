@@ -1,4 +1,4 @@
-package fr.commerces.transverse.util;
+package fr.commerces.utility;
 
 import java.io.File;
 import java.io.FileInputStream;

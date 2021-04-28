@@ -1,5 +1,7 @@
 package fr.commerces.services.products.mapper;
 
+import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.mapstruct.InheritConfiguration;
@@ -9,7 +11,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import fr.commerces.services._transverse.GenericResponse;
+import com.neovisionaries.i18n.LanguageCode;
+
 import fr.commerces.services.products.data.ProductData;
 import fr.commerces.services.products.data.ProductSeoData;
 import fr.commerces.services.products.data.ProductShippingData;
@@ -20,25 +23,18 @@ import fr.commerces.services.products.entity.ProductLang;
 @Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public abstract class ProductMapper {
 
-	public abstract Product toEntity(ProductData data);
-
 	/*
 	 * READ Utilisation opération de lecture
 	 */
-
 	/**
 	 * Produit
 	 * 
 	 * @param entity
 	 * @return
 	 */
-	@Mapping(target = "data", source = ".")
-	public abstract GenericResponse<ProductData, Long> toResponse(Product entity);
-
-	@Mapping(target = "id", ignore = true)
-	@InheritConfiguration
-	public abstract GenericResponse<ProductData, Long> toResponse(Product entity,
-			@MappingTarget GenericResponse<ProductData, Long> response);
+	public abstract Map<Long, ProductData> toProductDataById(Map<Long, ProductLang> entity);
+	public abstract ProductData toProductData(ProductLang entity);
+	
 
 	/**
 	 * Produit LANGUE
@@ -46,8 +42,7 @@ public abstract class ProductMapper {
 	 * @param entity
 	 * @return
 	 */
-	@Mapping(target = "data", source = ".")
-	public abstract GenericResponse<ProductData, Long> toResponse(ProductLang entity);
+	public abstract Map<LanguageCode, ProductSeoData> toProductSeoDataByLang(Map<LanguageCode, ProductLang> entity);
 
 	/**
 	 * Produit SEO
@@ -55,8 +50,7 @@ public abstract class ProductMapper {
 	 * @param entity
 	 * @return
 	 */
-	@Mapping(target = "data", source = ".")
-	public abstract GenericResponse<ProductSeoData, Long> toProductSeoResponse(ProductLang entity);
+	public abstract ProductSeoData toProductSeoResponse(ProductLang entity);
 	
 	/**
 	 * Produit Shipping
@@ -64,8 +58,7 @@ public abstract class ProductMapper {
 	 * @param entity
 	 * @return
 	 */
-	@Mapping(target = "data", source = ".")
-	public abstract GenericResponse<ProductShippingData, Long> toProductShippingResponse(Product entity);
+	public abstract ProductShippingData toProductShippingResponse(Product entity);
 
 	/*
 	 * CREATE Utilisation opération de création
@@ -92,7 +85,7 @@ public abstract class ProductMapper {
 	 */
 	@Mapping(target = "id", ignore = true)
 	@InheritConfiguration
-	public abstract Product dataIntoEntity(ProductShippingData data, @MappingTarget Product entity);
+	public abstract Product toProduct(ProductShippingData data, @MappingTarget Product entity);
 
 	/**
 	 * Produit LANGUE
@@ -102,7 +95,7 @@ public abstract class ProductMapper {
 	 */
 	@Mapping(target = "identity", ignore = true)
 	@InheritConfiguration
-	public abstract ProductLang dataIntoEntity(ProductData data, @MappingTarget ProductLang entity);
+	public abstract ProductLang toProductLang(ProductData data, @MappingTarget ProductLang entity);
 	
 	/**
 	 * Produit SEO
@@ -112,6 +105,6 @@ public abstract class ProductMapper {
 	 */
 	@Mapping(target = "identity", ignore = true)
 	@InheritConfiguration
-	public abstract ProductLang dataIntoEntity(ProductSeoData data, @MappingTarget ProductLang entity);
+	public abstract ProductLang toProductLang(ProductSeoData data, @MappingTarget ProductLang entity);
 
 }

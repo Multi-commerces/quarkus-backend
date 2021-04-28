@@ -44,26 +44,22 @@ public interface ProductVariationApi {
 
 	@GET
 	@Operation(summary = "Rechercher variations du produit", description = "Recherche les variations du produit.", operationId = "getVariations")
-	@Tag(ref = "Resource Produits")
 	List<ProductVariationData> getVariations(@PathParam(value = "productId") Long productId);
 
 	@POST
 	@Operation(summary = "Ajouter variation produit", description = "Demande l'ajout d'une nouvelle variation du produit .", operationId = "createVariation")
-	@Tag(ref = "Resource Produits")
 	Response createVariation(@Context UriInfo uriInfo, @PathParam(value = "productId") Long productId,
 			ProductVariationData variation);
 
 	@PUT
 	@Path("{variationId}")
 	@Operation(summary = "Modification variation produit", description = "Demande la modification d'une variation existante du produit .", operationId = "updateVariation")
-	@Tag(ref = "Resource Produits")
 	Response updateVariation(@PathParam(value = "productId") Long productId,
 			@PathParam(value = "variationId") Long variationId, ProductVariationData variation);
 
 	@DELETE
 	@Path("{ids}")
 	@Operation(summary = "Supprimer variation produit", description = "Demande la suppression de la variation du produit .", operationId = "deleteVariations")
-	@Tag(ref = "Resource Produits")
 	Response deleteVariations(@PathParam(value = "productId") Long productId, List<Long> ids);
 
 }

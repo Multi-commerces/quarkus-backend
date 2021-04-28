@@ -10,11 +10,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import fr.commerces.services._transverse.GenericResource;
-import fr.commerces.services._transverse.GenericResponse;
+import fr.commerces.services._transverse.response.CollectionResponse;
 import fr.commerces.services.products.data.ProductVariationData;
 import fr.commerces.services.products.manager.ProductVariationManager;
 
-public class ProductVariationResource extends GenericResource<GenericResponse<ProductVariationData,Long>> implements ProductVariationApi {
+public class ProductVariationResource extends GenericResource<CollectionResponse<ProductVariationData,Long>> implements ProductVariationApi {
 
 	@Inject
 	ProductVariationManager manager;

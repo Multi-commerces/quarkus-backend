@@ -59,11 +59,11 @@ public class Product extends PanacheEntityBase {
 	@Column(name = "package_Weight")
 	public Integer packageWeight;
 	
-	@Column(name = "delivery_Time_QuantityNOK")
-	private int deliveryTimeQuantityOK;
+	@Column(name = "delivery_Time_QuantityOK")
+	private Integer deliveryTimeQuantityOK;
 	
 	@Column(name = "delivery_Time_QuantityNOK")
-	private int deliveryTimeQuantityNOK;
+	private Integer deliveryTimeQuantityNOK;
 
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 	private List<ProductCategory> categories = new ArrayList<>();
