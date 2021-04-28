@@ -1,7 +1,5 @@
 package fr.commerces.services.products.ressources.products;
 
-import java.util.Collection;
-
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -24,7 +22,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import fr.commerces.services._transverse.GenericResponse;
+import fr.commerces.services._transverse.response.CollectionResponse;
 import fr.commerces.services.products.data.ProductData;
 
 /**
@@ -46,7 +44,7 @@ public interface ProductResourceApi {
 			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun porduit trouvé avec les paramètres fournis") 
 	})
-	GenericResponse<ProductData, Long> getProductById(
+	Response getProductById(
 			/*
 			 * Langue
 			 */
@@ -70,7 +68,7 @@ public interface ProductResourceApi {
 			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun porduit trouvé avec les critères de recherche") 
 	})
-	Collection<GenericResponse<ProductData, Long>> getProducts(
+	CollectionResponse<ProductData, Long> getProducts(
 			/*
 			 * language
 			 */

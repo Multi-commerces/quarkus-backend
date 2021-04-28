@@ -1,17 +1,23 @@
-package fr.commerces.services._transverse;
+package fr.commerces.services._transverse.data;
+
+import java.util.List;
 
 import org.eclipse.microprofile.openapi.models.PathItem.HttpMethod;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@JsonRootName("metadata")
+@Getter
+@Setter
 public class LinkData {
 
 	/**
-	 * l’attribut rel permet de donner un sens aux URLs et de faciliter la gestion côté client
+	 * l’attribut rel permet de donner un sens aux URLs et de faciliter la gestion
+	 * côté client
 	 */
 	@JsonProperty("rel")
 	private String rel;
@@ -37,15 +43,27 @@ public class LinkData {
 	 * <li>UPDATE</li>
 	 * </ul>
 	 */
-	private  HttpMethod method;
+	private HttpMethod method;
 
-	
+	private String desc;
+
+	private String summary;
+
+	/**
+	 * Liste de paramètres
+	 */
+	private List<Object> params;
+
 	public LinkData() {
-		this(null, null);
+		this((String) null, null);
 	}
 
 	public LinkData(String href) {
-		this("self", href);
+		this(REL.SELF, href);
+	}
+
+	public LinkData(REL rel, String href) {
+		this(rel.name(), href);
 	}
 
 	public LinkData(String rel, String href) {
@@ -55,10 +73,8 @@ public class LinkData {
 		method = HttpMethod.GET;
 	}
 
-	public enum Method {
-		SELF, LIST;
+	public enum REL {
+		SELF, LIST, FIRST, NEXT, PREV, LAST;
 	}
-	
-	
 
 }

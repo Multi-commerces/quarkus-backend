@@ -1,6 +1,6 @@
 package fr.commerces.services.products.manager;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,7 +13,6 @@ import javax.ws.rs.NotFoundException;
 import com.neovisionaries.i18n.LanguageCode;
 
 import fr.commerces.logged.Logged;
-import fr.commerces.services._transverse.GenericResponse;
 import fr.commerces.services.products.data.ProductSeoData;
 import fr.commerces.services.products.entity.Product;
 import fr.commerces.services.products.entity.ProductLang;
@@ -36,24 +35,16 @@ public class ProductSeoManager {
 	ProductMapper mapper;
 
 	/**
-	 * Fonction Mapper POJO > GenericResponse
-	 */
-	Function<ProductLang, GenericResponse<ProductSeoData, Long>> bindSeo = pojo -> {
-		GenericResponse<ProductSeoData, Long> response = mapper.toProductSeoResponse(pojo);
-		return response;
-	};
-
-	/**
 	 * Liste SEO du produit (seo multi-langues)
 	 * 
 	 * @param productId identifiant du produit
 	 * @param language  langue du produit
 	 * @return
 	 */
-	public final Collection<GenericResponse<ProductSeoData, Long>> findProductSeoByProduct(final Long productId) {
+	public final Map<LanguageCode, ProductSeoData> findProductSeoByProduct(final Long productId) {
 		try (Stream<ProductLang> streamEntity = Product.<Product>findByIdOptional(productId)
 				.orElseThrow(NotFoundException::new).getProductLang().stream()) {
-			return streamEntity.map(bindSeo).collect(Collectors.toList());
+			return mapper.toProductSeoDataByLang(streamEntity.collect(Collectors.toMap(ProductLang::getLang, Function.identity())));
 		}
 	}
 
@@ -64,10 +55,11 @@ public class ProductSeoManager {
 	 * @param language  langue du produit
 	 * @return
 	 */
-	public final GenericResponse<ProductSeoData, Long> findProductSeoByProductLang(final Long productId,
+	public final ProductSeoData findProductSeoByProductLang(final Long productId,
 			final LanguageCode language) {
 		ProductLang pojo = ProductLang.findByIdProductAndLanguageCode(productId, language)
 				.orElseThrow(NotFoundException::new);
+		
 		return mapper.toProductSeoResponse(pojo);
 	}
 
@@ -81,7 +73,7 @@ public class ProductSeoManager {
 	@Transactional
 	public final void update(final LanguageCode languageCode, final Long productId, final ProductSeoData data) {
 		ProductLang.findByIdProductAndLanguageCode(productId, languageCode)
-				.map(pojo -> mapper.dataIntoEntity(data, pojo)).orElseThrow(NotFoundException::new);
+				.map(pojo -> mapper.toProductLang(data, pojo)).orElseThrow(NotFoundException::new);
 	}
 
 }

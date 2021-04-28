@@ -16,8 +16,6 @@
 
 package fr.commerces.services.products.ressources.seo;
 
-import java.util.Collection;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -36,7 +34,8 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import fr.commerces.services._transverse.GenericResponse;
+import fr.commerces.services._transverse.response.CollectionResponse;
+import fr.commerces.services._transverse.response.SingleResponse;
 import fr.commerces.services.products.data.ProductSeoData;
 
 @Path("/products/{productId}/seo")
@@ -52,17 +51,16 @@ public interface ProductSeoApi {
 	 * @param productId
 	 * @return
 	 */
-	@GET
-	@Path("/")
-	@Operation(operationId = "getProductSeoById", 
-		summary = "Recherche les informations SEO d'un produit (dans toutes les langues).", 
-		description = "Retourne les informations SEO du produit.")
+	@GET @Path("/")
 	@APIResponses(value = { 
 			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
 			@APIResponse(responseCode = "401", description = "[NOK] - Une identification est nécessaire"),
-			@APIResponse(responseCode = "404", description = "[NOK] - Aucun produit ne correspond aux paramètres fournis") 
+			@APIResponse(responseCode = "404", description = "[NOK] - Aucun produit ne correspond aux paramètres fournis")
 	})
-	Collection<GenericResponse<ProductSeoData, Long>> getProductSeos(
+	@Operation(operationId = "getProductSeos", 
+		summary = "Informations SEO d'un produit (dans toutes les langues).", 
+		description = "Rechercher les informations SEO d'un produit et dans toutes les langues.")
+	CollectionResponse<ProductSeoData, Long> getProductSeos(
 			/*
 			 * Identifiant du produit
 			 */
@@ -79,7 +77,7 @@ public interface ProductSeoApi {
 	 */
 	@GET
 	@Path("/languages/{languageCode}")
-	@Operation(operationId = "getProductSEOs", 
+	@Operation(operationId = "getProductSeo", 
 		summary = "Recherche les informations SEO d'un produit (dans une seule langue).", 
 		description = "Retourne les informations SEO propre au produit pour une langue.")
 	@APIResponses(value = { 
@@ -87,7 +85,7 @@ public interface ProductSeoApi {
 			@APIResponse(responseCode = "401", description = "[NOK] - Une identification est nécessaire"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun produit trouvé avec les critères de sélection fournis") 
 	})
-	GenericResponse<ProductSeoData, Long> getProductSeo(
+	SingleResponse<ProductSeoData, Long> getProductSeo(
 			/*
 			 * language
 			 */

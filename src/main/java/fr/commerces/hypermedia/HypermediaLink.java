@@ -20,8 +20,9 @@ public @interface HypermediaLink {
 	String rel()  default "self";
 	
 	HttpMethod httpMethod()  default HttpMethod.GET;
+
 	
-	String title()  default "Informations";
+	String methode() default "";
 	
 
 	

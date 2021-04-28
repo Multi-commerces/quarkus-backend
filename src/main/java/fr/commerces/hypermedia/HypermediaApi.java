@@ -13,7 +13,7 @@ import org.eclipse.microprofile.openapi.models.PathItem.HttpMethod;
 @Inherited
 @Target({METHOD, ElementType.TYPE}) 
 @Retention(RUNTIME)
-public @interface HypermediaSelf {
+public @interface HypermediaApi {
 	
 	
 	Class<?> resource()  default Object.class;

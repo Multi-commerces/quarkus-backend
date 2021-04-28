@@ -10,10 +10,12 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import fr.commerces.services._transverse.response.CollectionResponse;
 import fr.commerces.services.authentifications.provider.AuthenticationContextProvider;
 import lombok.Getter;
 
-public abstract class GenericResource<R extends GenericResponse<?, ?>> {
+
+public abstract class GenericResource<R extends CollectionResponse<?, ?>> {
 
 	@Inject
 	protected AuthenticationContextProvider authentication;

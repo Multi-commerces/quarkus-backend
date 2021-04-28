@@ -134,6 +134,16 @@ public class ProductLang extends PanacheEntityBase {
 	 * ####################### METHODES Transient ########################
 	 * ###################################################################
 	 */
+	
+	@Transient
+	public LanguageCode getLang()
+	{
+		if (identity != null) {
+			return identity.getLanguage();
+		} else {
+			return null;
+		}
+	}
 
 	@Transient
 	public Long getId() {
