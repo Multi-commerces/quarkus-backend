@@ -18,7 +18,7 @@ package fr.commerces.services.authentifications.provider;
 
 import javax.validation.constraints.NotNull;
 
-import fr.commerces.services.products.entity.Product;
+import fr.commerces.services.internal.products.entity.Product;
 import lombok.Getter;
 
 @Getter
