@@ -1,0 +1,59 @@
+<server description="Open Liberty server">
+
+	<featureManager>
+		<!-- activer SSL -->
+		<feature>transportSecurity-1.0</feature>
+		<feature>ssl-1.0</feature>
+
+		<!-- <feature>openidConnectClient-1.0</feature> -->
+		<!-- <feature>appSecurity-3.0</feature> -->
+		<!-- <feature>mpJwt-1.1</feature> -->
+
+		<feature>jaxrs-2.1</feature>
+		<feature>jsonp-1.1</feature>
+		<feature>mpConfig-1.4</feature>
+		<feature>mpRestClient-1.4</feature>
+
+		<feature>jakartaee-8.0</feature>
+		<feature>jsf-2.3</feature>
+		<feature>jsp-2.3</feature>
+		<feature>el-3.0</feature>
+		<feature>servlet-4.0</feature>
+		<feature>cdi-2.0</feature>
+		<feature>websocket-1.1</feature>
+		<feature>beanValidation-2.0</feature>
+	</featureManager>
+
+	<ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore"
+		trustStoreRef="defaultTrustStore" />
+	<keyStore id="defaultKeyStore" password="OpenLiberty"
+		type="JKS" />
+		
+	<basicRegistry id="basic" realm="myRealm">
+	</basicRegistry>
+	
+<!-- groupIdentifier="groups" -->
+<!-- 	<openidConnectClient id="client01" clientId="mycormerce-webapp" -->
+<!-- 		signatureAlgorithm="RS256" audiences="mycormerce-webapp" -->
+<!-- 		clientSecret="ee51bbb2-1269-46d9-bd09-9061f69d1938" -->
+<!-- 		discoveryEndpointUrl="https://51.75.133.135:8443/auth/realms/myrealm/.well-known/uma2-configuration"> -->
+<!-- 	</openidConnectClient> -->
+
+	<variable name="default.http.port" defaultValue="7080" />
+	<variable name="default.https.port" defaultValue="9453" />
+	<variable name="app.context.root" defaultValue="/" />
+
+	<!-- le jeton JWT est ajouté à l'en-tête d'autorisation lorsque le service est appelé  authnToken="mpjwt" -->
+<!-- 	<webTarget uri="http://localhost:7080/*"  /> -->
+
+	<webApplication id="webmaker-webapp-shop" name="webmaker-webapp-shop"
+		location="webmaker-webapp-shop-1.0.0-SNAPSHOT.war" type="war"
+		contextRoot="${app.context.root}" />
+
+	<!-- Automatically expand WAR files and EAR files -->
+<!-- 	<applicationManager autoExpand="true" /> -->
+
+	<httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${default.http.port}"
+		httpsPort="${default.https.port}" />
+		
+</server>

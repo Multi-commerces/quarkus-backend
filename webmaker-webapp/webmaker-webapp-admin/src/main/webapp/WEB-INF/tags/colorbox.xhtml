@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition>
+	<div class="ui-g-12 ui-md-6 ui-lg-3">
+		<div class="ui-g card colorbox colorbox-#{index}">
+			<div class="ui-g-4">
+				<i class="pi pi-#{icon}"></i>
+			</div>
+			<div class="ui-g-8">
+				<span class="colorbox-name">#{name}</span> <span
+					class="colorbox-count">#{count}</span>
+			</div>
+		</div>
+	</div>
+</ui:composition>
+
+</html>

@@ -1,0 +1,45 @@
+
+					<h1>#{titlePage}</h1>
+					<h:form>
+						<h:selectOneMenu value="#{userData.localeCode}"
+							onchange="submit()"
+							valueChangeListener="#{userData.localeChanged}">
+							<f:selectItems value="#{userData.countries}" />
+						</h:selectOneMenu>
+					</h:form>
+
+				
+				
+				
+				
+<!-- 			<div class="ui-g-12 ui-md-3"> -->
+
+<!-- 				<p:galleria value="#{controller.images}" var="image" -->
+<!-- 					autoPlay="false" frameHeight="48" frameWidth="48" panelWidth="248" -->
+<!-- 					panelHeight="248" showCaption="true"> -->
+<!-- 					<h:graphicImage width="248" height="248" alt="image produit" -->
+<!-- 						value="#{controller.image}" /> -->
+<!-- 					<div style="top: 10px; left: 10px; position: absolute;"> -->
+<!-- 						<p:commandLink type="button"> -->
+<!-- 							<i class="fa fa-trash" style="color: red">delete</i> -->
+<!-- 						</p:commandLink> -->
+<!-- 					</div> -->
+
+<!-- 					<div style="top: 30px; left: 10px; position: absolute;"> -->
+<!-- 						<p:commandLink type="button" update="zoom" -->
+<!-- 							oncomplete="PF('dlg2').show();"> -->
+<!-- 							<f:setPropertyActionListener value="#{controller.image}" -->
+<!-- 								target="#{controller.selectedImage}" /> -->
+<!-- 							<i class="fa fa-search-plus" style="color: green">zoom</i> -->
+<!-- 						</p:commandLink> -->
+<!-- 					</div> -->
+<!-- 				</p:galleria> -->
+<!-- 			</div> -->
+
+<!-- 			<div style="margin-top: 1em"> -->
+<!-- 				<div jsf:id="images"> -->
+<!-- 					<p:fileUpload listener="#{controller.fileUploadEvent}" -->
+<!-- 						multiple="false" auto="true" label="image 64x64" update="images" -->
+<!-- 						uploadLabel="Valider" cancelLabel="Annuler" /> -->
+<!-- 				</div> -->
+<!-- 			</div> -->		

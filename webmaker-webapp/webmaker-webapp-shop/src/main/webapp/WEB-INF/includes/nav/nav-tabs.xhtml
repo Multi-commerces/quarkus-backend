@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<ui:param name="controller" value="#{adminCategoryMB}" />
+
+	<ul id="tabs" class="tabs tabs-transparent">
+		<li class="tab" data-tab="9999999999" style="display: none"><a
+				href="#9999999999" class="active"> </a></li>			
+		 <ui:repeat var="item" value="#{controller.listDataModel}" varStatus="status">
+		 	<li class="tab" data-tab="test#{status.index}">
+		 		<a href="#test#{status.index}" class="active">
+					<h:graphicImage width="65" height="64" alt="catégorie #{status.index}"
+					value="#{controller.getImage(item.bigPicture)}" />
+					<span style="display: block;">#{item.designation}</span>
+				</a>
+			</li>
+		 </ui:repeat>
+	</ul>
+	<div class="col s12" style="background-color: white;position: absolute;z-index: 10;" 
+	jsf:rendered="#{controller.listDataModel.rowCount != 0}">
+		<div id="9999999999" class="col s12 "></div>
+		<ui:repeat var="item" value="#{controller.listDataModel}" varStatus="status">
+			<div id="test#{status.index}" class="col s12" style="padding: 1em">
+				<div jsf:rendered="#{not empty item.children}">
+					<ui:repeat var="children" value="#{item.children}" varStatus="status">
+					<a href="#" class="chip" style="background-color: white;">
+						<h:graphicImage width="16" height="16" alt="sous catégorie #{status.index}"
+						value="#{controller.getImage(children.bigPicture)}" />
+						<span>#{children.designation}</span>
+					</a>
+					</ui:repeat>
+				</div>
+			</div>
+		</ui:repeat>
+
+	</div>
+	
+	<script type="text/javascript" async="true">
+	document.addEventListener('DOMContentLoaded', function() {
+		var tabs = document.getElementById('tabs');
+		var instances = M.Tabs.init(tabs,null);
+				
+		var instance = M.Tabs.getInstance(tabs);
+		
+		// Ce gestionnaire sera exécuté à chaque fois que le curseur
+		// se déplacera sur un élément de la liste
+		Array.from(document.querySelectorAll('.tab')).forEach(function(element) {
+			element.addEventListener('mouseover', function() {
+				instance.select(this.dataset.tab);
+			}, {passive: true});
+		});
+		// Ce gestionnaire sera exécuté à chaque fois que le curseur sortira du nav-content.
+		var element = document.getElementById('nav');
+		element.addEventListener('mouseleave', function() {
+			instance.select('9999999999');
+		});
+		
+
+	}, {passive: true});
+	</script>
+
+
+</ui:composition>

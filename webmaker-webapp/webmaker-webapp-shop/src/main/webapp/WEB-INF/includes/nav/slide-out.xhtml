@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	<ul id="slide-out" class="sidenav">
+		<li>
+			<div class="user-view">
+				<div class="background">
+					<h:graphicImage  value="/resources/img/office.jpg" />
+				</div>
+
+				<h:graphicImage value="/resources/img/logo.jpg" />
+
+<!-- 				<h:link outcome="#"> -->
+					<h:graphicImage styleClass="circle" value="/resources/img/yuna.jpg" />
+<!-- 				</h:link> -->
+<!-- 				<h:link outcome="#"> -->
+					<span class="white-text name">John Doe</span>
+<!-- 				</h:link> -->
+<!-- 				<h:link outcome="#"> -->
+					<span class="white-text email">jdandturk@gmail.com</span>
+<!-- 				</h:link> -->
+			</div>
+		</li>
+		<li>
+<!-- 		<h:link outcome="#!"> -->
+				<i class="material-icons">cloud</i>
+				<span>First Link With Icon</span>
+<!-- 			</h:link> -->
+			</li>
+		<li><h:link value="#!">Second Link</h:link></li>
+		<li><div class="divider"></div></li>
+		<li><a class="subheader">Subheader</a></li>
+		<li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+	</ul>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			var elems = document.querySelectorAll('.sidenav');
+			var instances = M.Sidenav.init(elems, null);
+		});
+	</script>
+</ui:composition>

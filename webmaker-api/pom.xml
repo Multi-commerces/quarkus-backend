@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>webmaker-api</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<parent>
+		<groupId>fr.webmaker</groupId>
+		<artifactId>webmaker</artifactId>
+		<version>1.0</version>
+	</parent>
+	<packaging>jar</packaging>
+
+	<properties>
+		<compiler-plugin.version>3.8.1</compiler-plugin.version>
+		<maven.compiler.parameters>true</maven.compiler.parameters>
+		<maven.compiler.source>8</maven.compiler.source>
+		<maven.compiler.target>8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<myfaces.version>2.3-next-M5</myfaces.version>
+		<omnifaces-quarkus.version>1.3.0</omnifaces-quarkus.version>
+		<omnifaces.version>3.11</omnifaces.version>
+		<poi.version>5.0.0</poi.version>
+		<primefaces.version>10.0.0</primefaces.version>
+		<primefaces-extensions.version>10.0.0</primefaces-extensions.version>
+		<primefaces.optimizer.version>2.3.5</primefaces.optimizer.version>
+		<quarkus.version>1.11.3.Final</quarkus.version>
+
+		<quarkus-plugin.version>1.11.3.Final</quarkus-plugin.version>
+		<quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
+		<quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+		<quarkus.platform.version>1.11.3.Final</quarkus.platform.version>
+		<surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+	</properties>
+
+
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.12</version>
+			<scope>compile</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.neovisionaries</groupId>
+			<artifactId>nv-i18n</artifactId>
+			<version>1.28</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>2.0.1.Final</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.eclipse.microprofile.rest.client/microprofile-rest-client-api -->
+		<dependency>
+			<groupId>org.eclipse.microprofile.rest.client</groupId>
+			<artifactId>microprofile-rest-client-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>2.1.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.microprofile.openapi</groupId>
+			<artifactId>microprofile-openapi-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+</project>

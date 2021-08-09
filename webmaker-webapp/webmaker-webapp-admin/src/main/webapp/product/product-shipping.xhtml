@@ -1,0 +1,80 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:w="http://web-maker.fr/html"
+	template="/WEB-INF/templates/layout-product-edit.xhtml">
+
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewAction action="#{adminProductShippingMB.onLoad}" />
+		</f:metadata>
+	</ui:define>
+	<ui:param name="controller" value="#{adminProductShippingMB}" />
+	
+
+	<ui:define name="main-header">
+		<div class="ui-g">
+			<div class="ui-g-12">
+				NULL
+			</div>
+		</div>
+	</ui:define>
+	
+	<!--  Formulaire d'édition  -->
+	<ui:define name="form-edit">
+		<ui:param name="shipping" value="#{model.data}" />
+		
+		<!-- Caractéristiques du paquet -->
+		<p:fieldset class="ui-g ui-fluid form-group ui-panelgrid-blank"
+			legend="#{msg['product.shipping.fieldset.package']}" title="title nfo">
+			
+			<w:inputText styleClass="ui-g-3 ui-xs-3" id="width" label="Largeur"
+				value="#{shipping.packageWidth}" addon="cm" />
+
+			<w:inputText styleClass="ui-g-3 ui-xs-3" id="height" label="Hauteur"
+				value="#{shipping.packageHeight}" addon="cm" />
+
+			<w:inputText styleClass="ui-g-3 ui-xs-3" id="depth"
+				label="Profondeur" value="#{shipping.packageDepth}" addon="cm" />
+
+			<w:inputText styleClass="ui-g-3 ui-xs-3" id="weight" label="Poids"
+				value="#{shipping.packageWeight}" addon="Kg" />
+		</p:fieldset>
+
+		<!-- Delai de livraison -->
+		<p:fieldset class="ui-g ui-fluid form-group ui-panelgrid-blank"
+		legend="#{msg['product.shipping.fieldset.deliveryTime']}">
+			<p:selectOneRadio id="deliveryTime" value="#{shipping.deliveryTimeQuantityOK}"
+				layout="responsive" columns="1">
+				<f:selectItem itemLabel="Aucun" itemValue="0" />
+				<f:selectItem itemLabel="Délai de livraison par défaut" itemValue="1" />
+				<f:selectItem itemLabel="Délai de livraison spécifique pour ce produit" itemValue="2" />
+			</p:selectOneRadio>
+		</p:fieldset>
+		
+		<!-- Frais supplémentaire -->
+		<p:fieldset class="ui-g ui-fluid form-group ui-panelgrid-blank"
+		legend="#{msg['product.shipping.fieldset.shippingfees']}">
+			
+			<!-- Frais de livraison -->
+			<w:inputText styleClass="ui-g-12" id="shippingfees" label="Frais de livraison"
+			value="#{shipping.shippingfees}" icon="euro" />
+			
+		</p:fieldset>
+
+		<!-- Transporteurs disponibles -->
+		<p:fieldset class="ui-g ui-fluid form-group ui-panelgrid-blank" legend="Transporteurs disponibles">
+
+
+		</p:fieldset>
+
+
+	</ui:define>
+	
+
+	
+
+</ui:composition>

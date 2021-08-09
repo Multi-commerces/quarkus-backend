@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition>
+	<div class="#{styleClass}">
+		<div class="ui-inputgroup " >
+			<span class="ui-inputgroup-addon"><i class="pi pi-#{icon}"></i>#{addon}</span>
+			<div class="ui-float-label" style="width: 100%">
+				<p:inputText id="#{id}" required="true" value="#{value}" />
+				<p:outputLabel for="@previous" value="#{label}" />
+			</div>
+		</div>
+		<h:message for="#{id}" style="color:red;" />
+	</div>
+
+</ui:composition>
+
+
+
+</html>

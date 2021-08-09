@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:w="http://web-maker.fr/html"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:pu="http://primefaces.org/ultima">
+
+	<p:card  rendered="#{controller.action eq 'DEFAULT'}">
+		<f:facet name="title">
+			<h:outputText value="#{panelListHeader}" />
+		</f:facet>
+
+
+		<ui:insert>
+		</ui:insert>
+
+
+
+		<h:form id="form-list" prependId="false">
+
+
+
+			<p:dataTable id="dataTable" widgetVar="dataTable"
+				binding="#{controller.dataTable}" emptyMessage="Aucune données"
+				selectionMode="multiple" selectionPageOnly="false"
+				sortMode="multiple" selection="#{controller.selectedItems}"
+				rowKey="#{item.identifier}"
+				filteredValue="#{controller.filteredItems}"
+				value="#{controller.items}" var="item" reflow="true" rows="25"
+				paginator="true" paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="{startRecord}-{endRecord}/{totalRecords}"
+				rowsPerPageTemplate="5,10,15,25">
+
+
+				<f:facet name="header">
+					<div class="p-d-flex p-ai-center p-jc-between">
+						<p:inputText id="globalFilter" style="width:250px"
+							placeholder="Entrer une valeur à rechercher" value=""
+							onkeyup="PF('dataTable').filter()" />
+					</div>
+				</f:facet>
+
+				<p:ajax event="rowDblselect" resetValues="true"
+					listener="#{controller.onRowDblSelect}" immediate="true"
+					update=":main" />
+
+				<p:ajax event="rowSelect" immediate="true" resetValues="true"
+					listener="#{controller.onRowSelect}" update=":main" />
+
+				<!-- MULTIPLE -->
+				<p:column selectionMode="multiple"
+					style="width:32px;text-align:center">
+				</p:column>
+
+				<!-- IDENTIFIER -->
+				<p:column headerText="#id" width="60" ariaHeaderText="identifier">
+					<h:outputText value="#{item.identifier.id}" />
+				</p:column>
+
+				<!-- INSERT COLUMNS -->
+				<ui:insert name="form-list">
+				</ui:insert>
+
+				<!-- ACTIONS -->
+				<p:column headerText="#{msg.actions}" width="100">
+					<!-- EDIT -->
+					<p:commandButton style="margin:0.2em" update=":main"
+						icon="pi pi-pencil" styleClass="rounded-button ui-button-primary"
+						title="edit" immediate="true" resetValues="true"
+						actionListener="#{controller.editAction}">
+						<f:attribute name="activeIndexTabMenu" value="0" />
+						<f:attribute name="itemId" value="#{item.identifier.id}" />
+					</p:commandButton>
+					<!-- DELETE -->
+					<p:commandButton title="delete" style="margin:0.2em"
+						icon="pi pi-trash" styleClass="rounded-button ui-button-secondary"
+						update=":main" immediate="true" resetValues="true"
+						actionListener="#{controller.deleteAction}">
+						<f:attribute name="identifier" value="#{item.identifier}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+	</p:card>
+
+</ui:composition>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition>
+	<div class="input-field">
+		
+		<i class="material-icons prefix" jsf:rendered="#{not empty icon}">#{icon}</i>
+		<p:inputText id="#{id}" type="text" required="true"
+			styleClass="validate"
+			value="#{value}"  />
+
+	
+		<p:outputLabel for="#{id}"
+			styleClass="#{not empty value ? 'active' : ''}">#{label}</p:outputLabel>
+		
+		<h:message for="#{id}" style="color:red;margin:8px;" />
+	</div>
+</ui:composition>
+
+</html>

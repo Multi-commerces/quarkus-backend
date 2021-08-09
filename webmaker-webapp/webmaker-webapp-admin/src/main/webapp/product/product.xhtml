@@ -1,0 +1,126 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:p="http://primefaces.org/ui"
+	xmlns:w="http://web-maker.fr/html"
+	template="/WEB-INF/templates/layout-crud.xhtml">
+
+	
+
+	<ui:param name="controller" value="#{adminProductMB}" />
+	<ui:param name="model" value="#{controller.model}" />
+
+	<ui:param name="panelListHeader" value="#{msg['products']}" />
+
+
+
+	<!-- Formulaire de création d'un produit -->
+	<ui:define name="form-edit">
+		<ui:param name="product" value="#{model.data}" />
+		<ui:param name="title" value="#{msg['products.title']}" />
+		
+		<!--  INPUT TEXT  -->
+		<fieldset class="ui-g ui-fluid">
+			<legend>Données d'identification</legend>
+			<div class=" form-group ui-g-12">
+				<w:inputText styleClass="ui-g-12 ui-md-6" id="metatitle"
+					label="#{msg['product.ref']}" value="#{product.reference}" />
+
+				<w:inputText styleClass="ui-g-12 ui-md-6" id="name"
+					label="#{msg['product.name']}" value="#{product.name}" />
+			</div>
+		</fieldset>
+
+
+		<!-- IMAGE -->
+		<div class="ui-g">
+			<div jsf:id="images" class=" card hovereffect ui-g-nopad"
+				style="width: 372px; height: 372px">
+				<h:graphicImage styleClass="img-responsive" width="186" height="186"
+					alt="" value="#{controller.image}" />
+				<div class="overlay">
+					<h2>#{msg.picture} #{msg.product}</h2>
+					<div class="info">
+						<p:fileUpload mode="advanced" label="#{msg.select}"
+							update="images" uploadLabel="btn.upload.label" immediate="true"
+							auto="true" process="@this"
+							listener="#{controller.fileUploadEvent}"
+							chooseIcon="fa fa-folder-open"
+							cancelLabel="#{msg['btn.cancel.label']}"
+							allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- TEXTEDITOR -->
+		<div class="ui-g">
+			<p:textEditor styleClass="ui-g-12 ui-g-nopad" toolbarVisible="true"
+				widgetVar="editor1" value="#{model.data.description}" height="300"
+				style="margin-bottom:10px" />
+
+			<p:textEditor styleClass="ui-g-12 ui-g-nopad" toolbarVisible="true"
+				widgetVar="editor2" value="#{model.data.summary}" height="300"
+				style="margin-bottom:10px" />
+		</div>
+	</ui:define>
+
+	<!--  Formulaire liste des produits  -->
+	<ui:define name="form-list">
+		<!-- Nom -->
+		<p:column headerText="#{msg.name}" sortBy="#{item.data.name}">
+			<h:outputText value="#{item.data.name}" />
+		</p:column>
+		<!-- Référence unique -->
+		<p:column headerText="#{msg.ref}" sortBy="#{item.data.reference}" width="160">
+			<h:outputText value="#{item.data.reference}" />
+		</p:column>
+		<!-- Prix Hors Taxe -->
+		<p:column headerText="#{msg.priceHT}" sortBy="#{item.data.priceHT}" width="120" >
+			<h:outputText value="#{item.data.priceHT}" />
+		</p:column>
+	</ui:define>
+
+	<ui:define name="content-footer">
+		<p:card header="variations">
+			<div class="ui-g">
+				<div class="root-card">
+					<div class="child-card">
+						<div class="multi-button">
+							<button class="fa fa-heart"></button>
+							<button class="fa fa-comment"></button>
+							<button class="fa fa-share-alt"></button>
+							<button class="fa fa-trash"></button>
+						</div>
+						<div class="container">
+							<h:graphicImage value="#{controller.getImage(null)}"
+								alt="image produit" width="124" height="124" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</p:card>
+		<p:card id="panel-product-variations" header="variations"
+			style="margin-bottom: 1em;border:none" widgetVar="panel-variations">
+			<h:form id="form" rendered="#{not empty controller.variationMB.items}">
+
+				<div class="ui-g">
+					<p:repeat value="#{controller.variationMB.items}" var="item">
+
+						<div class="box ui-g-3">
+							<a href="/products/#{model.id}/variations/#{item.id}"> <span
+								class="boxContent"> <h:graphicImage width="124"
+										height="124" alt="image produit"
+										value="#{controller.getImage(null)}" /> <span class="title">#{item.data.name}</span>
+							</span>
+							</a>
+						</div>
+					</p:repeat>
+				</div>
+			</h:form>
+		</p:card>
+	</ui:define>
+
+
+</ui:composition>

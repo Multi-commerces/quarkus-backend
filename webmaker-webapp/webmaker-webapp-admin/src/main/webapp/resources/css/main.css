@@ -1,0 +1,126 @@
+html {
+	line-height: inherit;
+	line-height: normal !important;
+}
+
+body {
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	background-color: #eff1f2;
+}
+
+/***************** HEADER **************************/
+body>header {
+	z-index: 99;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	overflow: hidden;
+}
+
+body>main {
+	margin-top : 200px;
+}
+
+/***************** BAR *************************/
+.ui-panel-titlebar {
+	font-size: medium;
+}
+
+/***************** TABLEAU *************************/
+body .ui-datatable a.chip:hover,
+body .ui-treetable a.chip:hover {
+	color: #a4c75c
+}
+
+body .ui-datatable .ui-datatable-header,
+body .ui-treetable  .ui-treetable-header {
+	background-color: initial;
+	border: none;
+}
+
+body .ui-datatable thead,
+body table[role=treegrid] thead {
+	border-bottom: rgba(76, 175, 80);
+	border-bottom-style: groove;
+}
+
+body .ui-datatable thead th.ui-state-active,
+body table[role=treegrid] thead th.ui-state-active {
+	background-color: initial;
+	color: initial;
+}
+
+body .ui-datatable thead th,
+body table[role=treegrid] thead th {
+	border: none;
+	border-style: none !important;
+}
+
+body .ui-datatable .ui-datatable-data>tr,
+body table[role=treegrid] .ui-treetable-data>tr {
+	border: none;
+	border-bottom: 1px solid  rgba(76, 175, 80, 0.3);
+}
+
+body .ui-datatable .ui-datatable-data>tr.ui-state-highlight,
+body table[role=treegrid] .ui-treetable-data>tr.ui-state-highlight {
+	border: inherit;
+	color: black;
+	background-color: rgba(76, 175, 80, 0.3);
+}
+
+body .ui-datatable .ui-datatable-data>tr.ui-state-hover,
+body table[role=treegrid] .ui-treetable-data>tr.ui-state-hover {
+	border: inherit;
+	background-color: rgba(76, 175, 80, 0.1);
+}
+
+
+
+body .ui-datatable .ui-datatable-data > tr > td, 
+body table[role=treegrid] .ui-treetable-data > tr > td
+	{
+	border: none !important;
+	border-style: none !important;
+}
+
+/* body .ui-treetable .ui-treetable-data > tr > td { */
+/* 	padding: 0 .857em; */
+/* } */
+
+
+
+/***************** PAGINATION (primefaces) *****************/
+h2 i.material-icons {
+	margin-right: 0.5em;
+}
+
+
+
+.ui-paginator-rpp-options {
+	width: auto;
+	height: auto;
+}
+
+/***************** FOOTER *****************/
+body>footer.page-footer, header.page-header .nav-extended {
+	background-attachment: scroll;
+background-clip: border-box;
+background-color: rgb(1, 87, 155);
+	color: white;
+}
+
+body>footer.page-footer {
+	min-height: 3em;
+	padding: 0.5em;
+}
+
+nav .nav-content .tabs {
+	height: 94px;
+}
+
+nav .nav-content .tabs .tab {
+	line-height: 15px;
+	height: 94px;
+}
+

@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form rendered="#{controller.action eq 'DEFAULT'}">
+		<p:autoUpdate></p:autoUpdate>
+		<p:toolbar>
+			<p:toolbarGroup>
+				 <p:commandButton value="New" icon="fa fa-plus"  
+				 	process="@this" actionListener="#{controller.newItem}"
+                          update=":main" 
+                                 styleClass="ui-button-success" style="margin-right: .5rem">
+                    <p:resetInput target=":main"/>
+                </p:commandButton>
+				<p:commandButton id="delete-products-button"
+					value="#{controller.deleteButtonMessage}" icon="fa fa-trash"
+					actionListener="#{controller.deleteSelectedItems}"
+					styleClass="ui-button-danger"
+					disabled="#{!controller.hasSelectedItems()}" update="@this">
+					<p:confirm header="Confirmation"
+						message="Delete the selected products?"
+						icon="fa fa-exclamation-triangle" />
+				</p:commandButton>
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+				<p:fileUpload mode="simple" skinSimple="true" label="Import"
+					chooseIcon="fa fa-download" />
+				<p:commandButton value="Export" icon="fa fa-upload"
+					styleClass="ui-button-help" ajax="false">
+					<p:dataExporter type="pdf" target="dataTable" fileName="products" />
+				</p:commandButton>
+			</p:toolbarGroup>
+		</p:toolbar>
+	</h:form>
+
+
+
+	<p:confirmDialog widgetVar="deleteProductDialog" showEffect="fade"
+		width="300" message="Delete the product?" header="Confirm"
+		severity="warn">
+		<p:commandButton value="Yes" icon="pi pi-check"
+			actionListener="#{controller.deleteItems}" process="@this"
+			oncomplete="PF('deleteProductDialog').hide()" />
+		<p:commandButton value="No" type="button"
+			styleClass="ui-button-secondary" icon="fa fa-times"
+			onclick="PF('deleteProductDialog').hide()" />
+	</p:confirmDialog>
+
+	<p:confirmDialog global="true" showEffect="fade" width="300">
+		<p:commandButton value="Yes" type="button"
+			styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+		<p:commandButton value="No" type="button"
+			styleClass="ui-confirmdialog-no ui-button-secondary"
+			icon="fa fa-times" />
+	</p:confirmDialog>
+
+
+</ui:composition>

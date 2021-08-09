@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:composition>
+<ul class="pagination">
+    <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+    <li class="active"><a href="#!">1</a></li>
+    <li class="waves-effect"><a href="#!">2</a></li>
+    <li class="waves-effect"><a href="#!">3</a></li>
+    <li class="waves-effect"><a href="#!">4</a></li>
+    <li class="waves-effect"><a href="#!">5</a></li>
+    <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+  </ul>
+</ui:composition>
+</html>

@@ -1,0 +1,13 @@
+{
+  "realm": "myrealm",
+  "auth-server-url": "http://51.75.133.135:8080/auth/",
+  "ssl-required": "external",
+  "resource": "mycormerce-webapp",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "ee51bbb2-1269-46d9-bd09-9061f69d1938"
+  },
+  "use-resource-role-mappings": true,
+  "confidential-port": 0,
+  "policy-enforcer": {}
+}

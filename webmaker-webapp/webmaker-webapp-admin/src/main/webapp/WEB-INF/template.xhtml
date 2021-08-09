@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:w="http://web-maker.fr/html">
+<f:view>
+	<ui:insert name="metadata" />
+	<h:head>
+		<!--[if lt IE 9]>
+		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<f:facet name="first">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+			<meta name="viewport"
+				content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+			<meta name="apple-mobile-web-app-capable" content="yes" />
+			<meta name="theme-color"
+				content="#{guestPreferences.themeColors[guestPreferences.theme]}" />
+		</f:facet>
+		<title>Administration</title>
+		<h:outputScript name="js/nanoscroller.js" library="ultima-layout" />
+		<h:outputScript name="js/layout.js" library="ultima-layout" />
+		<h:outputScript name="js/ripple.js" library="ultima-layout" />
+		<h:outputScript name="js/swipe.js" library="ultima-layout" />
+
+		<h:outputStylesheet name="css/nanoscroller.css" library="ultima-layout" />
+		<h:outputStylesheet name="css/animate.css" library="ultima-layout" />
+		<h:outputStylesheet name="css/ripple.css" library="ultima-layout" />
+		<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="ultima-layout" />
+		<h:outputStylesheet library="css" name="style.css" />
+		
+	</h:head>
+	<h:body styleClass="#{guestPreferences.inputStyleClass}">
+
+		<p:growl id="growl" life="1000" showDetail="true">
+			<p:autoUpdate />
+		</p:growl>
+
+		<div class="layout-wrapper #{guestPreferences.menuLayoutClass}">
+
+			<!-- HEADER -->
+			<header>
+				<ui:include src="./includes/ultima/topbar.xhtml" />
+			</header>
+			<ui:include src="./includes/ultima/rightpanel.xhtml" />
+			<ui:include src="./includes/ultima/menu.xhtml" />
+			<ui:include src="./includes/ultima/config.xhtml" />
+
+			<!-- LAYOUT -->
+			<div class="layout-main" >
+				
+				<h:form id="form-bread-crumb">
+					<p:breadCrumb>
+						<p:menuitem value="#{msg.home}" url="#" />
+						<ui:insert name="breadCrumb" />
+					</p:breadCrumb>
+				</h:form>
+			
+				<ui:insert name="dashboard"  />
+				
+
+				<main jsf:id="main">
+					<h:form style="margin:1rem">
+						<h:selectOneMenu value="#{userData.localeCode}"
+							onchange="submit()"
+							valueChangeListener="#{userData.localeChanged}">
+							<f:selectItems value="#{userData.countries}" />
+						</h:selectOneMenu>
+					</h:form>
+				
+					<ui:insert name="content" />
+				</main>
+				
+				<!-- pied de page  -->
+				<ui:include src="/WEB-INF/includes/footer.xhtml" />
+				
+			</div>
+		</div>
+		
+		<p:ajaxStatus
+			style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+			<f:facet name="start">
+				<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+					aria-hidden="true"></i>
+			</f:facet>
+
+			<f:facet name="complete" />
+		</p:ajaxStatus>
+
+		
+
+	</h:body>
+</f:view>
+</html>

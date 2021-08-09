@@ -1,0 +1,57 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:util="http://java.sun.com/jsf/composite/component"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+	<div id="nav">
+		<nav class="nav-extended row" id="panel-nav">
+			<a href="#" data-target="slide-out" class="sidenav-trigger"> <i
+				class="material-icons">menu</i>
+			</a>
+
+			<div class="nav-wrapper">
+				<a href="#!" class="brand-logo">
+					<span>web-maker.com</span>
+				</a>
+				<ul class="right hide-on-med-and-down">
+					<li><h:link outcome="/admin/store/categories/categories-crud">Config</h:link></li>
+					<li><h:link outcome="/store/contact/index">Contact</h:link></li>
+					<li><h:link outcome="/store/faq/faq-display">FAQ</h:link></li>
+					<li><h:link outcome="/store/newslatter/newslatter-display">Newsletter</h:link></li>
+					<li>
+						<a class="dropdown-trigger" href="#!"
+						data-target="dropdown"> <span>Compte</span> <i
+							class="material-icons right"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="nav-content col s12" style="padding:0">
+				<ui:include src="/WEB-INF/includes/nav/nav-tabs.xhtml" />
+			</div>
+		</nav>
+	</div>
+	
+	<!-- BEGIN dropdown -->
+	<ul id="dropdown" class="dropdown-content">
+		<li><a href="#!">Connexion</a></li>
+		<li class="divider"></li>
+		<li><a href="#!">Enregistrer</a></li>
+	</ul>
+	<ui:include src="/WEB-INF/includes/nav/slide-out.xhtml" />
+
+
+	<script type="text/javascript" async="true">
+		document.addEventListener('DOMContentLoaded', function() {
+			var elems = document.querySelectorAll('.dropdown-trigger');
+			var instances = M.Dropdown.init(elems, null);
+		});
+	</script>
+	<!-- END dropdown -->
+
+</ui:composition>
+
+
+

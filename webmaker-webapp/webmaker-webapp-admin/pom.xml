@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<name>webmaker-webapp-admin</name>
+	<parent>
+		<groupId>fr.webmaker</groupId>
+		<artifactId>webmaker-webapp</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>fr.webmaker</artifactId>
+	<!-- <version>1.0.0-SNAPSHOT</version> -->
+
+	<packaging>war</packaging>
+
+	<repositories>
+		<repository>
+			<id>prime-repo</id>
+			<name>PrimeFaces Maven Repository</name>
+			<url>http://repository.primefaces.org</url>
+			<layout>default</layout>
+		</repository>
+
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- Plugin compiler -->
+		<version.compiler-maven-plugin>3.8.1</version.compiler-maven-plugin>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+		<!-- Plugins -->
+		<version.liberty-maven-plugin>3.3.4</version.liberty-maven-plugin>
+		<version.maven-failsafe-plugin>2.22.2</version.maven-failsafe-plugin>
+		<version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
+
+		<!-- Liberty configuration -->
+		<liberty.var.default.http.port>9080</liberty.var.default.http.port>
+		<liberty.var.default.https.port>9443</liberty.var.default.https.port>
+		<liberty.var.app.context.root>/</liberty.var.app.context.root>
+
+		<arquillian.war.name>arquillian-managed</arquillian.war.name>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>1.6.0.Final</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.shrinkwrap.resolver</groupId>
+				<artifactId>shrinkwrap-resolver-bom</artifactId>
+				<version>3.1.4</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>libraries-bom</artifactId>
+				<version>20.9.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+		</dependency>
+		<!-- GOOGLE (service cloud) -->
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-storage</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.api-client</groupId>
+					<artifactId>google-api-client</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>1.32.1</version>
+		</dependency>
+
+		<!-- REST CLIENT -->
+		<dependency>
+			<groupId>fr.webmaker</groupId>
+			<artifactId>webmaker-api</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.projectlombok</groupId>
+					<artifactId>lombok</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- JARKATAEE 8 -->
+		<dependency>
+			<groupId>jakarta.platform</groupId>
+			<artifactId>jakarta.jakartaee-api</artifactId>
+			<version>8.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- microprofile -->
+		<dependency>
+			<groupId>org.eclipse.microprofile</groupId>
+			<artifactId>microprofile</artifactId>
+			<version>4.0.1</version>
+			<type>pom</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.microprofile.rest.client</groupId>
+			<artifactId>microprofile-rest-client-api</artifactId>
+			<version>1.4.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- JSF(Apache MyFaces-2) + Omnifaces + primefaces -->
+		<dependency>
+			<groupId>org.apache.myfaces.core</groupId>
+			<artifactId>myfaces-api</artifactId>
+			<version>3.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.omnifaces</groupId>
+			<artifactId>omnifaces</artifactId>
+			<version>3.11</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>10.0.0</version>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>primefaces-theme</groupId> -->
+		<!-- <artifactId>ultima-theme</artifactId> -->
+		<!-- <version>3.0.0</version> -->
+		<!-- <scope>system</scope> -->
+		<!-- <systemPath>${project.basedir}/src/main/resources/ultima-theme-3.0.0.jar</systemPath> -->
+		<!-- </dependency> -->
+
+		<dependency>
+			<groupId>org.ocpsoft.rewrite</groupId>
+			<artifactId>rewrite-servlet</artifactId>
+			<version>3.4.4.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ocpsoft.rewrite</groupId>
+			<artifactId>rewrite-config-prettyfaces</artifactId>
+			<version>3.4.4.Final</version>
+		</dependency>
+
+		<!-- Cache webapp -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-web</artifactId>
+			<version>2.0.4</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-authz-client</artifactId>
+			<version>11.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+			<artifactId>owasp-java-html-sanitizer</artifactId>
+			<version>20200713.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.8.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.12</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.microshed</groupId> -->
+		<!-- <artifactId>microshed-testing-testcontainers</artifactId> -->
+		<!-- <version>0.9</version> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.microshed </groupId> -->
+		<!-- <artifactId>microshed-testing-liberty</artifactId> -->
+		<!-- <version>0.9</version> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.junit.jupiter</groupId> -->
+		<!-- <artifactId>junit-jupiter</artifactId> -->
+		<!-- <version>5.6.2</version> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
+		<!-- For tests -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-client</artifactId>
+			<version>3.4.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-extension-providers</artifactId>
+			<version>3.4.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>javax.json</artifactId>
+			<version>1.1.4</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<!-- Tests integration -->
+		<dependency>
+			<groupId>io.openliberty.arquillian</groupId>
+			<artifactId>arquillian-liberty-managed-junit</artifactId>
+			<version>1.1.8</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.shrinkwrap</groupId>
+			<artifactId>shrinkwrap-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<!-- <testResources> -->
+		<!-- <testResource> -->
+		<!-- <directory>src/test/resources</directory> -->
+		<!-- </testResource> -->
+		<!-- <testResource> -->
+		<!-- <directory>src/test/java</directory> -->
+		<!-- </testResource> -->
+		<!-- </testResources> -->
+		<!-- <testSourceDirectory>src/test/java</testSourceDirectory> -->
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${version.compiler-maven-plugin}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.3</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<packagingExcludes>pom.xml</packagingExcludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>io.openliberty.tools</groupId>
+				<artifactId>liberty-maven-plugin</artifactId>
+				<version>${version.liberty-maven-plugin}</version>
+				<configuration>
+					<arquillianProperties>
+						<javaVmArguments>
+							-Dsystem.context.root=/${arquillian.war.name}
+						</javaVmArguments>
+					</arquillianProperties>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${version.maven-surefire-plugin}</version>
+				<configuration>
+					<!-- Skip the default running of this plug-in (or everything is run 
+						twice...see below) -->
+					<skip>true</skip>
+					<!-- Show 100% of the lines from the stack trace (doesn't work) -->
+					<trimStackTrace>false</trimStackTrace>
+					<excludes>
+						<exclude>none</exclude>
+					</excludes>
+					<includes>
+						<include>**/*IT.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<!-- Plugin pour les tests d'intégration -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${version.maven-failsafe-plugin}</version>
+				<configuration>
+					<systemPropertyVariables>
+						<arquillian.war.name>${arquillian.war.name}.war</arquillian.war.name>
+					</systemPropertyVariables>
+				</configuration>
+				<executions>
+					<execution>
+						<configuration>
+							<systemPropertyVariables>
+								<http.port>${liberty.var.default.http.port}</http.port>
+								<https.port>${liberty.var.default.https.port}</https.port>
+								<app.context.root>${liberty.var.app.context.root}</app.context.root>
+							</systemPropertyVariables>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>failsafe</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

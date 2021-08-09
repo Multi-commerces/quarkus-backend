@@ -1,0 +1,45 @@
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.3.0" 
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+
+	<url-mapping id="product">
+		<pattern value="/products/#{id}" />
+		<view-id value="/product/product-edit.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="product-stock">
+		<pattern value="/products/#{id}/stock" />
+		<view-id value="/product/product-stock.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="product-seo">
+		<pattern value="/products/#{id}/seo" />
+		<view-id value="/product/product-seo.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="product-shipping">
+		<pattern value="/products/#{id}/shipping" />
+		<view-id value="/product/product-shipping.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="product-pricing">
+		<pattern value="/products/#{id}/pricing" />
+		<view-id value="/product/product-pricing.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="products">
+		<pattern value="/products" />
+		<view-id value="/product/product.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="variations">
+		<pattern value="/products/#{id}/variations" />
+		<view-id value="/product/product-combinations.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="variation">
+		<pattern value="/products/#{id}/variations/#{variationId}" />
+		<view-id value="/product/product-combinations.xhtml" />
+	</url-mapping>
+
+</pretty-config>

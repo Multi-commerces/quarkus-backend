@@ -1,0 +1,91 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <a tabindex="0" id="layout-config-button" class="layout-config-button">
+        <i class="pi pi-cog"/>
+    </a>
+
+    <div id="layout-config" class="layout-config">
+        <h:form id="config-form">
+            <h5>Menu Type</h5>
+
+            <p:selectOneRadio value="#{guestPreferences.menuLayout}" layout="pageDirection" onchange="PrimeFaces.UltimaConfigurator.changeMenuLayout(event.target.value)">
+                <f:selectItem itemLabel="Static" itemValue="static"/>
+                <f:selectItem itemLabel="Overlay" itemValue="overlay"/>
+                <f:selectItem itemLabel="Horizontal" itemValue="horizontal"/>
+                <f:selectItem itemLabel="Slim" itemValue="slim"/>
+                <p:ajax onstart="PrimeFaces.UltimaConfigurator.beforeResourceChange()" update="menuform config-form topbarForm" />
+            </p:selectOneRadio>
+
+            <hr/>
+
+            <h5>Menu Colors</h5>
+
+            <p:selectOneRadio value="#{guestPreferences.darkMenu}" layout="pageDirection" onchange="PrimeFaces.UltimaConfigurator.changeMenuColor(event.target.value)">
+                <f:selectItem itemLabel="Dark" itemValue="true"/>
+                <f:selectItem itemLabel="Light" itemValue="false"/>
+                <p:ajax onstart="PrimeFaces.UltimaConfigurator.beforeResourceChange()" update="config-form" />
+            </p:selectOneRadio>
+
+            <hr/>
+
+            <h5>User Profile</h5>
+            <p:selectOneRadio value="#{guestPreferences.profileMode}" layout="pageDirection">
+                <f:selectItem itemLabel="Inline" itemValue="inline"/>
+                <f:selectItem itemLabel="Overlay" itemValue="overlay"/>
+                <p:ajax onstart="PrimeFaces.UltimaConfigurator.beforeResourceChange()" update="menuform config-form topbarForm" />
+            </p:selectOneRadio>
+
+            <hr/>
+
+            <h5>Theme Modes</h5>
+
+            <p:selectOneRadio value="#{guestPreferences.compactMode}" layout="pageDirection" onchange="PrimeFaces.UltimaConfigurator.changeComponentsTheme('#{guestPreferences.theme}',event.target.value)">
+                <f:selectItem itemLabel="Compact" itemValue="true"/>
+                <f:selectItem itemLabel="Standart" itemValue="false"/>
+                <p:ajax update="config-form" />
+            </p:selectOneRadio>
+
+            <hr/>
+
+            <h5>Input Style</h5>
+            <p:selectOneRadio value="#{guestPreferences.inputStyle}" layout="pageDirection"
+                              onchange="PrimeFaces.UltimaConfigurator.updateInputStyle(event.target.value)">
+                <f:selectItem itemLabel="Outlined" itemValue="outlined"/>
+                <f:selectItem itemLabel="Filled" itemValue="filled"/>
+                <p:ajax/>
+            </p:selectOneRadio>
+
+            <hr/>
+
+            <h5>Ripple Effect</h5>
+            <p:toggleSwitch id="ripple-switch" value="#{guestPreferences.ripple}" onchange="window.location.reload();">
+                <p:ajax onstart="PrimeFaces.UltimaConfigurator.beforeResourceChange()" update="config-form" />
+            </p:toggleSwitch>
+
+            <hr/>
+
+            <h5>Themes</h5>
+            <div class="layout-themes">
+                <ui:repeat value="#{guestPreferences.componentThemes}" var="theme">
+                    <div>
+                        <p:commandLink actionListener="#{guestPreferences.setTheme(theme.file)}"
+                                       process="@this" update="config-form"
+                                       onstart="PrimeFaces.UltimaConfigurator.beforeResourceChange()"
+                                       oncomplete="PrimeFaces.UltimaConfigurator.changeComponentsTheme('#{theme.file}','#{guestPreferences.compactMode}')">
+                            <p:graphicImage name="images/configurator/theme/#{theme.image}"
+                                            library="ultima-layout" title="#{theme.name}" />
+                            <ui:fragment rendered="#{theme.file eq guestPreferences.theme}">
+                                <i class="pi pi-check"/>
+                            </ui:fragment>
+                        </p:commandLink>
+                    </div>
+                </ui:repeat>
+            </div>
+        </h:form>
+    </div>
+    
+</ui:composition>

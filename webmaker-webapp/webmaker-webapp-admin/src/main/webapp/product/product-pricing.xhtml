@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:w="http://web-maker.fr/html"
+	template="/WEB-INF/templates/layout-product-edit.xhtml">
+
+
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewAction action="#{adminProductPricingMB.onLoad}" />
+		</f:metadata>
+	</ui:define>
+	<ui:param name="controller" value="#{adminProductPricingMB}" />
+	
+
+	
+	
+	<ui:define name="main-header">
+		<div class="ui-g">
+			<div class="ui-g-12">
+					! RAS !
+			</div>
+		</div>
+	</ui:define>
+		
+	<!--  Formulaire d'édition  -->
+	<ui:define name="form-edit">
+		<ui:param name="pricing" value="#{model.data}" />
+		
+		<p:fieldset legend="Prix de vente" class="ui-g ui-fluid form-group ui-panelgrid-blank">
+			
+			<w:inputText styleClass="ui-g-12 ui-md-4" id="priceHT" label="Montant (HT)" 
+			icon="euro" value="#{pricing.priceHT}" />
+			<w:inputText styleClass="ui-g-12 ui-md-4" id="priceTTC" label="Montant (TTC)" 
+			icon="euro"  value="#{pricing.priceTTC}" />
+			
+			<div class="ui-g-12 ui-md-4">
+				<div class="ui-inputgroup">
+					<div class="md-inputfield">
+						<p:selectOneMenu id="ref" required="true"  value="#{pricing.taxRule}">
+							<f:selectItem itemLabel="Taux réduit (TVA 5.5)" itemValue="5.5" />
+							<f:selectItem itemLabel="Taux standard (TVA 10)" itemValue="10" />
+							<f:selectItem itemLabel="Taux supérieure (TVA 20)" itemValue="20" />
+						</p:selectOneMenu>
+						<p:outputLabel for="ref" value="Taxe" />
+					</div>
+				</div>
+			</div>
+		</p:fieldset>
+		
+		<fieldset class="ui-g ui-fluid form-group ui-panelgrid-blank">
+			<legend>Prix d'achat</legend>
+			
+		</fieldset>
+
+	</ui:define>
+
+
+</ui:composition>
