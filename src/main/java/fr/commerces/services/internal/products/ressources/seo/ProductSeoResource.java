@@ -14,18 +14,18 @@ import fr.commerces.services._transverse.GenericResource;
 import fr.commerces.services._transverse.response.CollectionResponse;
 import fr.commerces.services._transverse.response.SingleResponse;
 import fr.commerces.services.internal.products.data.ProductSeoData;
-import fr.commerces.services.internal.products.manager.ProductSeoManager;
+import fr.commerces.services.internal.products.manager.ProductManager;
 
 @RequestScoped
 public class ProductSeoResource extends GenericResource<CollectionResponse<ProductSeoData, Long>>
 		implements ProductSeoApi {
 
 	@Inject
-	ProductSeoManager manager;
+	ProductManager manager;
 
 	@Override
 	public CollectionResponse<ProductSeoData, Long> getProductSeos(final Long productId) {
-		final Map<LanguageCode, ProductSeoData> items = manager.findProductSeoByProduct(productId);
+		final Map<LanguageCode, ProductSeoData> items = manager.findSeoByProduct(productId);
 
 		/*
 		 * Réponse API
@@ -52,7 +52,7 @@ public class ProductSeoResource extends GenericResource<CollectionResponse<Produ
 		final LanguageCode languageCode = LanguageCode.getByCode(lang);
 
 		// CALL BUSINESS
-		final ProductSeoData data = manager.findProductSeoByProductLang(productId, languageCode);
+		final ProductSeoData data = manager.findSeoByProductLangPK(productId, languageCode);
 
 		// RESPONSE
 		final SingleResponse<ProductSeoData, Long> response = new SingleResponse<ProductSeoData, Long>();
@@ -65,7 +65,7 @@ public class ProductSeoResource extends GenericResource<CollectionResponse<Produ
 
 	@Override
 	public Response updateProductSeo(final String languageCode, final Long productId, final ProductSeoData data) {
-		manager.update(LanguageCode.getByCode(languageCode), productId, data);
+		manager.updateSEO(LanguageCode.getByCode(languageCode), productId, data);
 		return Response.noContent().build();
 	}
 

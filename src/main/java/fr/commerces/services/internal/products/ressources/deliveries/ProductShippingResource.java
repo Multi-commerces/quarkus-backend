@@ -23,7 +23,7 @@ public class ProductShippingResource extends GenericResource<CollectionResponse<
 
 	@Override
 	public Response getProductShipping(final Long productId, final INCLUDE include) {
-		final ProductShippingData data = manager.findProductShippingById(productId);
+		final ProductShippingData data = manager.findShippingByProductId(productId);
 		// TODO prendre en compte dans une prochaine version INCLUDE
 		if (Objects.equals(include, INCLUDE.TRANSPORTERS) && !isNotEmpty(data.getTransporters())) {
 
@@ -39,7 +39,7 @@ public class ProductShippingResource extends GenericResource<CollectionResponse<
 
 	@Override
 	public Response postProductShipping(final Long productId, ProductShippingData data) {
-		manager.updateProductShipping(productId, data);
+		manager.updateShipping(productId, data);
 		return Response.noContent().build();
 	}
 

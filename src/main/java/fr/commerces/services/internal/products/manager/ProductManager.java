@@ -9,6 +9,10 @@ import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.ws.rs.NotFoundException;
 
 import com.neovisionaries.i18n.LanguageCode;
@@ -16,6 +20,7 @@ import com.neovisionaries.i18n.LanguageCode;
 import fr.commerces.logged.Logged;
 import fr.commerces.services._transverse.data.PagingData;
 import fr.commerces.services.internal.products.data.ProductData;
+import fr.commerces.services.internal.products.data.ProductSeoData;
 import fr.commerces.services.internal.products.data.ProductShippingData;
 import fr.commerces.services.internal.products.entity.Product;
 import fr.commerces.services.internal.products.entity.ProductLang;
@@ -36,33 +41,20 @@ public class ProductManager {
 	@Inject
 	ProductMapper mapper;
 
-	/**
-	 * Obtenir la liste des produits avec prise en compte des critères de recherche
-	 * 
-	 * @param language 
-	 * @param page (optionnel)
-	 * @param size (optionnel)
-	 * @return liste des produits (key : identifiant du produit, value : le produit)
-	 */
-	public final Map<Long, ProductData> list(final LanguageCode language, final Optional<Integer> page,
-			final Optional<Integer> size) {
-		try (final Stream<ProductLang> streamEntity = ProductLang.findByLanguageCode(language)
-				.page(Page.of(page.orElse(1) - 1, size.orElse(SIZE))).stream()) {
-			return mapper
-					.toProductDataById(streamEntity.collect(Collectors.toMap(ProductLang::getId, Function.identity())));
-		}
-	}
+	/* ################ Opérations de lecture ################ */
 
 	/**
-	 * Obtenir la pagination
+	 * Obtenir la pagination pour
+	 * 
 	 * @param language
 	 * @param optSize
 	 * @return
 	 */
-	public final PagingData getPagingData(final LanguageCode language, final Optional<Integer> optSize) {
+	public final PagingData getPagingProductLang(final LanguageCode language, final Optional<Integer> optSize) {
 		int size = optSize.orElse(SIZE);
 
 		final PanacheQuery<ProductLang> query = ProductLang.findByLanguageCode(language).page(Page.ofSize(size));
+
 		final PagingData pagingData = new PagingData();
 		pagingData.setPage(1);
 		pagingData.setPageSize(size);
@@ -73,44 +65,125 @@ public class ProductManager {
 	}
 
 	/**
+	 * Obtenir la liste des produits avec prise en compte des critères de recherche
+	 * 
+	 * @param language
+	 * @param page     (optionnel)
+	 * @param size     (optionnel)
+	 * @return liste des produits (key : identifiant du produit, value : le produit)
+	 */
+	public final Map<Long, ProductData> findAllByLanguageCode(@NotNull final LanguageCode language,
+			final Optional<@Min(1) Integer> optPage, final Optional<@Positive @Min(1) Integer> size) {
+
+		var page = Page.of(optPage.orElse(1) - 1, size.orElse(SIZE));
+		try (final Stream<ProductLang> streamEntity = ProductLang.findByLanguageCode(language).page(page).stream()) {
+			var map = streamEntity.collect(Collectors.toMap(ProductLang::getId, Function.identity()));
+			return mapper.toProductDataById(map);
+		}
+	}
+
+	/**
 	 * Obtenir les informations d'expédition du produit
 	 * 
 	 * @param productId
 	 * @return
 	 */
-	public final ProductShippingData findProductShippingById(final Long productId) {
+	public final ProductShippingData findShippingByProductId(@NotNull final Long productId) {
 		final Product product = Product.<Product>findByIdOptional(productId).orElseThrow(NotFoundException::new);
 		return mapper.toProductShippingResponse(product);
 	}
 
 	/**
-	 * Mise à jour des informations d'expédition du produit
+	 * Otenir les informations SEO du produit (toutes les langues)
 	 * 
-	 * @param language
-	 * @param id
-	 * @param data
+	 * @param productId identifiant du produit
+	 * @param language  langue du produit
+	 * @return
 	 */
-	@Transactional
-	public final void updateProductShipping(final Long productId, final ProductShippingData data) {
-		Product.<Product>findByIdOptional(productId).map(pojo -> mapper.toProduct(data, pojo))
-				.orElseThrow(NotFoundException::new);
+	public final Map<LanguageCode, ProductSeoData> findSeoByProduct(@NotNull final Long productId) {
+		try (Stream<ProductLang> streamEntity = Product.<Product>findByIdOptional(productId)
+				.orElseThrow(NotFoundException::new).getProductLang().stream()) {
+			return mapper.toProductSeoDataByLang(
+					streamEntity.collect(Collectors.toMap(ProductLang::getLang, Function.identity())));
+		}
 	}
 
-	public final ProductData findByIdProductAndLanguageCode(final Long productId, final LanguageCode language) {
-		ProductLang entity = ProductLang.findByIdProductAndLanguageCode(productId, language)
+	/**
+	 * Obtenir les information SEO du produit
+	 * 
+	 * @param productId identifiant du produit
+	 * @param language  langue du produit
+	 * @return
+	 */
+	public final ProductSeoData findSeoByProductLangPK(@NotNull final Long productId,
+			@NotNull final LanguageCode languageCode) {
+		final ProductLang pojo = ProductLang.findByIdProductAndLanguageCode(productId, languageCode)
+				.orElseThrow(NotFoundException::new);
+
+		return mapper.toProductSeoResponse(pojo);
+	}
+
+	public final ProductData findByProductLangPK(@NotNull final Long productId,
+			@NotNull final LanguageCode languageCode) {
+		final ProductLang entity = ProductLang.findByIdProductAndLanguageCode(productId, languageCode)
 				.orElseThrow(NotFoundException::new);
 
 		return mapper.toProductData(entity);
 	}
 
+	/* ################Opérations de mise à jour ################ */
+
+	/**
+	 * Opération de mise à jour d'un produit traduit dans une langue
+	 * 
+	 * @param language
+	 * @param productId
+	 * @param data
+	 */
 	@Transactional
-	public final void update(final LanguageCode language, final Long id, final ProductData data) {
-		ProductLang.findByIdProductAndLanguageCode(id, language).map(pojo -> mapper.toProductLang(data, pojo))
+	public final void updateProductLang(@NotNull final LanguageCode language, @NotNull final Long productId,
+			@Valid final ProductData data) {
+		ProductLang.findByIdProductAndLanguageCode(productId, language).map(pojo -> mapper.toProductLang(data, pojo))
 				.orElseThrow(NotFoundException::new);
 	}
 
+	/**
+	 * Opération de mise à jour Produit SEO
+	 * 
+	 * @param languageCode langue du produit
+	 * @param productId    identifiant du produit
+	 * @param data
+	 */
 	@Transactional
-	public final Long create(final LanguageCode languageCode, final ProductData data) {
+	public final void updateSEO(@NotNull final LanguageCode languageCode, @NotNull final Long productId,
+			@Valid final ProductSeoData data) {
+		ProductLang.findByIdProductAndLanguageCode(productId, languageCode)
+				.map(pojo -> mapper.toProductLang(data, pojo)).orElseThrow(NotFoundException::new);
+	}
+
+	/**
+	 * Opération de mise à jour des informations d'expédition du produit
+	 * 
+	 * @param productId
+	 * @param data
+	 */
+	@Transactional
+	public final void updateShipping(@NotNull final Long productId, @NotNull final ProductShippingData data) {
+		Product.<Product>findByIdOptional(productId).map(pojo -> mapper.toProduct(data, pojo))
+				.orElseThrow(NotFoundException::new);
+	}
+
+	/* ################ Opérations de Opérations de création ################ */
+
+	/**
+	 * Opération de création d'un nouveau produit dans une langue
+	 * 
+	 * @param languageCode
+	 * @param data
+	 * @return
+	 */
+	@Transactional
+	public final Long createProductLang(@NotNull final LanguageCode languageCode, @Valid final ProductData data) {
 		final ProductLang productLang = mapper.toProductLang(data);
 		productLang.setLanguage(languageCode);
 		productLang.persistAndFlush();
@@ -118,10 +191,18 @@ public class ProductManager {
 		return productLang.getProduct().getId();
 	}
 
+	/* ################ Opérations de suppression ################ */
+
+	/**
+	 * Opération de suppresion d'un produit existant, traduit dans une langue
+	 * 
+	 * @param languageCode
+	 * @param productId
+	 */
 	@Transactional
-	public void delete(final LanguageCode languageCode, final Long productId) {
-		boolean isOK = ProductLang.deleteByIdProductAndLanguageCode(productId, languageCode);
-		if (!isOK) {
+	public void deleteProductLang(@NotNull final LanguageCode languageCode, @NotNull final Long productId) {
+		boolean exists = ProductLang.deleteByProductLangPK(productId, languageCode);
+		if (!exists) {
 			throw new NotFoundException(
 					String.format("Suppression impossible, produit introuvable avec productId=%s, languageCode=%s",
 							String.valueOf(productId), languageCode.toString()));

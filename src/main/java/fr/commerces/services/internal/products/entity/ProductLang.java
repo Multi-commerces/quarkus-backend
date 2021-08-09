@@ -125,7 +125,7 @@ public class ProductLang extends PanacheEntityBase {
 	 * @param languageCode languageCode de l'entity à supprimer.
 	 * @return false si l'entité n'a pas été supprimée (introuvable).
 	 */
-	public static boolean deleteByIdProductAndLanguageCode(final Long idProduct, final LanguageCode languageCode) {
+	public static boolean deleteByProductLangPK(final Long idProduct, final LanguageCode languageCode) {
 		return deleteById(new ProductLangPK(idProduct, languageCode));
 	}
 

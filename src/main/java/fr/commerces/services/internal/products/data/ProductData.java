@@ -1,6 +1,8 @@
 package fr.commerces.services.internal.products.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,6 +22,16 @@ public class ProductData implements Serializable {
 	 * Référence produit
 	 */
 	private String reference;
+	
+	/**
+	 * Image de couverture
+	 */
+	private ProductImageData imageCover = new ProductImageData();
+	
+	/**
+	 * Image de couverture
+	 */
+	private List<ProductImageData> images = new ArrayList<ProductImageData>();
 
 	/**
 	 * Nom du produit traduit
@@ -45,5 +57,11 @@ public class ProductData implements Serializable {
 	 * Taxe
 	 */
 	private double taxRule;
+	
+//	@Transient
+//	public double getPriceTTC()
+//	{
+//		return priceHT * (1 + taxRule/100);
+//	}
 
 }

@@ -93,7 +93,7 @@ public interface ProductResourceApi {
 
 	/* ############################################################################################################# */
 
-	@RolesAllowed({ "gestionnaire" })
+//	@RolesAllowed({ "gestionnaire" })
 	@POST
 	@Path("/languages/{languageCode}") 
 	@Operation(operationId = "createProduct", summary = "Création produit", description = "Demande la création d'un nouveau produit .")

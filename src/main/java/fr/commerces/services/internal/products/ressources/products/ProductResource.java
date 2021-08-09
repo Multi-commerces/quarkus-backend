@@ -47,7 +47,7 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 	@Override
 	public Response getProductById(final String languageCode, final Long idProduct) {
 		// Data API
-		final ProductData data = manager.findByIdProductAndLanguageCode(idProduct, LanguageCode.getByCode(languageCode));
+		final ProductData data = manager.findByProductLangPK(idProduct, LanguageCode.getByCode(languageCode));
 
 		// Réponse API
 		final SingleResponse<ProductData, Long> singleResponse = new SingleResponse<ProductData, Long>();
@@ -68,7 +68,7 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 		/*
 		 * Data API
 		 */
-		final Map<Long, ProductData> items = manager.list(LanguageCode.getByCode(languageCode),
+		final Map<Long, ProductData> items = manager.findAllByLanguageCode(LanguageCode.getByCode(languageCode),
 				Optional.ofNullable(page), Optional.ofNullable(size));
 
 		/*
@@ -88,7 +88,7 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 		reponse.setEmbedded(embedded);
 		
 		// Pagination
-		final PagingData pagingData = manager.getPagingData(LanguageCode.getByCode(languageCode), Optional.ofNullable(size));
+		final PagingData pagingData = manager.getPagingProductLang(LanguageCode.getByCode(languageCode), Optional.ofNullable(size));
 		reponse.setPaging(pagingData);
 
 		return reponse;
@@ -96,19 +96,19 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 
 	@Override
 	public Response createProduct(final String languageCode, final ProductData data) {
-		Long newId = manager.create(LanguageCode.getByCode(languageCode), data);
+		Long newId = manager.createProductLang(LanguageCode.getByCode(languageCode), data);
 		return buildResponse.apply(newId);
 	}
 
 	@Override
 	public Response updateProduct(final String languageCode, final Long productId, final ProductData data) {
-		manager.update(LanguageCode.getByCode(languageCode), productId, data);
+		manager.updateProductLang(LanguageCode.getByCode(languageCode), productId, data);
 		return Response.noContent().build();
 	}
 
 	@Override
 	public Response deleteProductLang(final String languageCode, final Long productId) {
-		manager.delete(LanguageCode.getByCode(languageCode), productId);
+		manager.deleteProductLang(LanguageCode.getByCode(languageCode), productId);
 		return Response.noContent().build();
 	}
 

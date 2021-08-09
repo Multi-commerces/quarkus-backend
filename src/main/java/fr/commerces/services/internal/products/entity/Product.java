@@ -80,10 +80,4 @@ public class Product extends PanacheEntityBase {
 			CascadeType.REMOVE }, orphanRemoval = true)
 	private List<ProductImage> images = new ArrayList<>();
 
-//	@Transient
-//	public double getPriceTTC()
-//	{
-//		return priceHT * (1 + taxRule/100);
-//	}
-
 }
