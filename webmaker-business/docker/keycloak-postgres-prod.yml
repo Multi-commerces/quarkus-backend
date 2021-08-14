@@ -15,7 +15,7 @@ services:
         POSTGRES_PASSWORD: password
       ports:
         - "5432:5432"
-## CERBOT :  https://blog.eleven-labs.com/fr/https-part-2/
+  ## CERBOT :  https://blog.eleven-labs.com/fr/https-part-2/
   nginx:
     image: nginx
     container_name: nginx
@@ -27,7 +27,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-## keycloak : https://hub.docker.com/r/jboss/keycloak/
+  ## keycloak : https://hub.docker.com/r/jboss/keycloak/
   keycloak:
       image: quay.io/keycloak/keycloak:latest
       environment:

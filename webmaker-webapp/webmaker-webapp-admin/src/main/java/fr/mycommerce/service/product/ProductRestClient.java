@@ -10,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import fr.webmaker.common.response.CollectionResponse;
@@ -20,6 +21,7 @@ import fr.webmaker.product.response.ProductDataResponse;
 @Dependent
 @Path("/languages/{languageCode}/products")
 @RegisterRestClient(configKey = "mycommerce-api")
+@RegisterClientHeaders
 public interface ProductRestClient  {
 
 	@GET

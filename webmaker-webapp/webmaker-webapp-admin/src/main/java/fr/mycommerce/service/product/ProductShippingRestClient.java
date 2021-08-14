@@ -6,6 +6,7 @@ import javax.ws.rs.PATCH;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
+import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import fr.webmaker.common.Identifier;
@@ -15,6 +16,7 @@ import fr.webmaker.product.data.ProductShippingData;
 @Dependent
 @Path("products/{productId}/shipping")
 @RegisterRestClient(configKey = "mycommerce-api")
+@RegisterClientHeaders
 public interface ProductShippingRestClient {
 
 	@GET

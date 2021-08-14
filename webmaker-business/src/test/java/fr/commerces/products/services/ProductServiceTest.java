@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.commerces.services.internal.products.ressources.products.ProductManager;
+import fr.commerces.microservices.product.ProductManager;
 import fr.webmaker.product.data.ProductData;
 import io.quarkus.test.junit.QuarkusTest;
 

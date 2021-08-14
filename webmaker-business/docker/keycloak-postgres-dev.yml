@@ -1,4 +1,5 @@
 #https://hub.docker.com/r/jboss/keycloak/
+#https://github.com/keycloak/keycloak-containers/blob/master/docker-compose-examples/keycloak-postgres.yml
 version: '3'
 
 volumes:
@@ -28,6 +29,7 @@ services:
         DB_PASSWORD: postgres_pwd
         KEYCLOAK_USER: admin
         KEYCLOAK_PASSWORD: Pa55w0rd
+        #JDBC_PARAMS: "ssl=true"
       command:
         -b 0.0.0.0 -Djboss.http.port=8080 -Djboss.https.port=8443
       ports:
