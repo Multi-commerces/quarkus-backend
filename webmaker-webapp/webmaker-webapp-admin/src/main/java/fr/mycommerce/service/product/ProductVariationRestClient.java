@@ -13,9 +13,9 @@ import javax.ws.rs.PathParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import fr.webmaker.common.response.SingleResponse;
-import fr.webmaker.product.ProductVariationID;
-import fr.webmaker.product.data.ProductVariationData;
+import fr.webmaker.commons.response.SingleResponse;
+import fr.webmaker.microservices.catalog.products.data.ProductVariationData;
+import fr.webmaker.microservices.catalog.products.id.ProductVariationID;
 
 @Dependent
 @Path("/products/{productId}/variations")

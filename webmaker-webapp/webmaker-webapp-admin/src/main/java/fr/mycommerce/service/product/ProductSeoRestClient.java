@@ -8,9 +8,9 @@ import javax.ws.rs.PathParam;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import fr.webmaker.common.Identifier;
-import fr.webmaker.common.response.SingleResponse;
-import fr.webmaker.product.data.ProductSeoData;
+import fr.webmaker.commons.identifier.Identifier;
+import fr.webmaker.commons.response.SingleResponse;
+import fr.webmaker.microservices.catalog.products.data.ProductSeoData;
 
 @Dependent
 @Path("/products/{productId}/seo")

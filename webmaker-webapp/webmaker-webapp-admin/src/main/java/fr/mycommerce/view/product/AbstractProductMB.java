@@ -6,7 +6,7 @@ import javax.faces.event.ActionEvent;
 
 import fr.mycommerce.transverse.AbstractView;
 import fr.mycommerce.view.product.ProductFlowPage.FlowPage;
-import fr.webmaker.common.Identifier;
+import fr.webmaker.commons.identifier.Identifier;
 import lombok.Getter;
 import lombok.Setter;
 

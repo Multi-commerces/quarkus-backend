@@ -15,8 +15,8 @@ import fr.mycommerce.service.product.ProductVariationRestClient;
 import fr.mycommerce.transverse.AbstractCrudView;
 import fr.mycommerce.transverse.ActionType;
 import fr.mycommerce.transverse.Model;
-import fr.webmaker.product.ProductVariationID;
-import fr.webmaker.product.data.ProductVariationData;
+import fr.webmaker.microservices.catalog.products.data.ProductVariationData;
+import fr.webmaker.microservices.catalog.products.id.ProductVariationID;
 import lombok.Getter;
 
 @Named("adminProductVariationMB")

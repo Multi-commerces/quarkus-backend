@@ -10,8 +10,8 @@ import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
-import fr.webmaker.common.Identifier;
-import fr.webmaker.common.response.SingleResponse;
+import fr.webmaker.commons.identifier.Identifier;
+import fr.webmaker.commons.response.SingleResponse;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

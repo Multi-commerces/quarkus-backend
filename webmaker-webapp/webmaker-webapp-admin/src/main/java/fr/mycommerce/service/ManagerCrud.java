@@ -2,7 +2,7 @@ package fr.mycommerce.service;
 
 import java.io.Serializable;
 
-import fr.webmaker.common.Identifier;
+import fr.webmaker.commons.identifier.Identifier;
 
 /**
  * </h1>Crud Manager (create, read, update et delete)</h1>

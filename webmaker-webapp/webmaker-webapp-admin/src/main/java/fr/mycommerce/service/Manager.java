@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import fr.mycommerce.transverse.Model;
-import fr.webmaker.common.Identifier;
+import fr.webmaker.commons.identifier.Identifier;
 
 public interface Manager <Data extends Serializable, I extends Identifier<?>> extends Serializable {
 	

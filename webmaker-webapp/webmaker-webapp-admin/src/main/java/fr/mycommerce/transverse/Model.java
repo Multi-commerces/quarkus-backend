@@ -2,7 +2,7 @@ package fr.mycommerce.transverse;
 
 import java.io.Serializable;
 
-import fr.webmaker.common.Identifier;
+import fr.webmaker.commons.identifier.Identifier;
 
 public class Model<Data extends Serializable, I extends Identifier<?>> implements Serializable {
 

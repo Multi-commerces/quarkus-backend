@@ -11,9 +11,9 @@ import javax.inject.Named;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 
-import fr.webmaker.product.ProductID;
-import fr.webmaker.product.data.ProductData;
-import fr.webmaker.product.response.ProductDataResponse;
+import fr.webmaker.microservices.catalog.products.data.ProductData;
+import fr.webmaker.microservices.catalog.products.id.ProductID;
+import fr.webmaker.microservices.catalog.products.response.ProductResponse;
 import fr.webmaker.resource.ProductRestClient;
 import lombok.Getter;
 
@@ -44,7 +44,7 @@ public class FicheProductMB implements Serializable {
 	@PostConstruct
 	public void init() {
 		var productId = getValueParam("productId");
-		ProductDataResponse response = service.get("fr", Long.valueOf(productId));
+		ProductResponse response = service.get("fr", Long.valueOf(productId));
 		product = response.getData();
 		identifier = response.getIdentifier();
 	}

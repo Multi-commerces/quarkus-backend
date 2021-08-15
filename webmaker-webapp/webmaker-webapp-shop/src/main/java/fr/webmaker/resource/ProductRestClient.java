@@ -12,10 +12,10 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import fr.webmaker.common.response.CollectionResponse;
-import fr.webmaker.product.ProductID;
-import fr.webmaker.product.data.ProductData;
-import fr.webmaker.product.response.ProductDataResponse;
+import fr.webmaker.commons.response.CollectionResponse;
+import fr.webmaker.microservices.catalog.products.data.ProductData;
+import fr.webmaker.microservices.catalog.products.id.ProductID;
+import fr.webmaker.microservices.catalog.products.response.ProductResponse;
 
 @Dependent
 @Path("/languages/{languageCode}/products")
@@ -31,7 +31,7 @@ public interface ProductRestClient  {
 	
 	@Path("/{productId}")
 	@GET
-	ProductDataResponse get(
+	ProductResponse get(
 			@PathParam("languageCode") String languageCode,
 			@PathParam("productId") Long id);
 

@@ -6,7 +6,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import fr.commerces.commons.exceptions.crud.NotFoundException;
-import fr.webmaker.common.response.ErrorResponse;
+import fr.webmaker.commons.response.ErrorResponse;
 
 @Provider
 public class NotFoundExceptionHandler implements ExceptionMapper<NotFoundException> {

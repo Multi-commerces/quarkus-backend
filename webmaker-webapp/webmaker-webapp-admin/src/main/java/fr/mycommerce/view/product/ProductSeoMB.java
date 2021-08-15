@@ -8,9 +8,9 @@ import org.omnifaces.cdi.ViewScoped;
 
 import fr.mycommerce.service.product.ProductSeoRestClient;
 import fr.mycommerce.view.product.ProductFlowPage.FlowPage;
-import fr.webmaker.common.Identifier;
-import fr.webmaker.common.response.SingleResponse;
-import fr.webmaker.product.data.ProductSeoData;
+import fr.webmaker.commons.identifier.Identifier;
+import fr.webmaker.commons.response.SingleResponse;
+import fr.webmaker.microservices.catalog.products.data.ProductSeoData;
 import lombok.Getter;
 
 /**

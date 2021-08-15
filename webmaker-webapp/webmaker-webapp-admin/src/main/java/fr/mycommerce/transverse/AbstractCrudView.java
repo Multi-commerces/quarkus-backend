@@ -40,7 +40,7 @@ import com.google.cloud.storage.StorageOptions;
 import fr.mycommerce.exception.MissingArgumentException;
 import fr.mycommerce.exception.MissingModelException;
 import fr.mycommerce.transverse.old.RenderMode;
-import fr.webmaker.common.Identifier;
+import fr.webmaker.commons.identifier.Identifier;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

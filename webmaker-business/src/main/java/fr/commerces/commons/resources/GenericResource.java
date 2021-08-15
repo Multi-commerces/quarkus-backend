@@ -12,9 +12,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import fr.commerces.services.authentifications.provider.AuthenticationContextProvider;
-import fr.webmaker.common.Identifier;
-import fr.webmaker.common.response.CollectionResponse;
-import fr.webmaker.common.response.SingleResponse;
+import fr.webmaker.commons.identifier.Identifier;
+import fr.webmaker.commons.response.CollectionResponse;
+import fr.webmaker.commons.response.SingleResponse;
 import lombok.Getter;
 
 

@@ -24,9 +24,9 @@ import fr.mycommerce.transverse.AbstractCrudView;
 import fr.mycommerce.transverse.ActionType;
 import fr.mycommerce.transverse.Model;
 import fr.mycommerce.view.product.ProductFlowPage.FlowPage;
-import fr.webmaker.product.ProductID;
-import fr.webmaker.product.data.ProductData;
-import fr.webmaker.product.response.ProductDataResponse;
+import fr.webmaker.microservices.catalog.products.data.ProductData;
+import fr.webmaker.microservices.catalog.products.id.ProductID;
+import fr.webmaker.microservices.catalog.products.response.ProductResponse;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -160,7 +160,7 @@ public class AdminProductListMB extends AbstractCrudView<ProductData, ProductID>
 				final Client client = ClientBuilder.newClient();
 				Response responseGet = client.target(location).request().get();
 				if (responseGet.getStatus() == Response.Status.OK.getStatusCode()) {
-					final ProductDataResponse dataResponse = responseGet.readEntity(ProductDataResponse.class);
+					final ProductResponse dataResponse = responseGet.readEntity(ProductResponse.class);
 
 					responseGet.close();
 					client.close();

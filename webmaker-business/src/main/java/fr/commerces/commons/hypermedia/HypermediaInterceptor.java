@@ -22,9 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.commerces.commons.resources.GenericResource;
-import fr.webmaker.common.LinkData;
-import fr.webmaker.common.response.CollectionResponse;
-import fr.webmaker.common.response.SingleResponse;
+import fr.webmaker.commons.LinkData;
+import fr.webmaker.commons.response.CollectionResponse;
+import fr.webmaker.commons.response.SingleResponse;
 
 /**
  * API Hypermedia

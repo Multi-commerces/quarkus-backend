@@ -13,9 +13,9 @@ import javax.inject.Named;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 
-import fr.webmaker.common.response.CollectionResponse;
-import fr.webmaker.product.ProductID;
-import fr.webmaker.product.data.ProductData;
+import fr.webmaker.commons.response.CollectionResponse;
+import fr.webmaker.microservices.catalog.products.data.ProductData;
+import fr.webmaker.microservices.catalog.products.id.ProductID;
 import fr.webmaker.resource.ProductRestClient;
 import lombok.Getter;
 
