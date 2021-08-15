@@ -1,17 +1,19 @@
-package fr.commerces.products;
+package fr.commerces.microservices.product.stock;
 
-import static fr.commerces.commons.utilities.UtilityTest.PATH_PRODUCT_PRICING;
 import static fr.commerces.commons.utilities.UtilityTest.PRODUCT_ID_10000001;
 import static fr.commerces.commons.utilities.UtilityTest.PRODUCT_ID_BIDON;
 
 import org.junit.jupiter.api.Test;
 
 import fr.commerces.commons.abstracts.AbtractQuarkusApiTest;
+import fr.commerces.microservices.product.stocks.ProductStockApi;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 
+@TestHTTPEndpoint(ProductStockApi.class)
 @QuarkusTest
-public class ProductPricingApiTest extends AbtractQuarkusApiTest {
+public class ProductStockApiTest extends AbtractQuarkusApiTest {
 
 	@Test
 	@TestSecurity(authorizationEnabled = false)
@@ -28,10 +30,4 @@ public class ProductPricingApiTest extends AbtractQuarkusApiTest {
 
 		testEndpoint_OK();
 	}
-
-	@Override
-	protected String getBasePath() {
-		return PATH_PRODUCT_PRICING;
-	}
-
 }

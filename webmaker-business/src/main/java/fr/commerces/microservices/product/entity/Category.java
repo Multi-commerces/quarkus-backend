@@ -1,7 +1,7 @@
 package fr.commerces.microservices.product.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +10,7 @@ import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,16 +20,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotNull;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import lombok.Getter;
 import lombok.Setter;
 
-@Cacheable(false)
+@EntityListeners(CategoryListener.class)
+@Cacheable(true)
 @Entity
 @Getter
 @Setter
@@ -43,29 +43,24 @@ public class Category extends PanacheEntityBase {
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
 	public List<ProductCategory> products = new ArrayList<>();
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "category_parent_id", nullable = true)
 	public Category parentCategory;
 
 	/**
 	 * Liste des sous-catégories FetchType.LAZY
 	 */
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "parentCategory", fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "parentCategory", fetch = FetchType.LAZY, orphanRemoval = false)
 	@OrderBy("position")
 	public Set<Category> childrenCategory = new HashSet<>();
 
-	@NotNull
-	public String description;
-
-	@NotNull
-	public String designation;
-
+	@Column(nullable = false)
 	public int position;
 
 	/**
 	 * catégorie activé/désactivé
 	 */
-	public boolean Displayed;
+	public boolean displayed;
 
 	/**
 	 * Image de la catégorie (version non retourchée)
@@ -77,11 +72,23 @@ public class Category extends PanacheEntityBase {
 	 */
 	public byte[] smallPicture;
 
+	@Column(columnDefinition = "timestamp default current_timestamp", nullable = false, updatable = false, insertable = true)
+	public LocalDateTime created;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date created;
+	@Column(columnDefinition = "timestamp default current_timestamp", nullable = false, updatable = true, insertable = true)
+	public LocalDateTime updated;
+	
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = CategoryLang.class, mappedBy = "category", cascade = {
+			CascadeType.REMOVE }, orphanRemoval = true)
+	private List<CategoryLang> categoryLang = new ArrayList<>();
 
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date updated;
-
+	/**
+	 * Recherche de produits dans une langue
+	 * 
+	 * @param codeLang code langue
+	 * @return
+	 */
+	public static PanacheQuery<Category> findCategoryHierarchy() {
+		return Category.<Category>find("parentCategory is null");
+	}
 }

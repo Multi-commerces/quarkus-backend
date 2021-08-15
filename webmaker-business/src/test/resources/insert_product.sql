@@ -15,3 +15,39 @@ INSERT INTO PRODUCT (product_id, reference) VALUES (10000003, 'REF10000003');
 INSERT INTO PRODUCT_LANG (PRODUCT_ID, CODE_LANG, NAME, DESCRIPTION, DESCRIPTION_SHORT)
 VALUES (10000003, 'fr', 'NOM-10000003', 'DESCRIPTIF, PRODUIT 10000003', 'DESCRIPTIF COURT, PRODUIT 10000003'),
 	(10000003, 'ang', 'NAME-10000003', 'DESCRIPTION, PRODUCT 10000003', 'DESCRIPTION SHORT, PRODUCT 10000003');
+	
+-- Category n°20000001 (traduction fr)
+INSERT INTO CATEGORY (category_id, category_parent_id, displayed, position, created)
+VALUES(20000001 , null, true, 1, '2021-08-02 12:05:06');
+INSERT INTO CATEGORY_LANG (category_id, code_lang, description, name)
+VALUES(20000001 , 'fr', 'DESCRIPTION 20000001', 'DESIGNATION 20000001');
+
+-- Category n°20000002 (traduction fr)
+INSERT INTO CATEGORY (category_id, category_parent_id, displayed, position, created)
+VALUES(20000002 , null, true, 1, '2021-05-12 04:05:34');
+INSERT INTO CATEGORY_LANG (category_id, code_lang, description, name)
+VALUES(20000002 , 'fr', 'DESCRIPTION 20000002', 'DESIGNATION 20000002');
+
+-- Category n°20000003 (traduction fr)
+INSERT INTO CATEGORY (category_id, category_parent_id, displayed, position, created)
+VALUES(20000003 , null, true, 1, '2021-02-23 15:23:54');
+INSERT INTO CATEGORY_LANG (category_id, code_lang, description, name)
+VALUES(20000003 , 'fr', 'DESCRIPTION 20000003', 'DESIGNATION 20000003');
+
+-- Category n°20000004 (traduction fr) - Root Category n°20000003
+INSERT INTO CATEGORY (category_id, category_parent_id, displayed, position, created)
+VALUES(20000004 , 20000003, true, 1, '2021-04-04 11:07:16');
+INSERT INTO CATEGORY_LANG (category_id, code_lang, description, name)
+VALUES(20000004 , 'fr', 'DESCRIPTION 20000004', 'DESIGNATION 20000004');
+
+
+-- Produit Category 
+INSERT INTO PRODUCT_CATEGORY(productId, category_id)
+VALUES(10000001, 20000001), (10000002, 20000002), (10000003, 20000003);
+
+
+
+
+
+
+

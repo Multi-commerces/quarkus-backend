@@ -34,6 +34,8 @@ public class ProductData implements Serializable {
 	 * Image de couverture
 	 */
 	private List<ProductImageData> images = new ArrayList<ProductImageData>();
+	
+	
 
 	/**
 	 * Nom du produit traduit

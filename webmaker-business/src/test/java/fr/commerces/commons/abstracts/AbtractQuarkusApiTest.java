@@ -17,7 +17,7 @@ public abstract class AbtractQuarkusApiTest {
 	private final Map<String, Object> pathParams = new HashMap<String, Object>();
 	private final Map<String, Object> queryParams = new HashMap<String, Object>();
 	
-	protected abstract String getBasePath();
+//	protected abstract String getBasePath();
 
 	@BeforeEach
 	public void beforeEach() {
@@ -44,6 +44,7 @@ public abstract class AbtractQuarkusApiTest {
 		return testEndpoint_StatusCode404("/");
 	}
 
+	
 	protected final ValidatableResponse testEndpoint_StatusCode404(final String endpointPath) {
 		return testEndpoint(endpointPath, 404);
 	}
@@ -57,7 +58,14 @@ public abstract class AbtractQuarkusApiTest {
 	}
 
 	protected final ValidatableResponse testEndpoint(final String endpointPath, final int expectedStatusCode) {
-		final StringBuilder fullPath = new StringBuilder(getBasePath()).append(endpointPath);
+		if(endpointPath == null)
+		{
+			return given().when().get("/", pathParams)    
+	          .then()
+	             .statusCode(expectedStatusCode);
+		}
+		
+		final StringBuilder fullPath = new StringBuilder(endpointPath);
 
 		if (!queryParams.isEmpty()) {
 			fullPath.append("?");

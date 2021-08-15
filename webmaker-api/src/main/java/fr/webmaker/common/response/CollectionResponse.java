@@ -7,6 +7,13 @@ import fr.webmaker.common.PagingData;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Permet d'inclure la pagination dans a réponse
+ * @author julien ILARI
+ *
+ * @param <M>
+ * @param <I>
+ */
 @Getter
 @Setter
 public class CollectionResponse<M, I extends Identifier<?>> {
