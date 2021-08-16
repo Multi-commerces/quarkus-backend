@@ -79,5 +79,7 @@ public class Product extends PanacheEntityBase {
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = ProductImage.class, mappedBy = "product", cascade = {
 			CascadeType.REMOVE }, orphanRemoval = true)
 	private List<ProductImage> images = new ArrayList<>();
+	
+	
 
 }

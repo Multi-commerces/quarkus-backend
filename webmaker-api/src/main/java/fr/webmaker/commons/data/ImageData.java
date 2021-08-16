@@ -5,9 +5,15 @@ import lombok.Data;
 @Data
 public class ImageData {
 
-	private String caption = "Nom image";
-	
-	private String url = "http://d1fmx1rbmqrxrr.cloudfront.net/cnet/optim/i/edit/2019/04/eso1644bsmall__w770.jpg";
+	/**
+	 * Description courte pour accompagner l'image
+	 */
+	private String caption;
+
+	/**
+	 * Url de l'image
+	 */
+	private String url;
 
 	public ImageData() {
 		super();
