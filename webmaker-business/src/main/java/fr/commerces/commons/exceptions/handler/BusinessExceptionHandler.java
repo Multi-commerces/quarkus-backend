@@ -1,4 +1,4 @@
-package fr.commerces.commons.handler;
+package fr.commerces.commons.exceptions.handler;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;

@@ -56,12 +56,22 @@
 	</dependencyManagement>
 	<dependencies>
 
-
+		<dependency>
+			<groupId>com.tinify</groupId>
+			<artifactId>tinify</artifactId>
+			<version>LATEST</version>
+		</dependency>
 
 		<dependency>
 			<groupId>fr.webmaker</groupId>
 			<artifactId>webmaker-api</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jmimemagic</groupId>
+			<artifactId>jmimemagic</artifactId>
+			<version>0.1.5</version>
 		</dependency>
 
 		<!-- FACES -->
@@ -232,12 +242,12 @@
 			<artifactId>quarkus-test-security</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.github.database-rider</groupId> -->
-<!-- 			<artifactId>rider-cdi</artifactId> -->
-<!-- 			<version>1.28.0</version> -->
-<!-- 			<scope>test</scope> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.github.database-rider</groupId> -->
+		<!-- <artifactId>rider-cdi</artifactId> -->
+		<!-- <version>1.28.0</version> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
 		<!-- <dependency> -->
 		<!-- <groupId>io.quarkus</groupId> -->
 		<!-- <artifactId>quarkus-cache</artifactId> -->

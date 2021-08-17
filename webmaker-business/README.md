@@ -1,8 +1,7 @@
 # Projet (quarkus, lombok + mapstruct + RESTEasy + Jackson pour la sérialisation JSON + hibernate orm panache et plus encore)
 
-Le projet utilise Quarkus, Le Framework Java Supersonic Subatomic.
-Website: https://quarkus.io/ .
-
+Le projet utilise Quarkus, Le Framework Java Supersonic Subatomic. <br />
+Website: https://quarkus.io/ . <br />
 
 Dans une invite de commande, etre positionné sur le répertoire du projet.
 
@@ -24,6 +23,11 @@ psql -U postgres_user -d multicommerces -h localhost -p 5435
 
 
 POSTGRES_PASSWORD: postgres_pwd
+
+# Requêtes (psql)
+<b>SELECT</b> pi.*, title, i.name, file_name, ci.width || 'px' "width", ci.height || 'px' "height" <br />
+<b>FROM</b> product_image pi <b>INNER JOIN</b> image i on pi.image_id = i.image_id <br />
+   <b>INNER JOIN</b> CONFIG_IMAGE ci on ci.CONFIG_IMAGE_ID = i.CONFIG_IMAGE_ID ;
  
 
 # Mode débug Eclipse
@@ -31,15 +35,12 @@ POSTGRES_PASSWORD: postgres_pwd
  ![Alt text](readme/debug.png?raw=true "Title") 
 
 # Quarkus - Sécurité (JWT, OAUTH2, OCID)
+
 OIDC server 'http://localhost:8080/auth/realms/multi-commerces' 
-
-https://quarkus.io/guides/security-jwt
-
-https://quarkus.io/guides/security-oauth2
-
-https://quarkus.io/guides/security-openid-connect
-
-https://quarkus.io/guides/security-openid-connect-web-authentication
+<li>https://quarkus.io/guides/security-jwt
+<li>https://quarkus.io/guides/security-oauth2
+<li>https://quarkus.io/guides/security-openid-connect
+<li>https://quarkus.io/guides/security-openid-connect-web-authentication
 
 
 ## Pour lancer l'application en mode développement

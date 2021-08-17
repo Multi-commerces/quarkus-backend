@@ -12,7 +12,7 @@ public class NotFoundDeleteException extends NotFoundException {
 	private static final long serialVersionUID = 1L;
 
 	public NotFoundDeleteException(Object identifier) {
-		super(CrudType.DELETE, identifier);
+		super(CrudExceptionType.DELETE, identifier);
 
 	}
 

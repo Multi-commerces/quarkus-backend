@@ -1,4 +1,4 @@
-package fr.commerces.microservices.storage.exceptions;
+package fr.commerces.microservices.catalog.images.exceptions;
 public class StorageFileNotFoundException extends StorageException {
 
     /**

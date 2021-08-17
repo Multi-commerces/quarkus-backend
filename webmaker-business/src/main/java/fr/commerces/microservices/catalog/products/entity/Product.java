@@ -10,10 +10,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import fr.commerces.microservices.catalog.images.entity.ShopImage;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Getter;
 import lombok.Setter;
@@ -77,9 +80,12 @@ public class Product extends PanacheEntityBase {
 	private List<ProductVariation> variations = new ArrayList<>();
 
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = ProductImage.class, mappedBy = "product", cascade = {
-			CascadeType.REMOVE }, orphanRemoval = true)
+			CascadeType.REMOVE, CascadeType.MERGE }, orphanRemoval = true)
 	private List<ProductImage> images = new ArrayList<>();
 	
+	@OneToOne
+    @JoinColumn(name="IMAGE_ID")
+    private ShopImage coverImage ; 
 	
-
+	
 }

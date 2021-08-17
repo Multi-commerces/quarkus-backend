@@ -14,10 +14,10 @@ public class NotFoundException extends RuntimeException {
 	private String identifierDebug;
 
 	public NotFoundException(Object identifier) {
-		this(CrudType.READ, identifier);
+		this(CrudExceptionType.READ, identifier);
 	}
 
-	public NotFoundException(CrudType crudType, Object identifier) {
+	public NotFoundException(CrudExceptionType crudType, Object identifier) {
 		super(String.format("Opération de " + crudType.getSummary() + " impossible car l'occurence à "
 				+ crudType.getVerb() + " est introuvable."));
 

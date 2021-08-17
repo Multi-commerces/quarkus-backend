@@ -12,6 +12,8 @@ import javax.interceptor.InvocationContext;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
 
+import org.jboss.logging.MDC;
+
 import fr.commerces.commons.exceptions.crud.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,8 +37,11 @@ public class ServiceInterceptor implements Serializable {
 	@PostConstruct
 	public void postConstructInterception(InvocationContext invocationContext) throws Exception {
 		log.debug(invocationContext.getClass() + " is ready for manipulation");
-
-		invocationContext.proceed();
+		try {
+			invocationContext.proceed();
+		} catch (Exception e) {
+			throw e;
+		} 
 	}
 
 	@PreDestroy
@@ -53,8 +58,11 @@ public class ServiceInterceptor implements Serializable {
 
 	@AroundInvoke
 	public Object aroundInvokeLoggedInterceptor(InvocationContext invocationContext) throws Exception {
+		MDC.clear();
+		MDC.put("method", invocationContext.getMethod().getDeclaringClass().getSimpleName());
+		MDC.put("class", invocationContext.getTarget().getClass().getSimpleName());
 		log.info("Entering method: " + invocationContext.getMethod().getName() + " in class "
-				+ invocationContext.getMethod().getDeclaringClass().getName());
+				+ invocationContext.getMethod().getDeclaringClass().getSimpleName());
 		try {
 			return invocationContext.proceed();
 		} catch (PersistenceException e) {
@@ -70,6 +78,8 @@ public class ServiceInterceptor implements Serializable {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw e;
+		} finally {
+			MDC.clear();
 		}
 	}
 

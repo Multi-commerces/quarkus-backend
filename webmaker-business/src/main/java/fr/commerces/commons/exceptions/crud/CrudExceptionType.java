@@ -1,14 +1,17 @@
 package fr.commerces.commons.exceptions.crud;
 
-enum CrudType {
-	READ("lecture", "lire"), UPDATE("mise à jour", "modifier"), CREATE("création", "créer"),
-	DELETE("suppression", "supprimer");
+enum CrudExceptionType {
+	READ("lecture", "lire"), 
+	UPDATE("mise à jour", "modifier"), 
+	CREATE("création", "créer"),
+	DELETE("suppression", "supprimer"),
+	;
 
 	private String summary;
 
 	private String verb;
 
-	private CrudType(String summary, String verb) {
+	private CrudExceptionType(String summary, String verb) {
 		this.summary = summary;
 		this.verb = verb;
 	}

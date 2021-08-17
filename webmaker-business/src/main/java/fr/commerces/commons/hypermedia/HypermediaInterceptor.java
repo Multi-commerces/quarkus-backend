@@ -17,6 +17,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.models.PathItem.HttpMethod;
+import org.jboss.logging.MDC;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,8 @@ public class HypermediaInterceptor implements Serializable {
 		final Object object = invocationContext.proceed();
 		final Object target = invocationContext.getTarget();
 		if (target instanceof GenericResource) {
-
+			MDC.put("method", invocationContext.getMethod().getName());
+			MDC.put("class", invocationContext.getMethod().getDeclaringClass().getSimpleName());
 			/* Resource */
 			final GenericResource<?> resource = (GenericResource<?>) target;
 			final HypermediaApi hypermedia = invocationContext.getTarget().getClass()
@@ -90,8 +92,6 @@ public class HypermediaInterceptor implements Serializable {
 		for (SingleResponse<?, ?> response : collectionResponse.get_embedded()) {
 			List<LinkData> links = response.get_links();
 			for (fr.commerces.commons.hypermedia.HypermediaLink link : hypermedia.links()) {
-				logger.debug(link.toString());
-
 				// LINK
 				final Class<?> resource = link.resource();
 				final HttpMethod httpMethod = link.httpMethod();
@@ -133,7 +133,6 @@ public class HypermediaInterceptor implements Serializable {
 				}
 
 				// URI => TITLE, TYPE, REL
-				logger.debug("############" + invocationContext.getContextData().toString());
 				URI uri = uriBuilder.build(params.toArray());
 
 				// final var builder =
@@ -142,8 +141,19 @@ public class HypermediaInterceptor implements Serializable {
 				linkData.setSummary(summary);
 				linkData.setDesc(desc);
 				linkData.setMethod(httpMethod.name());
-
-
+				
+				if(logger.isDebugEnabled())
+				{
+					logger.debug("####################### HypermediaLink ###########################");
+					logger.debug("url = {}", uri);
+					logger.debug("httpMethod = {}", httpMethod);
+					logger.debug("method = {}", method);
+					logger.debug("rel = {}", rel);
+					logger.debug("summary = {}", summary);
+					logger.debug("desc = {}", desc);
+					logger.debug("linkData = {}", linkData);
+				}
+				
 				links.add(linkData);
 			}
 		}

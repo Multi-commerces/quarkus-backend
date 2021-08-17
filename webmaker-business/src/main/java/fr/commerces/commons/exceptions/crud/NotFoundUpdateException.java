@@ -12,7 +12,7 @@ public class NotFoundUpdateException extends NotFoundException {
 	private static final long serialVersionUID = 1L;
 
 	public NotFoundUpdateException(Object identifier) {
-		super(CrudType.UPDATE, identifier);
+		super(CrudExceptionType.UPDATE, identifier);
 
 	}
 

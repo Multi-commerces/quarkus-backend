@@ -13,8 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import fr.commerces.microservices.catalog.images.ShopImage;
+import fr.commerces.microservices.catalog.images.entity.ShopImage;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,15 +33,20 @@ public class ProductImage extends PanacheEntityBase {
 	@Column(name = "PRODUCT_IMAGE_ID")
 	public Long id;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = ShopImage.class)
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, targetEntity = ShopImage.class)
 	@JoinColumn(name = "IMAGE_ID", nullable = false)
 	public ShopImage image;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Product.class)
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, targetEntity = Product.class)
 	@JoinColumn(name = "PRODUCT_ID", nullable = false)
 	public Product product;
 	
 	@Column(name = "POSITION", nullable = false, columnDefinition = "integer default 0")
 	public Integer position;
+	
+	public static PanacheQuery<ProductImage> findByProductAndImage(final Long productId, final Long imageId) {
+		return find("product.id = ?1 and image.id = ?2", productId, imageId);
+	}
+	
 
 }

@@ -12,7 +12,7 @@ public class NotFoundCreateException extends NotFoundException {
 	private static final long serialVersionUID = 1L;
 
 	public NotFoundCreateException(Object identifier) {
-		super(CrudType.DELETE, identifier);
+		super(CrudExceptionType.DELETE, identifier);
 
 	}
 
