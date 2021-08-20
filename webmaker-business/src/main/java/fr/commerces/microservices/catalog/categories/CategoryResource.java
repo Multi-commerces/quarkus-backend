@@ -1,6 +1,6 @@
 package fr.commerces.microservices.catalog.categories;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -14,9 +14,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.commerces.microservices.catalog.categories.data.CategoryHierarchyData;
-import fr.commerces.microservices.catalog.categories.response.CategoryHierarchyResponse;
-import fr.webmaker.commons.identifier.LongID;
+import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchyCollectionResponse;
+import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchyResponse;
 
 @Tag(name = "Ressource Catégories", description = "Ressource pour la gestion des catégories")
 @Path("/languages/{languageCode}/categories")
@@ -28,19 +27,16 @@ public class CategoryResource {
 
 	@Path("/")
 	@GET
-	public CategoryHierarchyResponse getCategoriesV(
+	public CategoryHierarchyCollectionResponse getCategories(
 			@Parameter(description = "Langue des catégories recherchées") 
 			@PathParam("languageCode") String lang,
 			@Parameter(description = "Inclure les sous-catégories") 
 			@QueryParam("includeSubCategories") Boolean includeSubCategories) 
 	{
-		final Map<LongID, CategoryHierarchyData> dataByIdentifier = manager.findCategoryHierarchy(LanguageCode.fr);
-
-		CategoryHierarchyResponse response = new CategoryHierarchyResponse();
-		response.setLanguageCode(LanguageCode.fr);
-		response.setDataByIdentifier(dataByIdentifier);
-		
-		return response;
+		final List<CategoryHierarchyResponse> dataByIdentifier = manager.findCategoryHierarchy(LanguageCode.fr);
+	
+		//new CollectionResponse<CategoryData, LongID>(new ArrayList<>(dataByIdentifier));
+		return new CategoryHierarchyCollectionResponse(LanguageCode.fr, dataByIdentifier);
 	}
 
 }

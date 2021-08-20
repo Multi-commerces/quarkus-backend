@@ -154,18 +154,35 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 			} catch (Exception e) {
 				// Ignore
 			}
-			
-			uploadObject("centering-line-273419", "e-commerce-generic-bucket", "REF001/" + uploadedFile.getFileName(),
-					uploadedFile.getContent());
 		}
 	}
 	
 	/**
+	 * Action upload d'un fichier
 	 * 
-	 * @param projectId The ID of your GCP project
+	 * @param event
+	 * @throws IOException 
+	 */
+	public void fileUploadEvent(FileUploadEvent event) throws IOException {
+		uploadedFile = event.getFile();
+	}
+	
+	public String getImage() {
+		byte[] content = uploadedFile != null ? uploadedFile.getContent() : null;
+		if (content == null)
+			return "http://placehold.it/372x372";
+
+		return "data:image/png;base64," + Base64.encodeBase64String(content);
+	}
+	
+	/**
+	 * Exemple uploadObject("centering-line-273419", "e-commerce-generic-bucket",
+	 * "REF001/" + uploadedFile.getFileName(), uploadedFile.getContent());
+	 * 
+	 * @param projectId  The ID of your GCP project
 	 * @param bucketName The ID of your GCS bucket
 	 * @param objectName The ID of your GCS object
-	 * @param content The flux
+	 * @param content    The flux
 	 * @throws IOException
 	 */
 	public static void uploadObject(String projectId, String bucketName, String objectName, byte[] content)
@@ -235,18 +252,6 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 		uploadedFile = null;
 		this.action = ActionType.DEFAULT;
 		this.selectedItems = null;
-	}
-
-	/**
-	 * Action upload d'un fichier
-	 * 
-	 * @param event
-	 * @throws IOException 
-	 */
-	public void fileUploadEvent(FileUploadEvent event) throws IOException {
-		uploadedFile = event.getFile();
-		uploadObject("centering-line-273419", "e-commerce-generic-bucket", "/REF001/" + uploadedFile.getFileName(),
-				uploadedFile.getContent());
 	}
 
 	public void reset(ActionEvent event) {
@@ -450,16 +455,6 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 			return Long.valueOf(id);
 		}
 		return null;
-	}
-	
-	public String getImage(byte[] flux) {
-		if (flux == null)
-			return "http://placehold.it/372x372";
-					
-//					"data:image/png;base64,"
-//					+ "iVBORw0KGgoAAAANSUhEUgAAAHwAAAB8CAYAAACrHtS+AAAAxklEQVR42u3RQQEAAAQEMFfLUzHVBbFVWHp6izciXDjCEY5whCMc4QhHOMIRjnCEC0c4whGOcIQjHOEIRzjCEY5whAtHOMIRjnCEIxzhCEc4whGOcOEIRzjCEY5whCMc4QhHOMIRjnDhCEc4whGOcIQjHOEIRzjCES5cuHCEIxzhCEc4whGOcIQjHOEIF45whCMc4QhHOMIRjnCEIxzhCBeOcIQjHOEIRzjCEY5whCMc4cIRjnCEIxzhCEc4whGOcIQjHOH/HBqhlilYoS+oAAAAAElFTkSuQmCC";
-
-		return "data:image/png;base64," + Base64.encodeBase64String(flux);
 	}
 	
 	/**

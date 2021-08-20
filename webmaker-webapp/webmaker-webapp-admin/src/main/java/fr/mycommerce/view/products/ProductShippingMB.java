@@ -1,4 +1,4 @@
-package fr.mycommerce.view.product;
+package fr.mycommerce.view.products;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -6,21 +6,21 @@ import javax.inject.Named;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 
-import fr.mycommerce.service.product.ProductStockRestClient;
-import fr.mycommerce.view.product.ProductFlowPage.FlowPage;
+import fr.mycommerce.service.product.ProductShippingRestClient;
+import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
 import fr.webmaker.commons.identifier.Identifier;
 import fr.webmaker.commons.response.SingleResponse;
-import fr.webmaker.microservices.catalog.products.data.ProductStockData;
+import fr.webmaker.microservices.catalog.products.data.ProductShippingData;
 import lombok.Getter;
 
 /**
- * Backing Bean pour administration des données de stock du produit
+ * Backing Bean Administration Shipping
  * @author Julien ILARI
  *
  */
-@Named("adminProductStockMB")
+@Named("adminProductShippingMB")
 @ViewScoped
-public class ProductStockMB extends AbstractProductMB<ProductStockData, Identifier<Long>> {
+public class ProductShippingMB extends AbstractProductMB<ProductShippingData, Identifier<Long>> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,10 +30,10 @@ public class ProductStockMB extends AbstractProductMB<ProductStockData, Identifi
 	@Inject
 	@RestClient
 	@Getter
-	private ProductStockRestClient service;
+	private ProductShippingRestClient service;
 	
 	@Override
-	public SingleResponse<ProductStockData, Identifier<Long>> callServiceFindById(String identifier) {
+	public SingleResponse<ProductShippingData, Identifier<Long>> callServiceFindById(String identifier) {
 		return service.get(Long.valueOf(identifier));
 	}
 
@@ -54,7 +54,7 @@ public class ProductStockMB extends AbstractProductMB<ProductStockData, Identifi
 
 	@Override
 	FlowPage getFlowPage() {
-		return FlowPage.STOCK;
+		return FlowPage.SHIPPING;
 	}
 
 	@Override

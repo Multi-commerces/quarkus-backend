@@ -19,8 +19,11 @@
 	</ui:define>
 
 	<ui:define name="content">
+		
 		<!-- formulaire d'édition -->
-		<ui:decorate template="/WEB-INF/includes/section/section-edit.xhtml" />
+		<ui:decorate template="/WEB-INF/includes/section/section-edit.xhtml">
+			<ui:param name="title" value="Nouveau #{title}" />
+		</ui:decorate>
 		
 		<!-- fomulaire list -->
 		<ui:decorate template="/WEB-INF/includes/section/section-list.xhtml">

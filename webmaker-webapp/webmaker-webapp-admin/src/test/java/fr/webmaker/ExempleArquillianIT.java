@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import fr.mycommerce.ArquillianTool;
-import fr.mycommerce.view.product.ProductBasicMB;
+import fr.mycommerce.view.products.ProductBasicMB;
 
 @RunWith(Arquillian.class)
 public class ExempleArquillianIT

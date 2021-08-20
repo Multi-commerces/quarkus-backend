@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:p="http://primefaces.org/ui"
+	xmlns:w="http://web-maker.fr/html"
+	template="/WEB-INF/templates/layout-crud.xhtml">
+
+
+
+	<ui:param name="controller" value="#{adminCategoryMB}" />
+	<ui:param name="model" value="#{controller.model}" />
+
+	<ui:param name="panelListHeader" value="#{msg['categories']}" />
+	<ui:param name="title" value="#{msg.categorie}" />
+
+
+	<ui:define name="form-edit">
+		<ui:param name="category" value="#{model.data}" />
+
+		<div class="ui-g">
+			<w:inputText styleClass="ui-g-12" id="name" icon="pencil"
+							label="#{msg['product.ref']}" value="#{category.name}" />
+							
+			<w:inputText styleClass="ui-g-12" id="description" icon="pencil"
+							label="#{msg['product.ref']}" value="#{category.description}" />
+		
+		</div>
+
+	</ui:define>
+
+	<!--  Formulaire liste des produits  -->
+	<ui:define name="form-list">
+		<!-- Nom -->
+		<p:column headerText="#{msg.name}" sortBy="#{item.data.name}">
+			<h:outputText value="#{item.data.name}" />
+		</p:column>
+		
+		<!-- Description -->
+		<p:column headerText="#{msg.description}" sortBy="#{item.data.description}">
+			<h:outputText value="#{item.data.description}" />
+		</p:column>
+		
+
+		<p:column headerText="#{msg.created}" sortBy="#{item.data.created}">
+			<h:outputText value="#{item.data.created}">
+				<f:converter  converterId="zoneDateTimeConverter" />
+			</h:outputText>
+		</p:column>
+
+		<p:column headerText="#{msg.updated}" sortBy="#{item.data.updated}">
+			<h:outputText value="#{item.data.updated}">
+				<f:converter  converterId="zoneDateTimeConverter" />
+			</h:outputText>
+		</p:column>
+
+	</ui:define>
+
+	
+
+
+</ui:composition>

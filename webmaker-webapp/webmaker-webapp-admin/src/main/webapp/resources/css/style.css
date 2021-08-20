@@ -1,3 +1,38 @@
+body {
+	    background: #eaebec;
+}
+
+body .ui-tabs{
+	border-bottom-color: rgba(0, 0, 0, 0.38);
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 4px;
+	border-bottom-style: solid;
+	border-bottom-width: 0.5px;
+	border-image-outset: 0;
+	border-image-repeat: stretch;
+	border-image-slice: 100%;
+	border-image-source: none;
+	border-image-width: 1;
+	border-left-color: rgba(0, 0, 0, 0.38);
+	border-left-style: solid;
+	border-left-width: 0.5px;
+	border-right-color: rgba(0, 0, 0, 0.38);
+	border-right-style: solid;
+	border-right-width: 0.5px;
+	border-top-color: rgba(0, 0, 0, 0.38);
+	border-top-left-radius: 0px;
+	border-top-right-radius: 4px;
+	border-top-style: solid;
+	border-top-width: 0.5px;
+}
+
+body .ui-tabs .ui-tabs-panels .ui-tabs-panel
+ {
+	padding:0;
+	
+}
+
+
 /***************** BREAD-CRUMB *************************/
 #form-bread-crumb {
 	overflow: hidden;
@@ -11,13 +46,13 @@ body fieldset.ui-fieldset .ui-fieldset-content {
 }
 
 body fieldset, body fieldset.ui-fieldset {
-	background-color: #eeeeee;
+/* 	background-color: #eeeeee; */
 }
 
 body fieldset legend, body fieldset.ui-fieldset legend.ui-fieldset-legend
 	{
-	background-color: gray;
-	color: white;
+/* 	background-color: gray; */
+/* 	color: white; */
 	padding: 5px 10px;
 }
 
@@ -100,23 +135,7 @@ fieldset {
 /* 	background-color: #000; */
 /* 	color: #fff; */
 /* } */
-body.layout-compact .ui-fileupload .ui-fileupload-buttonbar {
-	background: none;
-	border: none;
-}
 
-body .ui-fileupload-buttonbar {
-	background: transparent none;
-	border: none;
-}
-
-body .ui-fileupload-content {
-	display: none;
-}
-
-body .ui-fileupload .ui-fileinput-button {
-	background-color: rgba(142, 103, 64, 0.98);
-}
 
 /* Variables */
 /* Mixins */
@@ -324,6 +343,26 @@ body .ui-card {
 }
 
 /*************** Hover effect  **********************/
+body .ui-fileupload .ui-fileupload-buttonbar {
+	background: none;
+	border: none !important;
+	padding:0;
+}
+
+body .ui-fileupload .ui-fileupload-content {
+	display: none;
+}
+
+
+
+body .ui-fileupload .ui-fileinput-button {
+	background-color: rgba(142, 103, 64, 0.98);
+}
+
+body .ui-fileupload .info {
+	background-color: rgba(142, 103, 64, 0.98);
+}
+
 .hovereffect {
 	width: 100%;
 	height: 100%;

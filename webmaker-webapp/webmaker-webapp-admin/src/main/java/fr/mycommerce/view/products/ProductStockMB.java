@@ -1,4 +1,4 @@
-package fr.mycommerce.view.product;
+package fr.mycommerce.view.products;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -6,11 +6,11 @@ import javax.inject.Named;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 
-import fr.mycommerce.service.product.ProductPricingRestClient;
-import fr.mycommerce.view.product.ProductFlowPage.FlowPage;
+import fr.mycommerce.service.product.ProductStockRestClient;
+import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
 import fr.webmaker.commons.identifier.Identifier;
 import fr.webmaker.commons.response.SingleResponse;
-import fr.webmaker.microservices.catalog.products.data.ProductPricingData;
+import fr.webmaker.microservices.catalog.products.data.ProductStockData;
 import lombok.Getter;
 
 /**
@@ -18,9 +18,9 @@ import lombok.Getter;
  * @author Julien ILARI
  *
  */
-@Named("adminProductPricingMB")
+@Named("adminProductStockMB")
 @ViewScoped
-public class ProductPricingMB extends AbstractProductMB<ProductPricingData, Identifier<Long>> {
+public class ProductStockMB extends AbstractProductMB<ProductStockData, Identifier<Long>> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,10 +30,10 @@ public class ProductPricingMB extends AbstractProductMB<ProductPricingData, Iden
 	@Inject
 	@RestClient
 	@Getter
-	private ProductPricingRestClient service;
+	private ProductStockRestClient service;
 	
 	@Override
-	public SingleResponse<ProductPricingData, Identifier<Long>> callServiceFindById(String identifier) {
+	public SingleResponse<ProductStockData, Identifier<Long>> callServiceFindById(String identifier) {
 		return service.get(Long.valueOf(identifier));
 	}
 
@@ -54,12 +54,13 @@ public class ProductPricingMB extends AbstractProductMB<ProductPricingData, Iden
 
 	@Override
 	FlowPage getFlowPage() {
-		return FlowPage.PRICING;
+		return FlowPage.STOCK;
 	}
 
 	@Override
 	public Identifier<Long> newIdentifier() {
-		return new Identifier<Long>();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -1,4 +1,4 @@
-package fr.mycommerce.view.product;
+package fr.mycommerce.view.products;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -6,11 +6,11 @@ import javax.inject.Named;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 
-import fr.mycommerce.service.product.ProductBasicRestClient;
-import fr.mycommerce.view.product.ProductFlowPage.FlowPage;
+import fr.mycommerce.service.product.ProductSeoRestClient;
+import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
+import fr.webmaker.commons.identifier.Identifier;
 import fr.webmaker.commons.response.SingleResponse;
-import fr.webmaker.microservices.catalog.products.data.ProductBasicData;
-import fr.webmaker.microservices.catalog.products.id.ProductID;
+import fr.webmaker.microservices.catalog.products.data.ProductSeoData;
 import lombok.Getter;
 
 /**
@@ -18,9 +18,9 @@ import lombok.Getter;
  * @author Julien ILARI
  *
  */
-@Named("adminProductBasicMB")
+@Named("adminProductSeoMB")
 @ViewScoped
-public class ProductBasicMB extends AbstractProductMB<ProductBasicData, ProductID> {
+public class ProductSeoMB extends AbstractProductMB<ProductSeoData, Identifier<Long>> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,12 +30,10 @@ public class ProductBasicMB extends AbstractProductMB<ProductBasicData, ProductI
 	@Inject
 	@RestClient
 	@Getter
-	private ProductBasicRestClient service;
-
-	
+	private ProductSeoRestClient service;
 
 	@Override
-	public SingleResponse<ProductBasicData, ProductID> callServiceFindById(String identifier) {
+	public SingleResponse<ProductSeoData, Identifier<Long>> callServiceFindById(String identifier) {
 		return service.get("fr", Long.valueOf(identifier));
 	}
 
@@ -56,12 +54,14 @@ public class ProductBasicMB extends AbstractProductMB<ProductBasicData, ProductI
 	
 	@Override
 	FlowPage getFlowPage() {
-		return  FlowPage.BASIC;
+		// TODO Auto-generated method stub
+		return  FlowPage.SEO;
 	}
-	
+
 	@Override
-	public ProductID newIdentifier(){
-		return new ProductID(null, null);
+	public Identifier<Long> newIdentifier() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

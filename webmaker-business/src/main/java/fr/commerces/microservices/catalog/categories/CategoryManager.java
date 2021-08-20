@@ -1,7 +1,8 @@
 package fr.commerces.microservices.catalog.categories;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.time.ZoneOffset;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,12 +18,11 @@ import fr.commerces.commons.exceptions.crud.NotFoundDeleteException;
 import fr.commerces.commons.exceptions.crud.NotFoundException;
 import fr.commerces.commons.exceptions.crud.NotFoundUpdateException;
 import fr.commerces.commons.logged.ManagerInterceptor;
-import fr.commerces.microservices.catalog.categories.data.CategoryData;
-import fr.commerces.microservices.catalog.categories.data.CategoryHierarchyData;
 import fr.commerces.microservices.catalog.categories.entity.Category;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLangPK;
-import fr.webmaker.commons.identifier.LongID;
+import fr.webmaker.microservices.catalog.categories.data.CategoryData;
+import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchyResponse;
 
 @ManagerInterceptor
 @ApplicationScoped
@@ -36,11 +36,9 @@ public class CategoryManager {
 	 * 
 	 * @return
 	 */
-	public final Map<LongID, CategoryHierarchyData> findCategoryHierarchy(@NotNull LanguageCode languageCode) {
+	public final List<CategoryHierarchyResponse> findCategoryHierarchy(@NotNull LanguageCode languageCode) {
 		try (final Stream<CategoryLang> stream = CategoryLang.findHierarchy(languageCode).stream()) {
-			return stream.collect(Collectors.toMap(
-				category -> new LongID(category.getId()), mapper::toCategoryHierarchyData)
-			);
+			return stream.map(mapper::toCategoryHierarchyData).collect(Collectors.toList());
 		}
 	}
 
@@ -50,7 +48,7 @@ public class CategoryManager {
 	 * @param categoryId identifiant de la catégorie
 	 * @return
 	 */
-	public final CategoryHierarchyData findCategoryHierarchyById(@NotNull final Long categoryId, @NotNull LanguageCode languageCode) {
+	public final CategoryHierarchyResponse findCategoryHierarchyById(@NotNull final Long categoryId, @NotNull LanguageCode languageCode) {
 		final CategoryLang category = CategoryLang.<CategoryLang>findByIdOptional(new CategoryLangPK(categoryId, languageCode))
 				.orElseThrow(() -> new NotFoundException(categoryId));
 
@@ -64,7 +62,7 @@ public class CategoryManager {
 	public final void update(@NotNull final Long categoryId, @NotNull final LanguageCode langueCode, @NotNull final CategoryData data)
 			throws NotFoundException {
 		CategoryLang.findByCategoryLangPK(categoryId, langueCode).map(pojo -> {
-			pojo.getCategory().setUpdated(LocalDateTime.now());
+			pojo.getCategory().setUpdated(LocalDateTime.now(ZoneOffset.UTC));
 			return mapper.toEntity(data, pojo);
 		}).orElseThrow(() -> new NotFoundUpdateException(categoryId));
 	}

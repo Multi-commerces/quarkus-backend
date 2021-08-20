@@ -1,11 +1,11 @@
 package fr.commerces.microservices.catalog.categories;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections4.map.HashedMap;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -13,10 +13,11 @@ import org.mapstruct.MappingTarget;
 import com.neovisionaries.i18n.LanguageCode;
 
 import fr.commerces.commons.mapper.DefaultMappingConfig;
-import fr.commerces.microservices.catalog.categories.data.CategoryData;
-import fr.commerces.microservices.catalog.categories.data.CategoryHierarchyData;
 import fr.commerces.microservices.catalog.categories.entity.Category;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
+import fr.webmaker.commons.identifier.LongID;
+import fr.webmaker.microservices.catalog.categories.data.CategoryData;
+import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchyResponse;
 
 @ApplicationScoped
 @Mapper(config = DefaultMappingConfig.class)
@@ -50,22 +51,19 @@ public abstract class CategoryMapper {
 	/*
 	 * Mapper pour opération de lecture
 	 */
-
-//	@Mapping(target = "category", source = ".")
-//	@Mapping(source = "category", target = "category")
-//	@Mapping(target = "category.subCategories", source = "entity", qualifiedByName = "subCategories")
-	public CategoryHierarchyData toCategoryHierarchyData(CategoryLang entity)
+	public CategoryHierarchyResponse toCategoryHierarchyData(CategoryLang entity)
 	{
-		final CategoryHierarchyData categoryHierarchyData = new CategoryHierarchyData(toData(entity));
+		final CategoryHierarchyResponse categoryHierarchyData = new CategoryHierarchyResponse(toData(entity));
+		categoryHierarchyData.setIdentifier(new LongID(entity.getId()));
 		categoryHierarchyData.setSubCategories(subCategories(entity));
 		
 		return categoryHierarchyData;
 	}
 
 
-	private Map<Long, CategoryHierarchyData> subCategories(final CategoryLang entity) {
+	private List<CategoryHierarchyResponse> subCategories(final CategoryLang entity) {
 		
-		final Map<Long, CategoryHierarchyData> subCategories = new HashedMap<Long, CategoryHierarchyData>();
+		final List<CategoryHierarchyResponse> subCategories = new ArrayList<>();
 		if (CollectionUtils.isEmpty(entity.getChildrenCategory())) {
 			return subCategories;
 		}
@@ -79,7 +77,8 @@ public abstract class CategoryMapper {
 				.filter(o -> o.getLang().equals(lang))
 				.findAny()
 				.ifPresent(rootLang -> {
-					subCategories.put(root.getId(), toCategoryHierarchyData(rootLang));
+					CategoryHierarchyResponse c = toCategoryHierarchyData(rootLang);
+					subCategories.add(c);
 			});
 		});
 

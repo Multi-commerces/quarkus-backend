@@ -1,8 +1,11 @@
-package fr.commerces.microservices.catalog.categories.data;
+package fr.webmaker.microservices.catalog.categories.data;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,8 +21,10 @@ public class CategoryData implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "UTC")
 	public LocalDateTime created;
 
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "UTC")
 	public LocalDateTime updated;
 	
 
@@ -61,8 +66,11 @@ public class CategoryData implements Serializable {
 	 */
 	@ToString.Exclude
 	public String menuThumbnailUrl;
-
-	@ToString.Exclude
-	public Map<Long, CategoryData> subCategories;
+	
+	@Transient
+	public String getCreatedDate() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		return created.format(formatter);
+	}
 
 }

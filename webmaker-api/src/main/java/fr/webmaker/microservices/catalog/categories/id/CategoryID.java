@@ -1,4 +1,4 @@
-package fr.commerces.microservices.catalog.categories.identifier;
+package fr.webmaker.microservices.catalog.categories.id;
 
 import fr.webmaker.commons.identifier.Identifier;
 import lombok.Getter;

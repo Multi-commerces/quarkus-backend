@@ -51,7 +51,7 @@
 				<p:submenu id="um_traceability" label="#{msg.traceability}" icon="pi pi-fw pi-briefcase">
 					<f:attribute name="badge" value="9" />
 					<p:menuitem id="um_orders" value="#{msg.orders}" action="product" />
-					<p:menuitem id="um_invoices" value="#{msg.invoices}" outcome="/catalogue/categories" />
+					<p:menuitem id="um_invoices" value="#{msg.invoices}" outcome="/catalog/categories/categories.xhtml" />
 
 				</p:submenu>
 				
@@ -61,7 +61,7 @@
 					<p:menuitem id="um_products" value="#{msg.products}"
 						outcome="/product/product.xhtml?faces-redirect=true" />
 					<p:menuitem id="um_categories" value="#{msg.categories}"
-						outcome="/catalogue/categories" />
+						outcome="/catalog/categories/categories.xhtml" />
 
 				</p:submenu>
 

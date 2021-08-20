@@ -1,4 +1,4 @@
-package fr.mycommerce.view.product;
+package fr.mycommerce.view.products;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -6,21 +6,21 @@ import javax.inject.Named;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 
-import fr.mycommerce.service.product.ProductShippingRestClient;
-import fr.mycommerce.view.product.ProductFlowPage.FlowPage;
+import fr.mycommerce.service.product.ProductPricingRestClient;
+import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
 import fr.webmaker.commons.identifier.Identifier;
 import fr.webmaker.commons.response.SingleResponse;
-import fr.webmaker.microservices.catalog.products.data.ProductShippingData;
+import fr.webmaker.microservices.catalog.products.data.ProductPricingData;
 import lombok.Getter;
 
 /**
- * Backing Bean Administration Shipping
+ * Backing Bean pour administration des données de stock du produit
  * @author Julien ILARI
  *
  */
-@Named("adminProductShippingMB")
+@Named("adminProductPricingMB")
 @ViewScoped
-public class ProductShippingMB extends AbstractProductMB<ProductShippingData, Identifier<Long>> {
+public class ProductPricingMB extends AbstractProductMB<ProductPricingData, Identifier<Long>> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,10 +30,10 @@ public class ProductShippingMB extends AbstractProductMB<ProductShippingData, Id
 	@Inject
 	@RestClient
 	@Getter
-	private ProductShippingRestClient service;
+	private ProductPricingRestClient service;
 	
 	@Override
-	public SingleResponse<ProductShippingData, Identifier<Long>> callServiceFindById(String identifier) {
+	public SingleResponse<ProductPricingData, Identifier<Long>> callServiceFindById(String identifier) {
 		return service.get(Long.valueOf(identifier));
 	}
 
@@ -54,13 +54,12 @@ public class ProductShippingMB extends AbstractProductMB<ProductShippingData, Id
 
 	@Override
 	FlowPage getFlowPage() {
-		return FlowPage.SHIPPING;
+		return FlowPage.PRICING;
 	}
 
 	@Override
 	public Identifier<Long> newIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Identifier<Long>();
 	}
 
 }

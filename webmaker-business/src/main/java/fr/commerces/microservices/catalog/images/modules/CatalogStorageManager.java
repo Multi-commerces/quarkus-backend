@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -265,7 +266,7 @@ public class CatalogStorageManager {
 								/*
 								 * Gestion (des infos) de l'image en BDD
 								 */
-								final LocalDateTime toDay = LocalDateTime.now();
+								final LocalDateTime toDay = LocalDateTime.now(ZoneOffset.UTC);
 								
 								// Image
 								final ShopImage image = ShopImage.findByFileName(fileNameSb.toString())

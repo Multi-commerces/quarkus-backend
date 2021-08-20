@@ -1,10 +1,8 @@
-package fr.mycommerce.view.product;
+package fr.mycommerce.view.products;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -23,7 +21,7 @@ import fr.mycommerce.service.product.ProductRestClient;
 import fr.mycommerce.transverse.AbstractCrudView;
 import fr.mycommerce.transverse.ActionType;
 import fr.mycommerce.transverse.Model;
-import fr.mycommerce.view.product.ProductFlowPage.FlowPage;
+import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
 import fr.webmaker.microservices.catalog.products.data.ProductData;
 import fr.webmaker.microservices.catalog.products.id.ProductID;
 import fr.webmaker.microservices.catalog.products.response.ProductResponse;
@@ -48,24 +46,10 @@ public class AdminProductListMB extends AbstractCrudView<ProductData, ProductID>
 	@Getter
 	private ProductVariationMB variationMB;
 
-	@Getter
-	@Setter
-	private String selectedImage;
-
-	@Getter
-	@Setter
-	private List<String> images = new ArrayList<>();
 
 	@Getter
 	@Setter
 	protected int activeIndexTabMenu = 0;
-
-	@PostConstruct
-	public void postConstruct() {
-		for (int i = 1; i <= 12; i++) {
-			images.add("nature" + i + ".jpg");
-		}
-	}
 
 	/**
 	 * Action : changement du menu active
@@ -124,23 +108,9 @@ public class AdminProductListMB extends AbstractCrudView<ProductData, ProductID>
 				FlowPage.BASIC.getPage() + "?faces-redirect=true&id=" + model.getIdentifier().getId());
 	}
 
-	public String getImage() {
-		return getImage(getBigPicture());
-	}
-
-	public byte[] getBigPicture() {
-
-		if (action == ActionType.CREATE && uploadedFile != null && uploadedFile.getContent() != null) {
-			return uploadedFile.getContent();
-		}
-
-		if (action == ActionType.UPDATE && uploadedFile != null && uploadedFile.getContent() != null) {
-			return uploadedFile.getContent();
-		}
-
-		return null;
-
-	}
+	/* *****************************************************************************************
+	 * **************************************** ACTIONS ****************************************
+	 * *****************************************************************************************/
 
 	@Override
 	public List<Model<ProductData, ProductID>> findAll() {

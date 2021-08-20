@@ -1,11 +1,11 @@
-package fr.mycommerce.view.product;
+package fr.mycommerce.view.products;
 
 import java.io.Serializable;
 
 import javax.faces.event.ActionEvent;
 
 import fr.mycommerce.transverse.AbstractView;
-import fr.mycommerce.view.product.ProductFlowPage.FlowPage;
+import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
 import fr.webmaker.commons.identifier.Identifier;
 import lombok.Getter;
 import lombok.Setter;

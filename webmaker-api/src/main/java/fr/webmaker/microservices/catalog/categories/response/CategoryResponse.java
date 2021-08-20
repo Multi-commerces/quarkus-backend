@@ -1,8 +1,8 @@
-package fr.commerces.microservices.catalog.categories.response;
+package fr.webmaker.microservices.catalog.categories.response;
 
-import fr.commerces.microservices.catalog.categories.data.CategoryData;
-import fr.commerces.microservices.catalog.categories.identifier.CategoryID;
 import fr.webmaker.commons.response.SingleResponse;
+import fr.webmaker.microservices.catalog.categories.data.CategoryData;
+import fr.webmaker.microservices.catalog.categories.id.CategoryID;
 import lombok.Getter;
 import lombok.Setter;
 
