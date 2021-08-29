@@ -110,3 +110,37 @@ Une fois la commande exécutée, si tout s’est bien déroulé, vous trouverez 
 
 # Prise en compte du certificat google
 
+
+# Activer Java Faces + Omnis Faces + Primefaces
+
+	<dependency>
+		<groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
+		<artifactId>myfaces-quarkus-deployment</artifactId>
+		<version>${myfaces.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.omnifaces</groupId>
+		<artifactId>omnifaces</artifactId>
+		<version>${omnifaces.version}</version>
+		<scope>provided</scope>
+	</dependency>
+
+	<dependency>
+		<groupId>com.github.adminfaces</groupId>
+		<artifactId>quarkus-omnifaces</artifactId>
+		<version>${omnifaces-quarkus.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
+		<artifactId>myfaces-quarkus</artifactId>
+		<version>${myfaces.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.primefaces</groupId>
+		<artifactId>primefaces</artifactId>
+		<version>10.0.0</version>
+	</dependency>
+
+		
+

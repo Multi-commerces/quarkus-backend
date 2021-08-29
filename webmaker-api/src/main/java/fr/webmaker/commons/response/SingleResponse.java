@@ -6,8 +6,9 @@ import java.util.List;
 
 import fr.webmaker.commons.LinkData;
 import fr.webmaker.commons.identifier.Identifier;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * Réprésente une seul occurence de réponse
@@ -16,8 +17,8 @@ import lombok.Setter;
  * @param <M> Data
  * @param <I> Identifier
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class SingleResponse<M, I extends Identifier<?>> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -38,14 +39,8 @@ public class SingleResponse<M, I extends Identifier<?>> implements Serializable 
 	 * les différents états d’une même ressource, ainsi qu’entre les ressources
 	 * elles-mêmes.
 	 */
+	@EqualsAndHashCode.Exclude
 	protected List<LinkData> _links = new ArrayList<>();
-	
-	/**
-	 * Constructeur par défaut
-	 */
-	public SingleResponse() {
-		super();
-	}
 
 	/**
 	 * Constructeur

@@ -14,15 +14,16 @@ import fr.mycommerce.service.Manager;
 import fr.mycommerce.service.categories.CategoryRestClient;
 import fr.mycommerce.transverse.AbstractCrudView;
 import fr.mycommerce.transverse.Model;
-import fr.webmaker.commons.identifier.LongID;
+import fr.webmaker.commons.identifier.LangID;
+import fr.webmaker.commons.response.CollectionResponse2;
 import fr.webmaker.microservices.catalog.categories.data.CategoryData;
-import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchyCollectionResponse;
+import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchySingleResponse;
 import lombok.Getter;
 
 @Named("adminCategoryMB")
 @ViewScoped
-public class AdminCategoryListMB extends AbstractCrudView<CategoryData, LongID>
-		implements Manager<CategoryData, LongID> {
+public class AdminCategoryListMB extends AbstractCrudView<CategoryData, LangID>
+		implements Manager<CategoryData, LangID> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,16 +34,14 @@ public class AdminCategoryListMB extends AbstractCrudView<CategoryData, LongID>
 
 
 	@Override
-	public List<Model<CategoryData, LongID>> findAll() {
-
-
-		final CategoryHierarchyCollectionResponse response = service.getCategories("fr", true);
+	public List<Model<CategoryData, LangID>> findAll() {
+		final CollectionResponse2<CategoryHierarchySingleResponse> response = service.getCategories("fr", true);
 		if (response.get_embedded() == null) {
-			return new ArrayList<Model<CategoryData, LongID>>();
+			return new ArrayList<Model<CategoryData, LangID>>();
 		}
 
 		return service.getCategories("fr", true).get_embedded().stream()
-				.map(o -> new Model<CategoryData, LongID>(o.getIdentifier(), o.getData()))
+				.map(o -> new Model<CategoryData, LangID>(o.getIdentifier(), o.getData()))
 				.collect(Collectors.toList());
 	}
 
@@ -57,7 +56,7 @@ public class AdminCategoryListMB extends AbstractCrudView<CategoryData, LongID>
 	}
 
 	@Override
-	public void delete(LongID identifier) {
+	public void delete(LangID identifier) {
 
 	}
 

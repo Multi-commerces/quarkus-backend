@@ -15,9 +15,9 @@ import com.neovisionaries.i18n.LanguageCode;
 import fr.commerces.commons.mapper.DefaultMappingConfig;
 import fr.commerces.microservices.catalog.categories.entity.Category;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
-import fr.webmaker.commons.identifier.LongID;
+import fr.webmaker.commons.identifier.LangID;
 import fr.webmaker.microservices.catalog.categories.data.CategoryData;
-import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchyResponse;
+import fr.webmaker.microservices.catalog.categories.data.CategoryHierarchyData;
 
 @ApplicationScoped
 @Mapper(config = DefaultMappingConfig.class)
@@ -51,19 +51,23 @@ public abstract class CategoryMapper {
 	/*
 	 * Mapper pour opération de lecture
 	 */
-	public CategoryHierarchyResponse toCategoryHierarchyData(CategoryLang entity)
+	public CategoryHierarchyData toCategoryHierarchyData(CategoryLang entity)
 	{
-		final CategoryHierarchyResponse categoryHierarchyData = new CategoryHierarchyResponse(toData(entity));
-		categoryHierarchyData.setIdentifier(new LongID(entity.getId()));
+		final CategoryHierarchyData categoryHierarchyData = new CategoryHierarchyData(
+				new LangID(entity.getId(), entity.getLang()), // identifier
+				toData(entity), // category
+				subCategories(entity)); // subCategories
+		
+
 		categoryHierarchyData.setSubCategories(subCategories(entity));
 		
 		return categoryHierarchyData;
 	}
 
 
-	private List<CategoryHierarchyResponse> subCategories(final CategoryLang entity) {
+	private List<CategoryHierarchyData> subCategories(final CategoryLang entity) {
 		
-		final List<CategoryHierarchyResponse> subCategories = new ArrayList<>();
+		final List<CategoryHierarchyData> subCategories = new ArrayList<>();
 		if (CollectionUtils.isEmpty(entity.getChildrenCategory())) {
 			return subCategories;
 		}
@@ -77,7 +81,7 @@ public abstract class CategoryMapper {
 				.filter(o -> o.getLang().equals(lang))
 				.findAny()
 				.ifPresent(rootLang -> {
-					CategoryHierarchyResponse c = toCategoryHierarchyData(rootLang);
+					CategoryHierarchyData c = toCategoryHierarchyData(rootLang);
 					subCategories.add(c);
 			});
 		});

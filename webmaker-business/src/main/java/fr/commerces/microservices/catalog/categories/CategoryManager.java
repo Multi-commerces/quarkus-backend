@@ -22,7 +22,7 @@ import fr.commerces.microservices.catalog.categories.entity.Category;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLangPK;
 import fr.webmaker.microservices.catalog.categories.data.CategoryData;
-import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchyResponse;
+import fr.webmaker.microservices.catalog.categories.data.CategoryHierarchyData;
 
 @ManagerInterceptor
 @ApplicationScoped
@@ -36,7 +36,7 @@ public class CategoryManager {
 	 * 
 	 * @return
 	 */
-	public final List<CategoryHierarchyResponse> findCategoryHierarchy(@NotNull LanguageCode languageCode) {
+	public final List<CategoryHierarchyData> findCategoryHierarchy(@NotNull LanguageCode languageCode) {
 		try (final Stream<CategoryLang> stream = CategoryLang.findHierarchy(languageCode).stream()) {
 			return stream.map(mapper::toCategoryHierarchyData).collect(Collectors.toList());
 		}
@@ -48,7 +48,7 @@ public class CategoryManager {
 	 * @param categoryId identifiant de la catégorie
 	 * @return
 	 */
-	public final CategoryHierarchyResponse findCategoryHierarchyById(@NotNull final Long categoryId, @NotNull LanguageCode languageCode) {
+	public final CategoryHierarchyData findCategoryHierarchyById(@NotNull final Long categoryId, @NotNull LanguageCode languageCode) {
 		final CategoryLang category = CategoryLang.<CategoryLang>findByIdOptional(new CategoryLangPK(categoryId, languageCode))
 				.orElseThrow(() -> new NotFoundException(categoryId));
 

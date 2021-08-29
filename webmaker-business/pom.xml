@@ -17,49 +17,62 @@
 	<properties>
 		<compiler-plugin.version>3.8.1</compiler-plugin.version>
 		<maven.compiler.parameters>true</maven.compiler.parameters>
+
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<myfaces.version>2.3-next-M5</myfaces.version>
-		<omnifaces-quarkus.version>1.3.0</omnifaces-quarkus.version>
-		<omnifaces.version>3.11</omnifaces.version>
-		<poi.version>5.0.0</poi.version>
-		<primefaces.version>10.0.0</primefaces.version>
-		<primefaces-extensions.version>10.0.0</primefaces-extensions.version>
-		<primefaces.optimizer.version>2.3.5</primefaces.optimizer.version>
-		<quarkus.version>1.11.3.Final</quarkus.version>
 
-		<quarkus-plugin.version>1.11.3.Final</quarkus-plugin.version>
-		<quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
-		<quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-		<quarkus.platform.version>1.11.3.Final</quarkus.platform.version>
+		<quarkus-plugin.version>2.2.0.Final</quarkus-plugin.version>
 		<surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+
+		<myfaces.version>2.3-next-M6</myfaces.version>
+		<!-- <omnifaces-quarkus.version>1.3.0</omnifaces-quarkus.version> -->
+		<!-- <omnifaces.version>3.11</omnifaces.version> -->
+		<!-- <primefaces.version>10.0.0</primefaces.version> -->
+		<!-- <primefaces-extensions.version>10.0.0</primefaces-extensions.version> -->
+		<!-- <primefaces.optimizer.version>2.3.5</primefaces.optimizer.version> -->
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<!-- <dependency> -->
+			<!-- <groupId>io.quarkus</groupId> -->
+			<!-- <artifactId>quarkus-bom</artifactId> -->
+			<!-- <version>${quarkus.version}</version> -->
+			<!-- <type>pom</type> -->
+			<!-- <scope>import</scope> -->
+			<!-- </dependency> -->
+
 			<dependency>
-				<groupId>io.quarkus</groupId>
+				<groupId>io.quarkus.platform</groupId>
 				<artifactId>quarkus-bom</artifactId>
-				<version>${quarkus.version}</version>
+				<version>2.1.4.Final</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<dependency>
-				<groupId>${quarkus.platform.group-id}</groupId>
-				<artifactId>${quarkus.platform.artifact-id}</artifactId>
-				<version>${quarkus.platform.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-arc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-keycloak-authorization</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-oidc</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>com.tinify</groupId>
 			<artifactId>tinify</artifactId>
-			<version>LATEST</version>
+			<version>1.6.4</version>
 		</dependency>
 
 		<dependency>
@@ -74,46 +87,7 @@
 			<version>0.1.5</version>
 		</dependency>
 
-		<!-- FACES -->
-		<dependency>
-			<groupId>org.omnifaces</groupId>
-			<artifactId>omnifaces</artifactId>
-			<version>${omnifaces.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.github.adminfaces</groupId>
-			<artifactId>quarkus-omnifaces</artifactId>
-			<version>${omnifaces-quarkus.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
-			<artifactId>myfaces-quarkus</artifactId>
-			<version>${myfaces.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.myfaces.core.extensions.quarkus</groupId>
-			<artifactId>myfaces-quarkus-deployment</artifactId>
-			<version>${myfaces.version}</version>
-		</dependency>
-
-
-
-
-		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-arc</artifactId>
-		</dependency>
-
-
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.primefaces</groupId> -->
-		<!-- <artifactId>primefaces</artifactId> -->
-		<!-- <version>10.0.0</version> -->
-		<!-- </dependency> -->
-
+	
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -126,17 +100,21 @@
 			<version>1.4.1.Final</version>
 		</dependency>
 
-		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-hibernate-validator</artifactId>
-		</dependency>
-
+		<!-- <dependency> -->
+		<!-- <groupId>io.quarkus</groupId> -->
+		<!-- <artifactId>quarkus-hibernate-validator</artifactId> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 			<version>2.0.1.Final</version>
+			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-smallrye-openapi</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-resteasy</artifactId>
@@ -145,7 +123,6 @@
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-resteasy-jackson</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-rest-client</artifactId>
@@ -164,17 +141,15 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
+			<version>3.2.2</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.neovisionaries</groupId>
 			<artifactId>nv-i18n</artifactId>
@@ -185,11 +160,6 @@
 		<!-- <groupId>com.hazelcast</groupId> -->
 		<!-- <artifactId>quarkus-hazelcast-client</artifactId> -->
 		<!-- </dependency> -->
-
-		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-keycloak-authorization</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-smallrye-openapi</artifactId>
@@ -242,16 +212,6 @@
 			<artifactId>quarkus-test-security</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>com.github.database-rider</groupId> -->
-		<!-- <artifactId>rider-cdi</artifactId> -->
-		<!-- <version>1.28.0</version> -->
-		<!-- <scope>test</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>io.quarkus</groupId> -->
-		<!-- <artifactId>quarkus-cache</artifactId> -->
-		<!-- </dependency> -->
 	</dependencies>
 	<build>
 		<finalName>${project.name}</finalName>

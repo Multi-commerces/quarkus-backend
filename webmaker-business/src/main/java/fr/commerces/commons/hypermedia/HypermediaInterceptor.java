@@ -86,10 +86,10 @@ public class HypermediaInterceptor implements Serializable {
 		/*
 		 * Construction LINKS
 		 */
-		if (collectionResponse == null || collectionResponse.get_embedded() == null) {
+		if (collectionResponse == null || collectionResponse.getCollection() == null) {
 			return;
 		}
-		for (SingleResponse<?, ?> response : collectionResponse.get_embedded()) {
+		for (SingleResponse<?, ?> response : collectionResponse.getCollection()) {
 			List<LinkData> links = response.get_links();
 			for (fr.commerces.commons.hypermedia.HypermediaLink link : hypermedia.links()) {
 				// LINK

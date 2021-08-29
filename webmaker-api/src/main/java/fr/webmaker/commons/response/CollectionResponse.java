@@ -16,17 +16,17 @@ import lombok.Data;
 @Data
 public class CollectionResponse<M, I extends Identifier<?>> {
 
-	protected PagingData _paging;
+	protected PagingData paging;
 
-	protected List<SingleResponse<M, I>> _embedded;
+	protected List<SingleResponse<M, I>> collection;
 
 	public CollectionResponse() {
 		super();
 	}
 	
-	public CollectionResponse(final List<SingleResponse<M, I>> _embedded) {
+	public CollectionResponse(final List<SingleResponse<M, I>> collection) {
 		super();
-		this._embedded = _embedded;
+		this.collection = collection;
 	}
 	
 	

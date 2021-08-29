@@ -39,7 +39,7 @@ public class ProductMB implements Serializable {
 	public void postConstruct() {
 		CollectionResponse<ProductData, ProductID> values = service.getProducts("fr", 1, 10);
 		
-		values.get_embedded().forEach(o -> {
+		values.getCollection().forEach(o -> {
 			items.put(o.getIdentifier().getId(), o.getData());
 		});
 

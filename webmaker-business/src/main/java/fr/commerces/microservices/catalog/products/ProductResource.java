@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -54,6 +55,7 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 	/**
 	 * GET ALL
 	 */
+	@RolesAllowed(value = "gestionnaire")
 	@Hypermedia
 	@Override
 	public CollectionResponse<ProductData, ProductID> getProducts(final String languageCode, final Integer page,
@@ -73,15 +75,15 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 		final CollectionResponse<ProductData, ProductID> reponse = new CollectionResponse<ProductData, ProductID>();
 
 		// Réponse API - embedded
-		final List<SingleResponse<ProductData, ProductID>> embedded = new ArrayList<>();
+		final List<SingleResponse<ProductData, ProductID>> collection = new ArrayList<>();
 		items.entrySet().stream().forEach(entry -> {
-			embedded.add(new ProductResponse(entry.getKey(), languageCode, entry.getValue()));
+			collection.add(new ProductResponse(entry.getKey(), languageCode, entry.getValue()));
 		});
-		reponse.set_embedded(embedded);
+		reponse.setCollection(collection);
 
 		// Réponse API - Pagination
 		final PagingData pagingData = manager.getPagingProductLang(LanguageCode.getByCode(languageCode), Optional.ofNullable(size));
-		reponse.set_paging(pagingData);
+		reponse.setPaging(pagingData);
 
 		return reponse;
 	}

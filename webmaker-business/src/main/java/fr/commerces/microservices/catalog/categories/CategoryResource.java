@@ -1,6 +1,7 @@
 package fr.commerces.microservices.catalog.categories;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -14,8 +15,11 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchyCollectionResponse;
-import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchyResponse;
+import fr.webmaker.commons.identifier.LangID;
+import fr.webmaker.commons.response.CollectionResponse;
+import fr.webmaker.commons.response.SingleResponse;
+import fr.webmaker.microservices.catalog.categories.data.CategoryData;
+import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchySingleResponse;
 
 @Tag(name = "Ressource Catégories", description = "Ressource pour la gestion des catégories")
 @Path("/languages/{languageCode}/categories")
@@ -27,16 +31,18 @@ public class CategoryResource {
 
 	@Path("/")
 	@GET
-	public CategoryHierarchyCollectionResponse getCategories(
+	public CollectionResponse<CategoryData, LangID> getCategories(
 			@Parameter(description = "Langue des catégories recherchées") 
 			@PathParam("languageCode") String lang,
 			@Parameter(description = "Inclure les sous-catégories") 
 			@QueryParam("includeSubCategories") Boolean includeSubCategories) 
 	{
-		final List<CategoryHierarchyResponse> dataByIdentifier = manager.findCategoryHierarchy(LanguageCode.fr);
-	
-		//new CollectionResponse<CategoryData, LongID>(new ArrayList<>(dataByIdentifier));
-		return new CategoryHierarchyCollectionResponse(LanguageCode.fr, dataByIdentifier);
+		// Collection SingleResponse
+		List<SingleResponse<CategoryData, LangID>> data = manager.findCategoryHierarchy(LanguageCode.fr).stream()
+			.map(categoryHierarchy -> new CategoryHierarchySingleResponse(categoryHierarchy))
+			.collect(Collectors.toList());
+		
+		return new CollectionResponse<CategoryData, LangID>(data);
 	}
 
 }

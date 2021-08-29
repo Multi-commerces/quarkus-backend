@@ -114,7 +114,7 @@ public class AdminProductListMB extends AbstractCrudView<ProductData, ProductID>
 
 	@Override
 	public List<Model<ProductData, ProductID>> findAll() {
-		return service.getProducts("fr", 1, 10).get_embedded().stream()
+		return service.getProducts("fr", 1, 10).getCollection().stream()
 				.map(o -> new Model<ProductData, ProductID>(o.getIdentifier(), o.getData()))
 				.collect(Collectors.toList());
 	}

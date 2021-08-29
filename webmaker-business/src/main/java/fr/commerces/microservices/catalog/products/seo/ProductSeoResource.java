@@ -33,15 +33,15 @@ public class ProductSeoResource extends GenericResource<CollectionResponse<Produ
 		final CollectionResponse<ProductSeoData, Identifier<Long>> reponse = new CollectionResponse<ProductSeoData, Identifier<Long>>();
 
 		// embedded
-		final List<SingleResponse<ProductSeoData, Identifier<Long>>> embedded = new ArrayList<>();
+		final List<SingleResponse<ProductSeoData, Identifier<Long>>> collection = new ArrayList<>();
 		items.entrySet().stream().forEach(entry -> {
 			final SingleResponse<ProductSeoData, Identifier<Long>> singleResponse = new SingleResponse<ProductSeoData, Identifier<Long>>();
 			singleResponse.setIdentifier(new Identifier<Long>(productId));
 			singleResponse.setData(entry.getValue());
 
-			embedded.add(singleResponse);
+			collection.add(singleResponse);
 		});
-		reponse.set_embedded(embedded);
+		reponse.setCollection(collection);
 
 		return reponse;
 	}

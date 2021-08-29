@@ -10,7 +10,6 @@ import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,7 +27,6 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import lombok.Getter;
 import lombok.Setter;
 
-@EntityListeners(CategoryListener.class)
 @Cacheable(true)
 @Entity
 @Getter
@@ -51,7 +49,8 @@ public class Category extends PanacheEntityBase {
 	/**
 	 * Liste des sous-catégories FetchType.LAZY
 	 */
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "parentCategory", fetch = FetchType.LAZY, orphanRemoval = false)
+	@OneToMany(cascade = {
+			CascadeType.ALL }, mappedBy = "parentCategory", fetch = FetchType.LAZY, orphanRemoval = false)
 	@OrderBy("position")
 	public Set<Category> childrenCategory = new HashSet<>();
 
@@ -78,7 +77,7 @@ public class Category extends PanacheEntityBase {
 
 	@Column(columnDefinition = "timestamp default current_timestamp", nullable = false, updatable = true, insertable = true)
 	public LocalDateTime updated;
-	
+
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = CategoryLang.class, mappedBy = "category", cascade = {
 			CascadeType.REMOVE }, orphanRemoval = true)
 	private List<CategoryLang> categoryLang = new ArrayList<>();

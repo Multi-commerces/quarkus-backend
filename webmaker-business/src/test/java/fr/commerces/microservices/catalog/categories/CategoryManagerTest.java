@@ -4,11 +4,11 @@ import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_CREATED_200000
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_CREATED_20000002;
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_CREATED_20000003;
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_CREATED_20000004;
+import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_IDENTIFIER_20000001FR;
+import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_IDENTIFIER_20000002FR;
+import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_IDENTIFIER_20000003FR;
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_ID_20000003;
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_ID_20000004;
-import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_LONGID_20000001;
-import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_LONGID_20000002;
-import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_LONGID_20000003FR;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -28,9 +28,9 @@ import com.neovisionaries.i18n.LanguageCode;
 
 import fr.commerces.microservices.catalog.categories.entity.Category;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
-import fr.webmaker.commons.identifier.LongID;
+import fr.webmaker.commons.identifier.LangID;
 import fr.webmaker.microservices.catalog.categories.data.CategoryData;
-import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchyResponse;
+import fr.webmaker.microservices.catalog.categories.data.CategoryHierarchyData;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -45,62 +45,66 @@ public class CategoryManagerTest {
 	 */
 	@Test
 	public void testFindCategoryHierarchy() {
+		
+		
 		// Execution -----------------------------------------
-		final Map<LongID, CategoryHierarchyResponse> categories = null;// manager.findCategoryHierarchy(LanguageCode.fr);
+		final List<CategoryHierarchyData> categories = manager.findCategoryHierarchy(LanguageCode.fr);
+		
+		Function<LangID, CategoryHierarchyData> findCategoryHierarchy = catId -> 
+				categories.stream().filter(o -> o.getIdentifier().equals(catId)).findAny().get();
+		
 
 		// Verification --------------------------------------
 		assertNotNull(categories);
 		assertThat(categories.size(), is(3));
 
-		CategoryHierarchyResponse categorySubCategories;
+		CategoryHierarchyData categorySubCategories;
 		CategoryData categoryData;
 
 		// CATEGORY_ID_20000001
-		categorySubCategories = categories.get(CATEGORY_LONGID_20000001);
+		categorySubCategories = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000001FR);
 		assertNotNull(categorySubCategories);
 		
-		categoryData = categorySubCategories.getData();
+		categoryData = categorySubCategories.getCategory();
 		assertNotNull(categoryData);
 		assertNotNull(categoryData.getDescription());
 		assertNotNull(categoryData.getName());
 		assertThat(categoryData.getCreated(), is(CATEGORY_CREATED_20000001));
 
 		// CATEGORY_ID_20000002
-		categorySubCategories = categories.get(CATEGORY_LONGID_20000002);
+		categorySubCategories = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000002FR);
 		assertNotNull(categorySubCategories);
 		
-		categoryData = categorySubCategories.getData();
+		categoryData = categorySubCategories.getCategory();
 		assertNotNull(categoryData);
 		assertNotNull(categoryData.getDescription());
 		assertNotNull(categoryData.getName());
 		assertThat(categoryData.getCreated(), is(CATEGORY_CREATED_20000002));
 
 		// CATEGORY_ID_20000003
-		categorySubCategories = categories.get(CATEGORY_LONGID_20000003FR);
+		categorySubCategories = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000003FR);
 		assertNotNull(categorySubCategories);
 		
-		categoryData = categorySubCategories.getData();
+		categoryData = categorySubCategories.getCategory();
 		assertNotNull(categoryData);
 		assertNotNull(categoryData.getDescription());
 		assertNotNull(categoryData.getName());
 		assertThat(categoryData.getCreated(), is(CATEGORY_CREATED_20000003));
 
-		final List<CategoryHierarchyResponse> subCategories = categorySubCategories.getSubCategories();
+		final List<CategoryHierarchyData> subCategories = categorySubCategories.getSubCategories();
 		assertThat(subCategories.size(), is(1));
-//		assertNotNull(subCategories.get(CATEGORY_ID_20000004));
 	}
 
 	@Test
 	public void testFindById() {
 		// Execution -----------------------------------------
-		final CategoryHierarchyResponse categorySubCategories = manager.findCategoryHierarchyById(CATEGORY_ID_20000003, LanguageCode.fr);
+		final CategoryHierarchyData categorySubCategories = manager.findCategoryHierarchyById(CATEGORY_ID_20000003, LanguageCode.fr);
 
 		// Verification --------------------------------------
 		assertNotNull(categorySubCategories);
 
-		final List<CategoryHierarchyResponse> subCategories = categorySubCategories.getSubCategories();
+		final List<CategoryHierarchyData> subCategories = categorySubCategories.getSubCategories();
 		assertThat(subCategories.size(), is(1));
-//		assertNotNull(subCategories.get(CATEGORY_ID_20000004));
 	}
 
 	@Test
