@@ -15,9 +15,8 @@ import fr.mycommerce.service.categories.CategoryRestClient;
 import fr.mycommerce.transverse.AbstractCrudView;
 import fr.mycommerce.transverse.Model;
 import fr.webmaker.commons.identifier.LangID;
-import fr.webmaker.commons.response.CollectionResponse2;
+import fr.webmaker.commons.response.CollectionResponse;
 import fr.webmaker.microservices.catalog.categories.data.CategoryData;
-import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchySingleResponse;
 import lombok.Getter;
 
 @Named("adminCategoryMB")
@@ -35,12 +34,12 @@ public class AdminCategoryListMB extends AbstractCrudView<CategoryData, LangID>
 
 	@Override
 	public List<Model<CategoryData, LangID>> findAll() {
-		final CollectionResponse2<CategoryHierarchySingleResponse> response = service.getCategories("fr", true);
-		if (response.get_embedded() == null) {
+		final CollectionResponse<CategoryData, LangID> response = service.getCategories("fr", true);
+		if (response.getCollection() == null) {
 			return new ArrayList<Model<CategoryData, LangID>>();
 		}
 
-		return service.getCategories("fr", true).get_embedded().stream()
+		return service.getCategories("fr", true).getCollection().stream()
 				.map(o -> new Model<CategoryData, LangID>(o.getIdentifier(), o.getData()))
 				.collect(Collectors.toList());
 	}

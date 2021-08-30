@@ -31,7 +31,7 @@ public class ProductServiceTest {
 		final Map<Long, ProductData> values = manager.findAllByLanguageCode(LanguageCode.fr, Optional.of(1),
 				Optional.of(size));
 
-		assertThat("Le nombre d'item, doit corresponde au param.'size' fourni", values.size(), is(size));
+		assertThat("Le nombre d'item, doit correspondre au param.'size' fourni", values.size(), is(size));
 	}
 
 	@Test

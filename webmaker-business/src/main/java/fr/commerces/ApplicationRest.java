@@ -20,20 +20,38 @@ import org.slf4j.LoggerFactory;
 
 import io.quarkus.runtime.StartupEvent;
 
+
+
+
+
 @ApplicationScoped
-@OpenAPIDefinition(info = 
-@Info(title = "Multi-commerces API", 
-description = "Cette API permet les opérations CRUD et l'interaction avec multi-commerces", 
-version = "1.0", contact = @Contact(name = "multi-commerces GitHub", url = "https://github.com/lunatech-labs/lunatech-timekeeper"), 
-license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html")), 
-servers = {
-		@Server(url = "http://localhost:8081", description = "DEV Server") }, security = {
-				@SecurityRequirement(name = "dev_multicommercesOAuth2", scopes = { "profile" }) })
-// Quarkus Issue pending with redirect and OAuth2 here https://github.com/quarkusio/quarkus/issues/4766
-// To fix this issue I extracted the swagger oauth2-redirect.html file and saved it in the timekeeper folder
-@SecurityScheme(securitySchemeName = "dev_multicommercesOAuth2", type = SecuritySchemeType.OAUTH2, 
-description = "authentication for OAuth2 access", 
-flows = @OAuthFlows(implicit = @OAuthFlow(authorizationUrl = "http://localhost:8080/auth/realms/multi-commerces/protocol/openid-connect/auth")))
+@OpenAPIDefinition(
+	info = @Info(title = "Multi-commerces API", 
+		description = "Cette API permet d'interagire avec votre boutique en ligne", 
+		version = "1.0.0", contact = @Contact(name = "web maker GitHub", url = "https://github.com/lunatech-labs/lunatech-timekeeper"), 
+		license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html")), 
+	
+	servers = { 
+			@Server(url = "http://localhost:8081", description = "DEV Server"), 
+			@Server(url = "https://api.web-maker.fr", description = "PROD Server") 
+			}, 
+	
+	security = { 
+			@SecurityRequirement(name = "dev_multicommercesOAuth2", scopes = { "profile" }),
+			@SecurityRequirement(name = "prod_multicommercesOAuth2", scopes = { "profile" }) 
+	}
+)
+
+// https://github.com/quarkusio/quarkus/issues/4766
+@SecurityScheme(
+	securitySchemeName = "dev_multicommercesOAuth2", 
+	type = SecuritySchemeType.OAUTH2, 
+	description = "authentication for OAuth2 access", 
+	flows = @OAuthFlows(
+			implicit = @OAuthFlow(
+					authorizationUrl = "http://localhost:8080/auth/realms/webmaker/protocol/openid-connect/auth")
+	)
+)
 public class ApplicationRest extends Application {
 
 	private static final Logger logger = LoggerFactory.getLogger(ApplicationRest.class);

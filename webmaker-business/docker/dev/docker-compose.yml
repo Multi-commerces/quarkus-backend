@@ -1,0 +1,48 @@
+#https://hub.docker.com/r/jboss/keycloak/
+#https://github.com/keycloak/keycloak-containers/blob/master/docker-compose-examples/keycloak-postgres.yml
+version: '3'
+volumes:
+   postgres_data:
+      driver: local
+services:
+   postgres:
+      image: postgres
+      restart: always
+      container_name: postgres-dev
+      volumes:
+      - /var/lib/docker/volumes/postgresql/data:/var/lib/postgresql/data
+      environment:
+         POSTGRES_DB: ${POSTGRES_DB}
+         POSTGRES_USER: ${POSTGRES_USER}
+         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+         POSTGRES_HOST_AUTH_METHOD: ${POSTGRES_HOST_AUTH_METHOD}
+      ports:
+      - 5435:5432
+   keycloak:
+      image: quay.io/keycloak/keycloak:latest
+      environment:
+         DB_VENDOR: POSTGRES
+         DB_ADDR: postgres
+         DB_DATABASE: ${POSTGRES_DB}
+         DB_SCHEMA: public
+         DB_USER: ${POSTGRES_USER}
+         DB_PASSWORD: ${POSTGRES_PASSWORD}
+         KEYCLOAK_USER: ${KEYCLOAK_USER}
+         KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      command: -b 0.0.0.0 -Djboss.http.port=8080 -Djboss.https.port=8443
+      ports:
+      - 8080:8080/tcp
+      - 8443:8443/tcp
+      depends_on:
+      - postgres
+   quarkus-api:
+      image: quarkus/api-fast-jar:latest
+      container_name: quarkus-api
+      environment:
+         QUARKUS_LAUNCH_DEVMODE: "true"
+      depends_on:
+      - postgres
+      - keycloak
+      network_mode : "host"
+      
+      

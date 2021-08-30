@@ -9,8 +9,9 @@ import javax.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import fr.webmaker.commons.response.CollectionResponse2;
-import fr.webmaker.microservices.catalog.categories.response.CategoryHierarchySingleResponse;
+import fr.webmaker.commons.identifier.LangID;
+import fr.webmaker.commons.response.CollectionResponse;
+import fr.webmaker.microservices.catalog.categories.data.CategoryData;
 
 @Dependent
 @Path("/languages/{languageCode}/categories")
@@ -20,7 +21,7 @@ public interface CategoryRestClient  {
 
 	@GET
 	@Path("/") 
-	CollectionResponse2<CategoryHierarchySingleResponse> getCategories(
+	CollectionResponse<CategoryData, LangID> getCategories(
 			@PathParam("languageCode") String lang,
 			@QueryParam("includeSubCategories") Boolean includeSubCategories);
 	

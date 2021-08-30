@@ -9,9 +9,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.keycloak.authorization.client.AuthzClient;
-
 import com.neovisionaries.i18n.LanguageCode;
 
 import fr.commerces.commons.hypermedia.Hypermedia;
@@ -30,7 +27,6 @@ import fr.webmaker.commons.response.SingleResponse;
 import fr.webmaker.microservices.catalog.products.data.ProductData;
 import fr.webmaker.microservices.catalog.products.id.ProductID;
 import fr.webmaker.microservices.catalog.products.response.ProductResponse;
-import io.quarkus.security.identity.SecurityIdentity;
 
 @HypermediaApi(resource = ProductBasicResourceApi.class, title = "Informations basiques du produit", links = {
 		@HypermediaLink(resource = ProductSeoApi.class, methode = "getProductSeo", rel = "seo"),
@@ -45,8 +41,9 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 	@Inject
 	ProductManager manager;
 
-	@Inject
-	SecurityIdentity identity;
+	//	@Inject
+	//	SecurityIdentity identity;
+
 
 	/*
 	 * Injection du client d'autorisation Dans certains cas, vous souhaiterez
@@ -55,16 +52,20 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 	 * l'obtention d'autorisations directement à partir de Keycloak. Pour cela, vous
 	 * pouvez injecter une AuthzClientinstance dans vos beans comme suit :
 	 */
-	@Inject
-	AuthzClient authzClient;
+
+	//	@Inject
+	//	AuthzClient authzClient;
+
 
 	/*
 	 * Accéder aux revendications JWT <p>Si vous avez besoin d'accéder aux
 	 * JsonWebTokenrevendications, vous pouvez simplement injecter le jeton lui-même
 	 * </p>
 	 */
-	@Inject
-    JsonWebToken jwt;
+
+//	@Inject
+//    JsonWebToken jwt;
+
 
 	/**
 	 * GET BY ID

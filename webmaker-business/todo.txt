@@ -22,6 +22,10 @@ chain1.pem
 fullchain1.pem
 privkey1.pem
 
+<<<<<<< HEAD
+=======
+#network_mode: host
+>>>>>>> [FREESTYLE] Compilation native (mode production)
 
 
 
