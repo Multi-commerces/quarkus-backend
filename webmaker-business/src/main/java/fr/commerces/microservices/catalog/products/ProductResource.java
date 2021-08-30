@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+
+import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.keycloak.authorization.client.AuthzClient;
 
 import com.neovisionaries.i18n.LanguageCode;
 
@@ -28,6 +30,7 @@ import fr.webmaker.commons.response.SingleResponse;
 import fr.webmaker.microservices.catalog.products.data.ProductData;
 import fr.webmaker.microservices.catalog.products.id.ProductID;
 import fr.webmaker.microservices.catalog.products.response.ProductResponse;
+import io.quarkus.security.identity.SecurityIdentity;
 
 @HypermediaApi(resource = ProductBasicResourceApi.class, title = "Informations basiques du produit", links = {
 		@HypermediaLink(resource = ProductSeoApi.class, methode = "getProductSeo", rel = "seo"),
@@ -42,20 +45,40 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 	@Inject
 	ProductManager manager;
 
+	@Inject
+	SecurityIdentity identity;
+
+	/*
+	 * Injection du client d'autorisation Dans certains cas, vous souhaiterez
+	 * peut-être utiliser l' API Java du client d'autorisation Keycloak pour
+	 * effectuer des opérations spécifiques telles que la gestion des ressources et
+	 * l'obtention d'autorisations directement à partir de Keycloak. Pour cela, vous
+	 * pouvez injecter une AuthzClientinstance dans vos beans comme suit :
+	 */
+	@Inject
+	AuthzClient authzClient;
+
+	/*
+	 * Accéder aux revendications JWT <p>Si vous avez besoin d'accéder aux
+	 * JsonWebTokenrevendications, vous pouvez simplement injecter le jeton lui-même
+	 * </p>
+	 */
+	@Inject
+    JsonWebToken jwt;
+
 	/**
 	 * GET BY ID
 	 */
 	@Override
 	public Response getProductById(final String languageCode, final Long idProduct, Boolean includeBasic) {
 		final ProductData data = manager.findByProductLangPK(idProduct, LanguageCode.getByCode(languageCode));
-		
+
 		return buildResponse(data, new ProductID(idProduct, languageCode));
 	}
 
 	/**
 	 * GET ALL
 	 */
-	@RolesAllowed(value = "gestionnaire")
 	@Hypermedia
 	@Override
 	public CollectionResponse<ProductData, ProductID> getProducts(final String languageCode, final Integer page,
@@ -82,7 +105,8 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 		reponse.setCollection(collection);
 
 		// Réponse API - Pagination
-		final PagingData pagingData = manager.getPagingProductLang(LanguageCode.getByCode(languageCode), Optional.ofNullable(size));
+		final PagingData pagingData = manager.getPagingProductLang(LanguageCode.getByCode(languageCode),
+				Optional.ofNullable(size));
 		reponse.setPaging(pagingData);
 
 		return reponse;

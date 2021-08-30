@@ -7,8 +7,22 @@ https://docs.postgresql.fr/10/creating-cluster.html
 https://blog.eleven-labs.com/fr/https-part-2/
 
 docker run -it --rm --name certbot -p 80:80 -p 443:443 -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" certbot/certbot certonly --standalone --email "julien.ilari@gmail.com" -d "jilari.fr"
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/web-maker.fr/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/web-maker.fr/privkey.pem
+This certificate expires on 2021-11-27.
+These files will be updated when the certificate renews.
+
+
 Une fois la commande exécutée, si tout s’est bien déroulé, vous trouverez le certificat dans le dossier 
 “/etc/letsencrypt/live/”.
+cert1.pem
+chain1.pem
+fullchain1.pem
+privkey1.pem
+
+
 
 
 -Djboss.socket.binding.port-offset=100

@@ -19,9 +19,6 @@ import javax.imageio.stream.ImageInputStream;
 
 import org.apache.commons.io.FileUtils;
 
-import com.tinify.Options;
-import com.tinify.Tinify;
-
 import fr.commerces.microservices.catalog.images.data.DimentionData;
 import fr.commerces.microservices.catalog.images.exceptions.StorageException;
 import io.quarkus.runtime.LaunchMode;
@@ -125,12 +122,13 @@ public class UtilityStorage {
 			return sourceData;
 		}
 
-		final Options options = new Options().with("method", "thumb").with("width", width).with("height", height);
-		try {
-			return Tinify.fromBuffer(sourceData).resize(options).toBuffer();
-		} catch (IOException e) {
-			throw storageException.apply(e, "Tinify.resize");
-		}
+//		final Options options = new Options().with("method", "thumb").with("width", width).with("height", height);
+//		try {
+//			return Tinify.fromBuffer(sourceData).resize(options).toBuffer();
+//		} catch (IOException e) {
+//			throw storageException.apply(e, "Tinify.resize");
+//		}
+		return null;
 	}
 
 	/**

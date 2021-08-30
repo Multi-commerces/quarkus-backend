@@ -13,7 +13,7 @@
 	<modules>
 		<module>webmaker-api</module>
 		<module>webmaker-business</module>
-		<module>webmaker-webapp</module>
+<!-- 		<module>webmaker-webapp</module> -->
 	</modules>
 
 	<properties>

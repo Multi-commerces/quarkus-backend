@@ -1,5 +1,6 @@
 package fr.commerces.microservices.catalog.products;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -78,6 +79,7 @@ public interface ProductResourceApi {
 			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun porduit trouvé avec les critères de recherche") 
 	})
+	@RolesAllowed(value = { "ADMIN" })
 	CollectionResponse<ProductData, ProductID> getProducts(
 			/*
 			 * language
@@ -173,7 +175,6 @@ public interface ProductResourceApi {
 			 */
 			@Parameter(description = "Identifiant du produit") 
 			@PathParam(value = "productId") Long productId);
-
 	
 
 }

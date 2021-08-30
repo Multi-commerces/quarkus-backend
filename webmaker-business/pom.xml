@@ -69,10 +69,28 @@
 			<artifactId>quarkus-oidc</artifactId>
 		</dependency>
 
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.tinify</groupId> -->
+<!-- 			<artifactId>tinify</artifactId> -->
+<!-- 			<version>1.6.4</version> -->
+<!-- 			<exclusions> -->
+<!-- 				<exclusion> -->
+<!-- 					<groupId>com.squareup.okhttp3</groupId> -->
+<!-- 					<artifactId>okhttp</artifactId> -->
+<!-- 				</exclusion> -->
+<!-- 			</exclusions> -->
+<!-- 		</dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
 		<dependency>
-			<groupId>com.tinify</groupId>
-			<artifactId>tinify</artifactId>
-			<version>1.6.4</version>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
 		</dependency>
 
 		<dependency>
@@ -87,7 +105,7 @@
 			<version>0.1.5</version>
 		</dependency>
 
-	
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -160,10 +178,6 @@
 		<!-- <groupId>com.hazelcast</groupId> -->
 		<!-- <artifactId>quarkus-hazelcast-client</artifactId> -->
 		<!-- </dependency> -->
-		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-smallrye-openapi</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-flyway</artifactId>
@@ -314,6 +328,7 @@
 			</build>
 			<properties>
 				<quarkus.package.type>native</quarkus.package.type>
+				<quarkus.native.additional-build-args>--rerun-class-initialization-at-runtime=sun.security.provider.NativePRNG</quarkus.native.additional-build-args>
 			</properties>
 		</profile>
 	</profiles>

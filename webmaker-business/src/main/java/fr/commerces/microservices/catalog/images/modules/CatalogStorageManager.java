@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -26,8 +25,6 @@ import javax.transaction.UserTransaction;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.MDC;
 
-import com.tinify.Tinify;
-
 import fr.commerces.commons.logged.ManagerInterceptor;
 import fr.commerces.microservices.catalog.images.entity.ShopImage;
 import fr.commerces.microservices.catalog.images.entity.ShopImageDimentionConfig;
@@ -37,7 +34,6 @@ import fr.commerces.microservices.catalog.products.entity.Product;
 import fr.commerces.microservices.catalog.products.entity.ProductImage;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.ShutdownEvent;
-import io.quarkus.runtime.Startup;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -47,8 +43,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @ManagerInterceptor
-@Startup
-@ApplicationScoped
+//@Startup
+//@ApplicationScoped
 public class CatalogStorageManager {
 
 	@Inject
@@ -119,7 +115,7 @@ public class CatalogStorageManager {
 		ImageIO.setUseCache(false);
 
 		// Configuration tinifyKey afin de pouvoir être authorisé a utiliser api Tinify
-		Tinify.setKey(tinifyKey);
+//		Tinify.setKey(tinifyKey);
 
 		initialized = true;
 	}

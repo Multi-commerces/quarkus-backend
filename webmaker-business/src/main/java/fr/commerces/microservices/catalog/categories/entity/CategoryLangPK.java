@@ -9,11 +9,9 @@ import javax.persistence.Enumerated;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Embeddable
 public class CategoryLangPK implements Serializable {
 

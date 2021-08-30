@@ -46,6 +46,7 @@ OIDC server 'http://localhost:8080/auth/realms/multi-commerces'
 ## Pour lancer l'application en mode développement
 
 Exécuter l'application en mode développement (codage en direct) en utilisant:
+
 ```shell script
 ./mvnw compile quarkus:dev
 ```
@@ -53,6 +54,7 @@ Exécuter l'application en mode développement (codage en direct) en utilisant:
 ## Empaquetage et exécution de l'application
 
 L'application peut être packagée en utilisant:
+
 ```shell script
 ./mvnw package
 ```
@@ -60,6 +62,7 @@ Il produit le fichier `api-1.0.0-SNAPSHOT-runner.jar` dans le répertoire`/targe
 Sachez qu'il ne s'agit pas d'un uber jar car les dépendances sont copiées dans le répertoire `target/lib`.
 
 Si vous souhaitez créer un uber jar, exécutez la commande suivante:
+
 ```shell script
 ./mvnw package -Dquarkus.package.type=uber-jar
 ```
@@ -69,11 +72,13 @@ L'application est désormais exécutable en utilisant `java -jar target/api-1.0.
 ## Créer un exécutable natif
 
 Vous pouvez créer un exécutable natif en utilisant:
+
 ```shell script
-./mvnw package -Pnative
+./mvnw package -Pnative -Dmaven.test.skip=true
 ```
 
 Ou, si vous n'avez pas installé GraalVM, vous pouvez exécuter la version exécutable native dans un conteneur en utilisant:
+
 ```shell script
 ./mvnw package -Pnative -Dquarkus.native.container-build=true
 ```
@@ -82,6 +87,38 @@ Vous pouvez ensuite exécuter votre exécutable natif avec: `./target/api-1.0.0-
 
 Si vous souhaitez en savoir plus sur la création d'exécutables natifs, veuillez consulter 
 https://quarkus.io/guides/maven-tooling.html.
+
+## Créer l'image docker de l'aaplication quarkus natif
+
+Si l'exécutable natif généré n'a pas été supprimé , créer l'image docker avec :
+
+```
+docker build -f src/main/docker/Dockerfile.native -t quarkus/code-with-quarkus .
+
+>>>
+FROM registry.access.redhat.com/ubi8/ubi-minimal
+WORKDIR /work/
+COPY target/*-runner /work/application
+RUN chmod 775 /work
+EXPOSE 8080
+CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
+```
+
+
+```
+docker build -f src/main/docker/Dockerfile.native -t quarkus-quickstart/getting-started .
+
+docker build -f ./docker/Dockerfile.multistage -t quarkus-quickstart/getting-started .
+```
+
+Et enfin, lancez-le avec :
+
+```
+docker run -i --rm -p 8080:8080 quarkus-quickstart/getting-started
+```
+
+
+
 
 # RESTEasy JSON serialisation en utilisant Jackson
 

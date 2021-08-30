@@ -36,6 +36,7 @@ public class CategoryManager {
 	 * 
 	 * @return
 	 */
+	@Transactional
 	public final List<CategoryHierarchyData> findCategoryHierarchy(@NotNull LanguageCode languageCode) {
 		try (final Stream<CategoryLang> stream = CategoryLang.findHierarchy(languageCode).stream()) {
 			return stream.map(mapper::toCategoryHierarchyData).collect(Collectors.toList());
