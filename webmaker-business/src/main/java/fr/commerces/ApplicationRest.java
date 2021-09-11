@@ -21,36 +21,39 @@ import org.slf4j.LoggerFactory;
 import io.quarkus.runtime.StartupEvent;
 
 
-
-
-
 @ApplicationScoped
 @OpenAPIDefinition(
 	info = @Info(title = "Multi-commerces API", 
-		description = "Cette API permet d'interagire avec votre boutique en ligne", 
-		version = "1.0.0", contact = @Contact(name = "web maker GitHub", url = "https://github.com/lunatech-labs/lunatech-timekeeper"), 
-		license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html")), 
-	
+			description = "Cette API permet d'interagire avec votre boutique en ligne", 
+			version = "1.0.0", contact = @Contact(name = "web maker GitHub", url = "https://github.com/lunatech-labs/lunatech-timekeeper"), 
+			license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html")
+	), 
 	servers = { 
 			@Server(url = "http://localhost:8081", description = "DEV Server"), 
 			@Server(url = "https://api.web-maker.fr", description = "PROD Server") 
-			}, 
-	
+	}, 
 	security = { 
-			@SecurityRequirement(name = "dev_multicommercesOAuth2", scopes = { "profile" }),
-			@SecurityRequirement(name = "prod_multicommercesOAuth2", scopes = { "profile" }) 
+			@SecurityRequirement(name = "dev_OAuth2", scopes = { "profile" }),
+			@SecurityRequirement(name = "prod_OAuth2", scopes = { "profile" })
 	}
 )
 
 // https://github.com/quarkusio/quarkus/issues/4766
 @SecurityScheme(
-	securitySchemeName = "dev_multicommercesOAuth2", 
+	securitySchemeName = "dev_OAuth2", 
 	type = SecuritySchemeType.OAUTH2, 
-	description = "authentication for OAuth2 access", 
+	description = "authentication pour un access OAuth2", 
 	flows = @OAuthFlows(
-			implicit = @OAuthFlow(
-					authorizationUrl = "http://localhost:8080/auth/realms/webmaker/protocol/openid-connect/auth")
+			implicit = @OAuthFlow(authorizationUrl = "http://localhost:8080/auth/realms/webmaker/protocol/openid-connect/auth")
 	)
+)
+@SecurityScheme(
+    securitySchemeName = "prod_OAuth2",
+    type = SecuritySchemeType.OAUTH2,
+    description = "authentication pour un access OAuth2",
+    flows = @OAuthFlows(
+            implicit = @OAuthFlow(authorizationUrl = "http://auth.web-maker.fr/auth/realms/webmaker/protocol/openid-connect/auth")
+    )
 )
 public class ApplicationRest extends Application {
 

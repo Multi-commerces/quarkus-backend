@@ -11,7 +11,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import fr.commerces.services.authentifications.provider.AuthenticationContextProvider;
+import fr.commerces.microservices.authentification.AuthenticationContextProvider;
 import fr.webmaker.commons.identifier.Identifier;
 import fr.webmaker.commons.response.CollectionResponse;
 import fr.webmaker.commons.response.SingleResponse;

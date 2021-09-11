@@ -1,15 +1,24 @@
 package fr.mycommerce.transverse;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.Part;
 import javax.validation.ValidationException;
 
+import org.primefaces.shaded.commons.io.IOUtils;
+
+import fr.mycommerce.transverse.old.RenderMode;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -97,6 +106,22 @@ public class JavaFacesTool implements Serializable {
 
 		facesContext.addMessage(null, facesMessage);
 	}
+	
+	protected static void addFlashMessage(final Severity severityName, final String message) {
+		FacesMessage facesMessage = null;
+		if (severityName.equals(FacesMessage.SEVERITY_INFO)) {
+			facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", message);
+		} else if (severityName.equals(FacesMessage.SEVERITY_ERROR)) {
+			facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", message);
+		}else
+		{
+			return;
+		}
+
+		final FacesContext facesContext = FacesContext.getCurrentInstance();
+	
+		facesContext.addMessage(null, facesMessage);
+	}
 
 	/**
 	 * Envoi d'un message lié à une Exception
@@ -154,5 +179,83 @@ public class JavaFacesTool implements Serializable {
 		} catch (Exception e) {
 		}
 		return formatted;
+	}
+	
+	public String getValueParam(String param) {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		// la demande n'est pas une publication:
+		if (!facesContext.isPostback() && !facesContext.isValidationFailed()) {
+			// extraire l'id de la chaîne de requête
+			Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
+			return paramMap.get(param);
+		}
+
+		return null;
+	}
+
+	public Map<String, String> getValueByParam() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		// la demande n'est pas une publication:
+		if (!facesContext.isPostback() && !facesContext.isValidationFailed()) {
+			// extraire l'id de la chaîne de requête
+			Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
+			return paramMap;
+		}
+
+		return new HashMap<String, String>();
+	}
+	
+	/**
+	 * Demande le mode de rendu (mobile ou ordinateur de bureau)
+	 * @return
+	 */
+    private RenderMode getBrowserRenderMode() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        String userAgent = externalContext.getRequestHeaderMap().get("User-Agent");
+        return userAgent.toLowerCase().contains("mobile") ? RenderMode.MOBILE : RenderMode.WEB;
+    }
+    
+    /**
+     * Le mode de rendu (cf. getBrowserRenderMode)
+     * @return
+     */
+    public String getRenderMode() {
+        return getBrowserRenderMode().name();
+    }
+    
+    /**
+	 * Obtient le fichier sous forme d'octet
+	 * 
+	 * @exception IllegalArgumentException [error.arg.null] - argument file est null
+	 * @param file élément reçu dans une demande POST multipart/form-data.
+	 * @return le tableau d'octets demandé
+	 */
+	protected byte[] encodeToFile(final Part file) {
+		if (file == null)
+			return null;
+		try (InputStream input = file.getInputStream()) {
+			/*
+			 * toByteArray met l'entrée en mémoire tampon en interne, il n'est donc pas
+			 * nécessaire d'utiliser un BufferedInputStream.
+			 */
+			return IOUtils.toByteArray(input);
+		} catch (IOException e) {
+			throw new RuntimeException("error.techn.io.encode", e);
+		}
+	}
+	
+	/**
+	 * Extraction de l'identifiant (param => id)
+	 * @return
+	 */
+	protected Long extractId()
+	{
+		String id = getValueParam("id");
+		if(id != null)
+		{
+			return Long.valueOf(id);
+		}
+		return null;
 	}
 }

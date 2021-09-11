@@ -31,7 +31,6 @@ public class AdminCategoryListMB extends AbstractCrudView<CategoryData, LangID>
 	@Getter
 	private CategoryRestClient service;
 
-
 	@Override
 	public List<Model<CategoryData, LangID>> findAll() {
 		final CollectionResponse<CategoryData, LangID> response = service.getCategories("fr", true);
@@ -40,8 +39,12 @@ public class AdminCategoryListMB extends AbstractCrudView<CategoryData, LangID>
 		}
 
 		return service.getCategories("fr", true).getCollection().stream()
-				.map(o -> new Model<CategoryData, LangID>(o.getIdentifier(), o.getData()))
-				.collect(Collectors.toList());
+				.map(o -> new Model<CategoryData, LangID>(o.getIdentifier(), o.getData())).collect(Collectors.toList());
+	}
+
+	@Override
+	protected CategoryData newDataInstance() {
+		return new CategoryData();
 	}
 
 	@Override
@@ -60,11 +63,8 @@ public class AdminCategoryListMB extends AbstractCrudView<CategoryData, LangID>
 	}
 
 	@Override
-	protected CategoryData newDataInstance() {
-		// TODO Auto-generated method stub
-		return new CategoryData();
+	protected void delete(List<LangID> ids) {
+
 	}
-
-
 
 }

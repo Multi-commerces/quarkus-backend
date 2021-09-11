@@ -14,6 +14,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import fr.mycommerce.service.product.ProductVariationRestClient;
 import fr.mycommerce.transverse.AbstractCrudView;
 import fr.mycommerce.transverse.ActionType;
+import fr.mycommerce.transverse.JavaFacesTool;
 import fr.mycommerce.transverse.Model;
 import fr.webmaker.microservices.catalog.products.data.ProductVariationData;
 import fr.webmaker.microservices.catalog.products.id.ProductVariationID;
@@ -39,11 +40,11 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData, P
 	public ProductVariationMB() {
 		super();
 
-		final String param1 = getValueParam("id");
+		final String param1 = JavaFacesTool.getValueParam("id");
 		if (param1 != null) {
 			productId = Long.valueOf(param1);
 		}
-		final String param2 = getValueParam("variationId");
+		final String param2 = JavaFacesTool.getValueParam("variationId");
 		if (param2 != null) {
 			variationId = Long.valueOf(param2);
 		}
@@ -102,6 +103,12 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData, P
 	@Override
 	protected ProductVariationData newDataInstance() {
 		return new ProductVariationData();
+	}
+
+	@Override
+	protected void delete(List<ProductVariationID> ids) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

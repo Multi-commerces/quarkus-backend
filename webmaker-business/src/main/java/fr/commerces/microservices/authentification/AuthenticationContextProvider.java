@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.commerces.services.authentifications.provider;
+package fr.commerces.microservices.authentification;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import fr.commerces.services.authentifications.models.Profile;
+import fr.commerces.microservices.authentification.data.AuthentificationData;
+import fr.commerces.microservices.authentification.entity.Profile;
+import fr.commerces.microservices.authentification.managers.UserManager;
 import io.quarkus.oidc.runtime.OidcJwtCallerPrincipal;
 import io.quarkus.security.ForbiddenException;
 import io.quarkus.security.UnauthorizedException;
@@ -42,74 +44,82 @@ public class AuthenticationContextProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationContextProvider.class);
 
-	/**
-	 * <h1>Obtenir le sujet</h1>
-	 * obtenir le sujet en injectant simplement un SecurityIdentity
-	 */
 	@Inject
 	SecurityIdentity identity;
+	
+	@Inject
+	UserManager userManager;
 
 	public AuthenticationContext context() {
-		logger.info("[AuthenticationContext] =======================================================");
 		if (identity.getPrincipal() instanceof OidcJwtCallerPrincipal) {
-			final var authenticationRequest = getAuthenticationRequest((OidcJwtCallerPrincipal) identity.getPrincipal());
+			final AuthentificationData authData = toAuthenticationData((OidcJwtCallerPrincipal) identity.getPrincipal());
 			try {
-				final var authenticationContext = new AuthenticationContext("", 0L);
-				// TODO : RAF Authentifier utilisateur
-
-				MDC.put("authenticationContext.userId", authenticationContext.getUserId().toString());
-				logger.info("Authentification success {}", authenticationRequest);
+				AuthenticationContext authContext = userManager.authenticate(authData);
 				
-				return authenticationContext;
+				logger.debug("Authentification success {}", authContext); 
+				MDC.put("userId", String.valueOf(authContext.getUserId()));
+
+				return authContext;
 			} catch (Exception e) {
 				logger.error("Authentification failed");
 				throw new ForbiddenException(e.getMessage(), e);
 			}
-
-		} else {
-			if(logger.isDebugEnabled())
-			{
-				logger.warn("Authentification failed");
-				return null;
-			}
-			else
-			{
-				return null;
-				//throw new UnauthorizedException();
-			}
-			
+		} 
+		
+		if (logger.isDebugEnabled()) {
+			logger.warn("Authentification failed");
 		}
+		
+		return null;
 	}
 
-	private AuthenticationData getAuthenticationRequest(OidcJwtCallerPrincipal jwtCallerPrincipal) {
+	/**
+	 * Création d'une instance AuthenticationData à partir du jeton JWT
+	 * @param jwtCallerPrincipal
+	 * @return
+	 */
+	public static AuthentificationData toAuthenticationData(OidcJwtCallerPrincipal jwtCallerPrincipal) {
 		final var jwtClaims = jwtCallerPrincipal.getClaims();
 		final String email = jwtClaims.getClaimValueAsString("email");
 		final String firstName = jwtClaims.getClaimValueAsString("given_name");
 		final String lastName = jwtClaims.getClaimValueAsString("family_name");
-		final String organization = jwtClaims.getClaimValueAsString("organization");
 		final String picture = jwtClaims.getClaimValueAsString("picture");
+		final String locale = jwtClaims.getClaimValueAsString("locale");
 		final List<Profile> profiles = getProfiles(jwtCallerPrincipal, jwtClaims);
 
-		return new AuthenticationData(firstName, lastName, email, picture, profiles, organization);
+		return new AuthentificationData(firstName, lastName, email, picture, profiles, locale);
 	}
 
-	private List<Profile> getProfiles(OidcJwtCallerPrincipal jwtCallerPrincipal, JwtClaims jwtClaims) {
+	/**
+	 * Récupération de la liste des profils de l'utilisateur
+	 * @param jwtCallerPrincipal
+	 * @param jwtClaims
+	 * @return
+	 */
+	private static List<Profile> getProfiles(OidcJwtCallerPrincipal jwtCallerPrincipal, JwtClaims jwtClaims) {
 		JsonObject realmAccess;
 		logger.debug("jwtClaims {}", jwtClaims.toString());
-		
 		try {
 			realmAccess = jwtClaims.getClaimValue("realm_access", JsonObject.class);
 		} catch (MalformedClaimException e) {
+			logger.error(e.getMessage());
 			throw new UnauthorizedException();
 		}
 
 		final List<Profile> profiles = Optional.ofNullable(realmAccess)
-				.map(jsonObject -> jsonObject.getJsonArray("roles").stream().map(Object::toString)
-						.map(s -> s.replace("\"", "")).map(Profile::getByName).filter(Optional::isPresent)
-						.map(Optional::get).collect(Collectors.toList()))
+				.map(jsonObject -> jsonObject
+						.getJsonArray("roles")
+						.stream()
+						.map(Object::toString)
+						.map(s -> s.replace("\"", ""))
+						.map(Profile::getByName)
+						.filter(Optional::isPresent)
+						.map(Optional::get)
+						.collect(Collectors.toList()))
 				.orElseGet(Collections::emptyList);
 
 		if (profiles.isEmpty()) {
+			logger.error(String.format("No profile detected: %s", jwtCallerPrincipal));
 			throw new UnauthorizedException();
 		}
 		return profiles;

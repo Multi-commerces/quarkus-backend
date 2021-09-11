@@ -40,33 +40,7 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 
 	@Inject
 	ProductManager manager;
-
-	//	@Inject
-	//	SecurityIdentity identity;
-
-
-	/*
-	 * Injection du client d'autorisation Dans certains cas, vous souhaiterez
-	 * peut-être utiliser l' API Java du client d'autorisation Keycloak pour
-	 * effectuer des opérations spécifiques telles que la gestion des ressources et
-	 * l'obtention d'autorisations directement à partir de Keycloak. Pour cela, vous
-	 * pouvez injecter une AuthzClientinstance dans vos beans comme suit :
-	 */
-
-	//	@Inject
-	//	AuthzClient authzClient;
-
-
-	/*
-	 * Accéder aux revendications JWT <p>Si vous avez besoin d'accéder aux
-	 * JsonWebTokenrevendications, vous pouvez simplement injecter le jeton lui-même
-	 * </p>
-	 */
-
-//	@Inject
-//    JsonWebToken jwt;
-
-
+	
 	/**
 	 * GET BY ID
 	 */

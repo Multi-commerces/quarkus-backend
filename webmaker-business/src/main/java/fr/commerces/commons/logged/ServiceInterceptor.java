@@ -72,8 +72,8 @@ public class ServiceInterceptor implements Serializable {
 			log.warn(e.getMessage().concat(" [ID]={{}}"), e.getIdentifierDebug());
 			throw e;
 		} catch (ConstraintViolationException e) {
-			log.error("L'action n'a pas pu aboutir en raison d'une violation de contrainte");
-			log.error(e.getMessage(), e);
+			log.warn("L'action n'a pas pu aboutir en raison d'une violation de contrainte");
+			log.warn(e.getMessage(), e);
 			throw e;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

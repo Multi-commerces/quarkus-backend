@@ -68,7 +68,7 @@ public class Product extends PanacheEntityBase {
 	@Column(name = "delivery_Time_QuantityNOK")
 	private Integer deliveryTimeQuantityNOK;
 
-	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductCategory> categories = new ArrayList<>();
 
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = ProductLang.class, mappedBy = "product", cascade = {

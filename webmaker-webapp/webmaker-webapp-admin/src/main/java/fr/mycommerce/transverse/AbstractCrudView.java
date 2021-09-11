@@ -1,21 +1,17 @@
 package fr.mycommerce.transverse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.application.FacesMessage.Severity;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.faces.event.ActionEvent;
@@ -30,7 +26,6 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.file.UploadedFile;
-import org.primefaces.shaded.commons.io.IOUtils;
 
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
@@ -39,7 +34,6 @@ import com.google.cloud.storage.StorageOptions;
 
 import fr.mycommerce.exception.MissingArgumentException;
 import fr.mycommerce.exception.MissingModelException;
-import fr.mycommerce.transverse.old.RenderMode;
 import fr.webmaker.commons.identifier.Identifier;
 import lombok.Getter;
 import lombok.Setter;
@@ -80,6 +74,8 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	 * @param id identifiant de l'item existant
 	 */
 	protected abstract void delete(I id);
+	
+	protected abstract void delete(List<I> ids);
 
 	/**
 	 * Liste des items
@@ -148,13 +144,6 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	protected UploadedFile uploadedFile;
 	public void setUploadedFile(UploadedFile uploadedFile) throws IOException {
 		this.uploadedFile = uploadedFile;
-		if (uploadedFile != null) {
-			try {
-				//BeanUtils.copyProperty(model, "picture", uploadedFile.getContent());
-			} catch (Exception e) {
-				// Ignore
-			}
-		}
 	}
 	
 	/**
@@ -211,8 +200,9 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 		storage.create(blobInfo, Files.readAllBytes(Paths.get(filePath)));
 
-		addFlashMessage(FacesMessage.SEVERITY_INFO,
-				"File " + filePath + " uploaded to bucket " + bucketName + " as " + objectName);
+		JavaFacesTool.sendFacesMessage("File " + filePath + " uploaded to bucket " + bucketName + " as " + objectName, 
+				FacesMessage.SEVERITY_INFO,
+				false);
 	}
 
 	@Getter
@@ -243,7 +233,10 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 			this.items = Optional.ofNullable(items).orElse(Collections.emptyList());
 			dataModels.setWrappedData(items);
 		} catch (Exception e) {
-			addFlashMessage(FacesMessage.SEVERITY_ERROR, e.getMessage());
+			JavaFacesTool.sendFacesMessage(
+					e.getMessage(), 
+					FacesMessage.SEVERITY_ERROR,
+					false);
 		}
 	}
 
@@ -251,7 +244,7 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 		model = newModelInstance();
 		uploadedFile = null;
 		this.action = ActionType.DEFAULT;
-		this.selectedItems = null;
+//		this.selectedItems = null;
 	}
 
 	public void reset(ActionEvent event) {
@@ -314,13 +307,6 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	 * </ul>
 	 */
 	public void saveAction(ActionEvent event) {
-		if (uploadedFile != null) {
-			try {
-			//	BeanUtils.copyProperty(model, "picture", uploadedFile.getContent());
-			} catch (Exception e) {
-				// Ignore
-			}
-		}
 		try {
 			switch (action) {
 			case CREATE:
@@ -335,7 +321,6 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 			}
 			successOfAction();
 			reset();
-			// TODO : postSaveAction(); ?
 		} catch (Exception e) {
 			failureOfAction();
 		}
@@ -355,9 +340,9 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 		// [BUSINESS] Opération de supression 
 		try {
 			delete(identifier);
-			successOfAction();
 		} catch (Exception e) {
 			failureOfAction();
+			return;
 		}
 		
 		// [WEB] Opération de suppression 
@@ -370,19 +355,26 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 		if (model != null && model.getIdentifier() != null && model.getIdentifier().equals(identifier)) {
 			model = newModelInstance();
 		}
+		
+		successOfAction();
+		this.action = ActionType.DEFAULT;
 	}
 
 	/**
 	 * Succès de l'action
 	 */
 	protected void successOfAction() {
-		addFlashMessage(FacesMessage.SEVERITY_INFO, "success of the action " + getAction().name().toLowerCase());
+		JavaFacesTool.sendFacesMessage("success of the action " + getAction().name().toLowerCase(), 
+				FacesMessage.SEVERITY_INFO,
+				true);
+		
 		// ---- Refresh dataTable ---- //
 		if (null != dataTable) {
-			final Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
-			flash.setKeepMessages(true);
-			flash.setRedirect(true);
-			PrimeFaces.current().executeScript("PF('" + dataTable.getWidgetVar() + "').filter();");
+//			final Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+//			flash.setKeepMessages(true);
+//			flash.setRedirect(true);
+			PrimeFaces.current().ajax().update("form-list:dataTable");
+//			PrimeFaces.current().executeScript("PF('" + dataTable.getWidgetVar() + "').filter();");
 		}
 	}
 
@@ -390,91 +382,14 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	 * Passage de la validation en échec avec création d'un facesMessage. Demande de
 	 * passer à la phase Response, en ignorant les phases non encore exécutées.
 	 */
-	protected void failureOfAction() {
-		addFlashMessage(FacesMessage.SEVERITY_ERROR, "failure of the action " + getAction().name().toLowerCase());
+	protected void failureOfAction() {	
+		JavaFacesTool.sendFacesMessage("failure of the action " + getAction().name().toLowerCase(), 
+				FacesMessage.SEVERITY_ERROR,
+				false);
 	}
 
-	protected static void addFlashMessage(final Severity severityName, final String message) {
-		FacesMessage facesMessage = null;
-		if (severityName.equals(FacesMessage.SEVERITY_INFO)) {
-			facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Info!", message);
-		} else if (severityName.equals(FacesMessage.SEVERITY_ERROR)) {
-			facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", message);
-		}else
-		{
-			return;
-		}
-
-		final FacesContext facesContext = FacesContext.getCurrentInstance();
 	
-		facesContext.addMessage(null, facesMessage);
-	}
 
-	/**
-	 * Obtient le fichier sous forme d'octet
-	 * 
-	 * @exception IllegalArgumentException [error.arg.null] - argument file est null
-	 * @param file élément reçu dans une demande POST multipart/form-data.
-	 * @return le tableau d'octets demandé
-	 */
-	protected static byte[] encodeToFile(final Part file) {
-		if (file == null)
-			return null;
-		try (InputStream input = file.getInputStream()) {
-			/*
-			 * toByteArray met l'entrée en mémoire tampon en interne, il n'est donc pas
-			 * nécessaire d'utiliser un BufferedInputStream.
-			 */
-			return IOUtils.toByteArray(input);
-		} catch (IOException e) {
-			throw new RuntimeException("error.techn.io.encode", e);
-		}
-	}
-
-	protected String getValueParam(String param) {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		// la demande n'est pas une publication:
-		if (!facesContext.isPostback() && !facesContext.isValidationFailed()) {
-			// extraire l'id de la chaîne de requête
-			Map<String, String> paramMap = facesContext.getExternalContext().getRequestParameterMap();
-			return paramMap.get(param);
-		}
-
-		return null;
-	}
-	
-	/**
-	 * Extraction de l'identifiant (param => id)
-	 * @return
-	 */
-	protected Long extractId()
-	{
-		String id = getValueParam("id");
-		if(id != null)
-		{
-			return Long.valueOf(id);
-		}
-		return null;
-	}
-	
-	/**
-	 * Demande le mode de rendu (mobile ou ordinateur de bureau)
-	 * @return
-	 */
-    private RenderMode getBrowserRenderMode() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        String userAgent = externalContext.getRequestHeaderMap().get("User-Agent");
-        return userAgent.toLowerCase().contains("mobile") ? RenderMode.MOBILE : RenderMode.WEB;
-    }
-    
-    /**
-     * Le mode de rendu (cf. getBrowserRenderMode)
-     * @return
-     */
-    public String getRenderMode() {
-        return getBrowserRenderMode().name();
-    }
     
     /**
      * Demande le message a afficher sur le bouton de suppression
@@ -503,9 +418,22 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	public void deleteSelectedItems() {	
 		if(!hasSelectedItems()) return;
 		
-		List<Identifier<?>> identifiers = selectedItems.stream()
+		final List<I> identifiers = selectedItems.stream()
 				.map(Model::getIdentifier)
 				.collect(Collectors.toList());
+		
+		/**
+		 *  [BUSINESS] Opération de suppression 
+		 */
+		try {
+			delete(identifiers);
+		} catch (Exception e) {
+			failureOfAction();
+			JavaFacesTool.sendFacesMessage(e.getMessage(), 
+					FacesMessage.SEVERITY_ERROR,
+					false);
+			return;
+		}
 		
 		/**
 		 * [WEB] Suppression des items sélectionnés de la liste
@@ -522,6 +450,7 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 		}
 		
 		successOfAction();
+		action = ActionType.DEFAULT;
 	}
 
 }

@@ -60,6 +60,12 @@
 			<artifactId>quarkus-arc</artifactId>
 		</dependency>
 
+
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-authz-client</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-keycloak-authorization</artifactId>
@@ -286,7 +292,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${surefire-plugin.version}</version>
 				<configuration>
-					<skipTests>true</skipTests>
+<!-- 					<skipTests>true</skipTests> -->
 					<systemPropertyVariables>
 						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
 						<maven.home>${maven.home}</maven.home>

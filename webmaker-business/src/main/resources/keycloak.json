@@ -1,0 +1,12 @@
+{
+  "realm": "webmaker",
+  "auth-server-url": "http://localhost:8080/auth/",
+  "ssl-required": "none",
+  "resource": "fontend-web",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "72eba50a-b5d6-4f9a-8dd8-62f4bd45dc30"
+  },
+  "confidential-port": 0,
+  "policy-enforcer": {}
+}

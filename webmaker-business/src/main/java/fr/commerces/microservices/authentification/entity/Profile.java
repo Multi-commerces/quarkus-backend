@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.commerces.services.authentifications.models;
+package fr.commerces.microservices.authentification.entity;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -24,13 +24,19 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 
+import java.util.ArrayList;
+
 public enum Profile {
     SUPER_ADMIN("super_admin"),
+    DEVELOPPEUR("developpeur_web"),
     ADMIN("admin"),
     USER("user"),
     GESTIONNAIRE("gestionnaire"),
-    SHOPPER("shopper"),
-    SELLER("seller");
+    RESP_SAV("responsable_service_client"),
+    RESP_CRM("responsable_CRM"),
+    RESP_ACHAT("responsable_achat"),
+    REST_LOGISTIQUE("responsable_logistique"),
+    REST_PRODUCT("responsable_produit");
 
     String tokenValue;
 
@@ -49,11 +55,21 @@ public enum Profile {
 
         @Override
         public String convertToDatabaseColumn(List<Profile> list) {
+        	if(list == null)
+        	{
+        		return null;
+        	}
+        	
             return list.stream().map(Enum::name).collect(Collectors.joining(","));
         }
 
         @Override
         public List<Profile> convertToEntityAttribute(String joined) {
+        	if(joined == null)
+        	{
+        		return new ArrayList<Profile>();
+        	}
+        	
             return stream(joined.split(",")).map(Profile::valueOf).collect(Collectors.toList());
         }
     }

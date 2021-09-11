@@ -160,4 +160,10 @@ public class AdminProductListMB extends AbstractCrudView<ProductData, ProductID>
 		return new ProductData();
 	}
 
+	@Override
+	protected void delete(List<ProductID> identifiers) {
+		identifiers.stream().forEach(identifier -> service.delete(identifier.getLanguageCode(), identifier.getId()));
+
+	}
+
 }

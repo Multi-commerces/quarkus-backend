@@ -4,4 +4,4 @@
  * @author Julien ILARI
  * @version 1.O
  */
-package fr.commerces.microservices.customer;
+package fr.commerces.microservices.authentification;
