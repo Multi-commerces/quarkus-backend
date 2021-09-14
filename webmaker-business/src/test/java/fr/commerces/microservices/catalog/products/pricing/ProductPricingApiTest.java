@@ -16,17 +16,15 @@ public class ProductPricingApiTest extends AbtractQuarkusApiTest {
 
 	@Test
 	@TestSecurity(authorizationEnabled = false)
-	public void testGetProductByIdEndpoint_StatusCode404() {
+	public void testGetProductByIdEndpoint_PRODUCT_ID_BIDON() {
 		putPathParam("productId", PRODUCT_ID_BIDON);
-
-		testEndpoint_StatusCode404();
+		testEndpoint_OK();
 	}
 
 	@Test
 	@TestSecurity(authorizationEnabled = false)
 	public void testGetProductByIdEndpoint_OK() {
 		putPathParam("productId", PRODUCT_ID_10000001);
-
 		testEndpoint_OK();
 	}
 

@@ -24,19 +24,23 @@ import javax.persistence.UniqueConstraint;
 import fr.commerces.microservices.catalog.products.entity.ProductCategory;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Cacheable(true)
 @Entity
-@Getter
-@Setter
+@Cacheable(true)
+@Getter @Setter 
+@ToString(onlyExplicitlyIncluded = true) 
+@EqualsAndHashCode(callSuper=false,onlyExplicitlyIncluded = true)
 @Table(name = "CATEGORY", uniqueConstraints = { @UniqueConstraint(columnNames = { "category_id" }) })
 public class Category extends PanacheEntityBase {
 
 	@Id
 	@Column(name = "category_id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@EqualsAndHashCode.Include @ToString.Include
 	public Long id;
 
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
@@ -55,11 +59,13 @@ public class Category extends PanacheEntityBase {
 	public Set<Category> childrenCategory = new HashSet<>();
 
 	@Column(nullable = false)
+	@ToString.Include
 	public int position;
 
 	/**
 	 * catégorie activé/désactivé
 	 */
+	@ToString.Include
 	public boolean displayed;
 
 	/**
@@ -72,12 +78,14 @@ public class Category extends PanacheEntityBase {
 	 */
 	public byte[] smallPicture;
 
+	@ToString.Include
 	@Column(columnDefinition = "timestamp default current_timestamp", nullable = false, updatable = false, insertable = true)
 	public LocalDateTime created;
 
+	@ToString.Include
 	@Column(columnDefinition = "timestamp default current_timestamp", nullable = false, updatable = true, insertable = true)
 	public LocalDateTime updated;
-
+	
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = CategoryLang.class, mappedBy = "category", cascade = {
 			CascadeType.REMOVE }, orphanRemoval = true)
 	private List<CategoryLang> categoryLang = new ArrayList<>();

@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbtractQuarkusApiTest {
 	
 	private final Map<String, Object> pathParams = new HashMap<String, Object>();
-	private final Map<String, Object> queryParams = new HashMap<String, Object>();
+	private final Map<String, Object> queryPrams = new HashMap<String, Object>();
 	
 //	protected abstract String getBasePath();
 
@@ -29,7 +30,7 @@ public abstract class AbtractQuarkusApiTest {
 	public void afterEach() {
 		log.info("############################## AfterEach ##############################");
 		pathParams.clear();
-		queryParams.clear();
+		queryPrams.clear();
 	}
 	
 	protected void putPathParam(String key, Object value) {
@@ -37,11 +38,11 @@ public abstract class AbtractQuarkusApiTest {
 	}
 
 	protected void putQueryParam(String key, Object value) {
-		queryParams.put(key, value);
+		queryPrams.put(key, value);
 	}
 	
 	protected final ValidatableResponse testEndpoint_StatusCode404() {
-		return testEndpoint_StatusCode404("/");
+		return testEndpoint_StatusCode404("");
 	}
 
 	
@@ -57,6 +58,10 @@ public abstract class AbtractQuarkusApiTest {
 		return testEndpoint(endpointPath, 200);
 	}
 
+	protected final ValidatableResponse testEndpoint(final int expectedStatusCode) {
+		return testEndpoint("/", expectedStatusCode);
+	}
+	
 	protected final ValidatableResponse testEndpoint(final String endpointPath, final int expectedStatusCode) {
 		if(endpointPath == null)
 		{
@@ -67,17 +72,17 @@ public abstract class AbtractQuarkusApiTest {
 		
 		final StringBuilder fullPath = new StringBuilder(endpointPath);
 
-		if (!queryParams.isEmpty()) {
+		if (!queryPrams.isEmpty()) {
 			fullPath.append("?");
-			queryParams.entrySet().forEach(entry -> {
-				fullPath.append("&");
-				fullPath.append(String.valueOf(entry.getKey()));
-				fullPath.append("=");
-				fullPath.append(String.valueOf(entry.getValue()));
-			});
+			final String params = queryPrams.entrySet().stream()
+					.map(entry -> String.join("=", entry.getKey(), String.valueOf(entry.getValue())))
+					.collect(Collectors.joining("&")).toString();
+			
+			fullPath.append(params);
+			log.info("Path (end-point) : " + fullPath.toString());
 		}
 
-		return given().when().get(fullPath.toString().replace("?&", "?"), pathParams).then()
+		return given().when().get(fullPath.toString(), pathParams).then()
 				.statusCode(expectedStatusCode);
 	}
 

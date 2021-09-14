@@ -20,7 +20,7 @@ public class ProductVariationApiTest extends AbtractQuarkusApiTest {
 	public void testGetProductByIdEndpoint_StatusCode404() {
 		putPathParam("productId", PRODUCT_ID_BIDON);
 
-		testEndpoint_StatusCode404();
+		testEndpoint_OK();
 	}
 
 	@Test

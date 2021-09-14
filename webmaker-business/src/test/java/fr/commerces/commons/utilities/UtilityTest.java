@@ -10,6 +10,7 @@ import fr.webmaker.commons.identifier.LangID;
 
 public final class UtilityTest {
 	public final static String LANG_CODE_BIDON = "xx";
+	public final static String LANG_CODE_NOTUSE = "tt";
 	public final static String LANG_CODE_FR = "fr";
 	
 	/*

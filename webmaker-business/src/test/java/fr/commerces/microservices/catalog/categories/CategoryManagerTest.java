@@ -160,6 +160,8 @@ public class CategoryManagerTest {
 		// Ne fait plus partie des enfants de CATEGORY_ID_20000003
 		final Category entity = Category.findById(CATEGORY_ID_20000003);
 		assertThat(entity.getChildrenCategory().size(), is(0)); 
+		
+		// TODO : Tester la non suppression des produits
 	}
 
 	@Test
