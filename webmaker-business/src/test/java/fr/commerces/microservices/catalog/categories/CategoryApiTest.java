@@ -4,6 +4,9 @@ import static fr.commerces.commons.utilities.UtilityTest.LANG_CODE_BIDON;
 import static fr.commerces.commons.utilities.UtilityTest.LANG_CODE_FR;
 import static fr.commerces.commons.utilities.UtilityTest.LANG_CODE_NOTUSE;
 
+import javax.ws.rs.core.Response.Status;
+
+import org.eclipse.microprofile.openapi.models.PathItem.HttpMethod;
 import org.junit.jupiter.api.Test;
 
 import fr.commerces.commons.abstracts.AbtractQuarkusApiTest;
@@ -19,21 +22,21 @@ public class CategoryApiTest extends AbtractQuarkusApiTest {
 	@TestSecurity(authorizationEnabled = false)
 	public void testGetCategoryByIdEndpoint_LANG_CODE_BIDON() {
 		putPathParam("languageCode", LANG_CODE_BIDON);
-		testEndpoint(200);
+		testEndpoint(HttpMethod.GET, Status.BAD_REQUEST);
 	}
 	
 	@Test
 	@TestSecurity(authorizationEnabled = false)
 	public void testGetCategoryByIdEndpoint_LANG_CODE_NOTUSE() {
 		putPathParam("languageCode", LANG_CODE_NOTUSE);
-		testEndpoint(200);
+		testEndpoint(HttpMethod.GET, Status.OK);
 	}
 
 	@Test
 	@TestSecurity(authorizationEnabled = false)
 	public void testGetCategoryByIdEndpoint_OK() {
 		putPathParam("languageCode", LANG_CODE_FR);
-		testEndpoint_OK();
+		testEndpoint(HttpMethod.GET, Status.OK);
 	}
 
 }

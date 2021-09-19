@@ -58,16 +58,16 @@ public class ProductResource extends GenericResource<CollectionResponse<ProductD
 	 */
 	@Hypermedia
 	@Override
-	public CollectionResponse<ProductData, ProductID> getProducts(final String languageCode, final Integer page,
-			final Integer size) {
+	public CollectionResponse<ProductData, ProductID> getProducts(final String languageCode, 
+			final Integer page,	final Integer size) {
 
 		final LanguageCode langCode = LanguageCode.getByCode(languageCode);
 
 		/*
 		 * Data API
 		 */
-		final Map<Long, ProductData> items = manager.findAllByLanguageCode(langCode, Optional.ofNullable(page),
-				Optional.ofNullable(size));
+		final Map<Long, ProductData> items = manager.findAllByLanguageCode(langCode, 
+				Optional.ofNullable(page), Optional.ofNullable(size));
 
 		/*
 		 * Réponse API

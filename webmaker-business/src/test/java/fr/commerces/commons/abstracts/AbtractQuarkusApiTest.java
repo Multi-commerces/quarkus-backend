@@ -4,12 +4,19 @@ import static io.restassured.RestAssured.given;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
+
+import org.eclipse.microprofile.openapi.models.PathItem.HttpMethod;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.RequestSpecification;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -17,8 +24,7 @@ public abstract class AbtractQuarkusApiTest {
 	
 	private final Map<String, Object> pathParams = new HashMap<String, Object>();
 	private final Map<String, Object> queryPrams = new HashMap<String, Object>();
-	
-//	protected abstract String getBasePath();
+	private Object body = null;
 
 	@BeforeEach
 	public void beforeEach() {
@@ -31,6 +37,7 @@ public abstract class AbtractQuarkusApiTest {
 		log.info("############################## AfterEach ##############################");
 		pathParams.clear();
 		queryPrams.clear();
+		body = null;
 	}
 	
 	protected void putPathParam(String key, Object value) {
@@ -40,50 +47,46 @@ public abstract class AbtractQuarkusApiTest {
 	protected void putQueryParam(String key, Object value) {
 		queryPrams.put(key, value);
 	}
-	
-	protected final ValidatableResponse testEndpoint_StatusCode404() {
-		return testEndpoint_StatusCode404("");
-	}
-
-	
-	protected final ValidatableResponse testEndpoint_StatusCode404(final String endpointPath) {
-		return testEndpoint(endpointPath, 404);
-	}
-	
-	protected final ValidatableResponse testEndpoint_OK() {
-		return testEndpoint_OK("/");
-	}
 
 	protected final ValidatableResponse testEndpoint_OK(final String endpointPath) {
-		return testEndpoint(endpointPath, 200);
+		return testEndpoint(HttpMethod.GET, endpointPath, Status.OK);
 	}
 
-	protected final ValidatableResponse testEndpoint(final int expectedStatusCode) {
-		return testEndpoint("/", expectedStatusCode);
+	protected final ValidatableResponse testEndpoint(final HttpMethod httpMethod, final Status status) {
+		return testEndpoint(httpMethod, "/", status);
 	}
 	
-	protected final ValidatableResponse testEndpoint(final String endpointPath, final int expectedStatusCode) {
-		if(endpointPath == null)
-		{
-			return given().when().get("/", pathParams)    
-	          .then()
-	             .statusCode(expectedStatusCode);
+	protected final ValidatableResponse testEndpoint(final HttpMethod httpMethod, final String endpointPath, final Status status) {
+		String path = endpointPath == null ? "/" : endpointPath;
+		
+		final RequestSpecification with = RestAssured.with()
+				.queryParams(queryPrams)
+				.pathParams(pathParams);
+		
+		final RequestSpecification given = given(body == null ? with: with.body(body))
+					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+					.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+
+		final RequestSpecification when = given.when();
+		final Response response;
+		switch (httpMethod) {
+		case GET:
+			response = when.get(path);
+			break;
+		case POST:
+			response = when.post(path);
+			break;
+		case PUT:
+			response = when.put(path);
+			break;
+		case PATCH:
+			response = when.patch(path);
+			break;
+		default:
+			return null;
 		}
 		
-		final StringBuilder fullPath = new StringBuilder(endpointPath);
-
-		if (!queryPrams.isEmpty()) {
-			fullPath.append("?");
-			final String params = queryPrams.entrySet().stream()
-					.map(entry -> String.join("=", entry.getKey(), String.valueOf(entry.getValue())))
-					.collect(Collectors.joining("&")).toString();
-			
-			fullPath.append(params);
-			log.info("Path (end-point) : " + fullPath.toString());
-		}
-
-		return given().when().get(fullPath.toString(), pathParams).then()
-				.statusCode(expectedStatusCode);
+		return response.then().statusCode(status.getStatusCode());
 	}
 
 }

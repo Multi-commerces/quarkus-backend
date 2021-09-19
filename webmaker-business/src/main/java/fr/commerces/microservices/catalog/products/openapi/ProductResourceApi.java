@@ -1,6 +1,5 @@
 package fr.commerces.microservices.catalog.products.openapi;
 
-import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -79,7 +78,6 @@ public interface ProductResourceApi {
 			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun porduit trouvé avec les critères de recherche") 
 	})
-	@RolesAllowed(value = { "ADMIN" })
 	CollectionResponse<ProductData, ProductID> getProducts(
 			/*
 			 * language
@@ -95,14 +93,14 @@ public interface ProductResourceApi {
 			@Parameter(description = "Numéro de page") 
 			@QueryParam(value = "page") 
 			@DefaultValue("1") 
-			Integer page,
+			Integer pageStart,
 			/*
 			 * size
 			 */
 			@Parameter(description = "Taille de la page (min 1 et max 100)") 
 			@QueryParam(value = "size") 
 			@DefaultValue("20") 
-			Integer size);
+			Integer pageSize);
 
 	/* ############################################################################################################# */
 
@@ -127,8 +125,7 @@ public interface ProductResourceApi {
 			@NotNull @Valid ProductData data);
 
 	/* ############################################################################################################# */
-
-//	@RolesAllowed({ "gestionnaire" })
+	
 	@PATCH
 	@Path("/{productId}")
 	@Operation(operationId = "updateProduct", summary = "Modification produit", description = "Opération de modification d'un produit existant.")
@@ -154,7 +151,6 @@ public interface ProductResourceApi {
 			@NotNull @Valid ProductData data);
 
 	
-//	@RolesAllowed({ "gestionnaire" })
 	@DELETE
 	@Path("/{productId}")
 	@Operation(operationId = "deleteProductLang", summary = "Suppression produit d'une langue", description = "Opération de suppression d'un produit existant dans une langue spécifique.")

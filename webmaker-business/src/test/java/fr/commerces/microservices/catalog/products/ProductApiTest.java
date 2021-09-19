@@ -4,6 +4,10 @@ import static fr.commerces.commons.utilities.UtilityTest.LANG_CODE_FR;
 import static fr.commerces.commons.utilities.UtilityTest.PRODUCT_ID_10000001;
 import static fr.commerces.commons.utilities.UtilityTest.PRODUCT_ID_BIDON;
 
+import javax.ws.rs.core.Response.Status;
+
+import org.eclipse.microprofile.openapi.models.PathItem.HttpMethod;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import fr.commerces.commons.abstracts.AbtractQuarkusApiTest;
@@ -22,8 +26,8 @@ public class ProductApiTest extends AbtractQuarkusApiTest {
 	public void testGetProductByIdEndpoint_StatusCode404() {
 		putPathParam("languageCode", LANG_CODE_FR);
 		putPathParam("productId", PRODUCT_ID_BIDON);
-
-		testEndpoint_StatusCode404("/{productId}");
+		
+		testEndpoint(HttpMethod.GET, "/{productId}", Status.NOT_FOUND);
 	}
 
 	@Test
@@ -32,15 +36,18 @@ public class ProductApiTest extends AbtractQuarkusApiTest {
 		putPathParam("languageCode", LANG_CODE_FR);
 		putPathParam("productId", PRODUCT_ID_10000001);
 
-		testEndpoint_OK("/{productId}");
+		testEndpoint(HttpMethod.GET, "/{productId}", Status.OK);
 	}
 
 	@Test
 	@TestSecurity(authorizationEnabled = false)
 	public void testGetProductsEndpoint_QueryParamEmpty_OK() {
 		putPathParam("languageCode", LANG_CODE_FR);
-
-		testEndpoint_OK("/");
+		
+		testEndpoint(HttpMethod.GET, Status.OK)
+			.body("paging.page", Matchers.is(1))
+			.body("paging.totalPages", Matchers.is(1))
+			.body("paging.totalItems", Matchers.is(3));
 	}
 	
 	@Test
@@ -50,8 +57,10 @@ public class ProductApiTest extends AbtractQuarkusApiTest {
 
 		putQueryParam("page", 1);
 		putQueryParam("size", 1);
-
-		testEndpoint_OK("/");
+		testEndpoint(HttpMethod.GET, Status.OK)
+			.assertThat()
+				.body("paging.page", Matchers.is(1), "paging.totalPages", Matchers.is(3), "paging.totalItems", Matchers.is(3))
+				.body( "collection.size()", Matchers.is(1));
 	}
 
 }

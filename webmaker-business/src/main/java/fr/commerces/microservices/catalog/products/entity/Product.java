@@ -44,8 +44,8 @@ public class Product extends PanacheEntityBase {
 	@Column(name = "price_HT")
 	public Double priceHT;
 
-//	@Column(name = "tax_Rule")
-//	public Double taxRule;
+	@Column(name = "tax_Rule")
+	public Double taxRule;
 
 	@Column(name = "quantity")
 	public Long quantity;

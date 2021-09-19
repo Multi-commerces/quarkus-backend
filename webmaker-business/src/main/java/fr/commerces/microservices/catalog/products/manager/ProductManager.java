@@ -80,10 +80,12 @@ public class ProductManager {
 	 * @return liste des produits (key : identifiant du produit, value : le produit)
 	 */
 	public final Map<Long, ProductData> findAllByLanguageCode(@NotNull final LanguageCode language,
-			@NotNull final Optional<@Min(1) Integer> optPage, @NotNull final Optional<@Positive @Min(1) Integer> size) {
-
-		var page = Page.of(optPage.orElse(1) - 1, size.orElse(SIZE));
-		try (final Stream<ProductLang> streamEntity = ProductLang.findByLanguageCode(language).page(page).stream()) {
+			@NotNull final Optional<@Min(1) Integer> page, 
+			@NotNull final Optional<@Positive @Min(1) Integer> size
+			) {
+		try (final Stream<ProductLang> streamEntity = ProductLang.findByLanguageCode(language)
+				.page(Page.of(page.orElse(1) - 1, size.orElse(SIZE)))
+				.stream()) {
 			var map = streamEntity.collect(Collectors.toMap(ProductLang::getId, Function.identity()));
 			return mapper.toProductDataById(map);
 		}
