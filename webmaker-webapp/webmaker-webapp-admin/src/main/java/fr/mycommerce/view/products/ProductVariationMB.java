@@ -11,13 +11,13 @@ import javax.inject.Named;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import fr.mycommerce.service.product.ProductVariationRestClient;
-import fr.mycommerce.transverse.AbstractCrudView;
-import fr.mycommerce.transverse.ActionType;
-import fr.mycommerce.transverse.JavaFacesTool;
-import fr.mycommerce.transverse.Model;
+import fr.mycommerce.commons.models.Model;
+import fr.mycommerce.commons.tools.JavaFacesTool;
+import fr.mycommerce.commons.views.AbstractCrudView;
+import fr.mycommerce.commons.views.ActionType;
 import fr.webmaker.microservices.catalog.products.data.ProductVariationData;
 import fr.webmaker.microservices.catalog.products.id.ProductVariationID;
+import fr.webmaker.microservices.catalog.products.restclient.ProductVariationRestClient;
 import lombok.Getter;
 
 @Named("adminProductVariationMB")

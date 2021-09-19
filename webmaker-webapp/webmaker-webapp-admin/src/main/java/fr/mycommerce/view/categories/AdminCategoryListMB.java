@@ -10,13 +10,13 @@ import javax.inject.Named;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 
-import fr.mycommerce.service.Manager;
-import fr.mycommerce.service.categories.CategoryRestClient;
-import fr.mycommerce.transverse.AbstractCrudView;
-import fr.mycommerce.transverse.Model;
+import fr.mycommerce.commons.managers.Manager;
+import fr.mycommerce.commons.models.Model;
+import fr.mycommerce.commons.views.AbstractCrudView;
 import fr.webmaker.commons.identifier.LangID;
 import fr.webmaker.commons.response.CollectionResponse;
 import fr.webmaker.microservices.catalog.categories.data.CategoryData;
+import fr.webmaker.microservices.catalog.categories.restapi.CategoryRestClient;
 import lombok.Getter;
 
 @Named("adminCategoryMB")

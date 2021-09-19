@@ -16,7 +16,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import fr.commerces.microservices.catalog.images.entity.ShopImage;
+import fr.commerces.microservices.catalog.images.entities.ShopImage;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Getter;
 import lombok.Setter;

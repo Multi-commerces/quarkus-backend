@@ -26,8 +26,6 @@ import org.junit.jupiter.api.Test;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.commerces.microservices.catalog.categories.entity.Category;
-import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
 import fr.webmaker.commons.identifier.LangID;
 import fr.webmaker.microservices.catalog.categories.data.CategoryData;
 import fr.webmaker.microservices.catalog.categories.data.CategoryHierarchyData;

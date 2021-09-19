@@ -18,9 +18,6 @@ import fr.commerces.commons.exceptions.crud.NotFoundDeleteException;
 import fr.commerces.commons.exceptions.crud.NotFoundException;
 import fr.commerces.commons.exceptions.crud.NotFoundUpdateException;
 import fr.commerces.commons.logged.ManagerInterceptor;
-import fr.commerces.microservices.catalog.categories.entity.Category;
-import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
-import fr.commerces.microservices.catalog.categories.entity.CategoryLangPK;
 import fr.webmaker.microservices.catalog.categories.data.CategoryData;
 import fr.webmaker.microservices.catalog.categories.data.CategoryHierarchyData;
 

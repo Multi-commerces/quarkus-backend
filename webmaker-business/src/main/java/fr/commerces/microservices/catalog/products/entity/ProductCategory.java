@@ -7,7 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
-import fr.commerces.microservices.catalog.categories.entity.Category;
+import fr.commerces.microservices.catalog.categories.Category;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Getter;
 import lombok.Setter;

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.faces.event.ActionEvent;
 
-import fr.mycommerce.transverse.AbstractView;
+import fr.mycommerce.commons.views.AbstractView;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
 import fr.webmaker.commons.identifier.Identifier;
 import lombok.Getter;
