@@ -32,10 +32,10 @@ public class ProductBasicManager {
 	 */
 	public final ProductBasicData findProductBasicByProductAndLang(@NotNull final Long productId,
 			@NotNull final LanguageCode languageCode) throws NotFoundException {
-		final ProductLang entity = ProductLang.findByIdProductAndLanguageCode(productId, languageCode)
+		
+		return ProductLang.findByIdProductAndLanguageCode(productId, languageCode)
+				.map(mapper::toData)
 				.orElseThrow(NotFoundException::new);
-
-		return mapper.toData(entity);
 	}
 
 	/* ################ Opérations de mise à jour ################ */

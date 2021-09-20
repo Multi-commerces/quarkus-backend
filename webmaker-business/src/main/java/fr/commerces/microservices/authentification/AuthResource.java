@@ -131,8 +131,6 @@ public class AuthResource implements AuthResourceApi {
 		    System.out.println(granted);
 		}
 		
-		
-		
 		return "{"
 				+ "\"Context\" : \"" + authContextProvider.context() + "\","
 				+ "\"Bearer\" : \"" + rpt + "\"}";

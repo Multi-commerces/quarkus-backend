@@ -2,9 +2,7 @@ package fr.commerces.microservices.catalog.products.manager;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,19 +16,20 @@ import com.neovisionaries.i18n.LanguageCode;
 
 import fr.commerces.commons.exceptions.crud.NotFoundDeleteException;
 import fr.commerces.commons.exceptions.crud.NotFoundException;
+import fr.commerces.commons.exceptions.crud.NotFoundUpdateException;
 import fr.commerces.commons.logged.ManagerInterceptor;
 import fr.commerces.microservices.catalog.products.entity.Product;
 import fr.commerces.microservices.catalog.products.entity.ProductLang;
-import fr.commerces.microservices.catalog.products.mapper.ProductMapper;
+import fr.commerces.microservices.catalog.products.mapper.ProductLangMapper;
 import fr.webmaker.commons.PagingData;
-import fr.webmaker.microservices.catalog.products.data.ProductData;
+import fr.webmaker.microservices.catalog.products.data.ProductLangData;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 
 @ManagerInterceptor
 @ApplicationScoped
 //@AlternativePriority(Interceptor.Priority.APPLICATION)
-public class ProductManager {
+public class ProductLangManager {
 
 	/**
 	 * Taille de la liste, par défaut 10 produits max
@@ -38,7 +37,7 @@ public class ProductManager {
 	private static final int SIZE = 10;
 
 	@Inject
-	ProductMapper mapper;
+	ProductLangMapper mapper;
 
 	/* ################ Opérations de lecture ################ */
 
@@ -54,15 +53,16 @@ public class ProductManager {
 	 * @return
 	 */
 	public final PagingData getPagingProductLang(@NotNull final LanguageCode languageCode,
-			final Optional<Integer> optSize) {
-		int size = optSize.orElse(SIZE);
+			final Optional<Integer> _page, final Optional<Integer> _size) {
+		int size = _size.orElse(SIZE);
+		int page = _page.orElse(1);
 
 		final PanacheQuery<ProductLang> query = ProductLang.findByLanguageCode(languageCode).page(Page.ofSize(size));
 
 		final PagingData pagingData = new PagingData();
-		pagingData.setPage(1);
-		pagingData.setPageSize(size);
-		pagingData.setTotalItems(query.count());
+		pagingData.setNumber(page);
+		pagingData.setSize(size);
+		pagingData.setTotalElements(query.count());
 		pagingData.setTotalPages(query.pageCount());
 
 		return pagingData;
@@ -79,16 +79,31 @@ public class ProductManager {
 	 * @param size     (optionnel)
 	 * @return liste des produits (key : identifiant du produit, value : le produit)
 	 */
-	public final Map<Long, ProductData> findAllByLanguageCode(@NotNull final LanguageCode language,
+	public final Map<Long, ProductLangData> findAllByLanguageCode(@NotNull final LanguageCode language,
 			@NotNull final Optional<@Min(1) Integer> page, 
 			@NotNull final Optional<@Positive @Min(1) Integer> size
 			) {
-		try (final Stream<ProductLang> streamEntity = ProductLang.findByLanguageCode(language)
+		
+		return ProductLang.findByLanguageCode(language)
 				.page(Page.of(page.orElse(1) - 1, size.orElse(SIZE)))
-				.stream()) {
-			var map = streamEntity.collect(Collectors.toMap(ProductLang::getId, Function.identity()));
-			return mapper.toProductDataById(map);
-		}
+				.list()
+				.stream()
+				.collect(
+					Collectors.toUnmodifiableMap(
+							product -> product.getId(),
+							product -> mapper.toProductData(product))
+				);
+	}
+	
+	public final Map<LanguageCode, ProductLangData> findAll(Long poductId) {
+		return ProductLang.findByProductId(poductId)
+				.list()
+				.stream()
+				.collect(
+					Collectors.toUnmodifiableMap(
+							product -> product.getLang(),
+							product -> mapper.toProductData(product))
+				);
 	}
 
 	/**
@@ -99,7 +114,7 @@ public class ProductManager {
 	 * @return
 	 * @throws NotFoundException Produit non trouvé
 	 */
-	public final ProductData findByProductLangPK(@NotNull final Long productId,
+	public final ProductLangData findByProductLangPK(@NotNull final Long productId,
 			@NotNull final LanguageCode languageCode) throws NotFoundException {
 		final ProductLang entity = ProductLang.findByIdProductAndLanguageCode(productId, languageCode)
 				.orElseThrow(() -> new NotFoundException(productId));
@@ -122,17 +137,17 @@ public class ProductManager {
 	 */
 	@Transactional
 	public final void updateProductLang(@NotNull final LanguageCode language, @NotNull final Long productId,
-			@NotNull @Valid final ProductData data) throws NotFoundException {
+			@NotNull @Valid final ProductLangData data) throws NotFoundException {
 		/*
 		 * MAJ PRODUIT
 		 */
 		Product.<Product>findByIdOptional(productId).map(pojo -> mapper.toProduct(data, pojo))
-				.orElseThrow(() -> new NotFoundException(productId));
+				.orElseThrow(() -> new NotFoundUpdateException(productId));
 		/*
 		 * MAJ PRODUIT LANG
 		 */
 		ProductLang.findByIdProductAndLanguageCode(productId, language).map(pojo -> mapper.toProductLang(data, pojo))
-				.orElseThrow(() -> new NotFoundException(productId + String.valueOf(language)));
+				.orElseThrow(() -> new NotFoundUpdateException(productId + String.valueOf(language)));
 	}
 
 	/* ################ Opérations de création ################ */
@@ -140,7 +155,7 @@ public class ProductManager {
 	/**
 	 * <h1>CREATE BY languageCode</h1>
 	 * <p>
-	 * Opération de création d'un nouveau produit dans une langue
+	 * Opération de création d'un nouveau produit
 	 * </p>
 	 * 
 	 * @param languageCode langue du produit 
@@ -148,7 +163,7 @@ public class ProductManager {
 	 * @return
 	 */
 	@Transactional
-	public final Long createProductLang(@NotNull final LanguageCode languageCode, @Valid final ProductData data) {
+	public final Long createProductLang(@NotNull final LanguageCode languageCode, @Valid final ProductLangData data) {
 		final ProductLang productLang = mapper.toProductLang(data);
 		productLang.setProductLangPK(languageCode);
 		productLang.persistAndFlush();
@@ -166,7 +181,7 @@ public class ProductManager {
 	 * @throws NotFoundDeleteException
 	 */
 	@Transactional
-	public void deleteProductLang(@NotNull final Long productId) throws NotFoundDeleteException {
+	public void deleteProductLanguages(@NotNull final Long productId) throws NotFoundDeleteException {
 		if (!Product.deleteById(productId)) {
 			throw new NotFoundDeleteException(productId);
 		}

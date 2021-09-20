@@ -15,7 +15,7 @@ Dans une invite de commande, etre positionné sur le répertoire du projet.
 L'application quarkus sera lancée manuellement et l'image docker sera construite pour les autres environnements.
 
 ```shell script
-docker-compose -f docker/dev/docker-compose.yml --env-file .env up -d
+docker-compose -f docker/local/docker-compose.yml --env-file .env up -d
 ```
 
 psql -U postgres_user -d multicommerces -h localhost -p 5435 <br />
@@ -30,9 +30,11 @@ POSTGRES_PASSWORD: postgres_pwd
 ##### Toutes les étapes (shell script) :
 
 ```shell script
-cd ./docker/dev/ && \
+sdk default java 11.0.12-open && \
+cd /home/njlg6500/workspace/jilari/webmaker/webmaker-business/docker/local/ && \
 docker-compose up -d && \
-./mvnw compile quarkus:dev -DdebugHost=0.0.0.0 
+cd /home/njlg6500/workspace/jilari/webmaker/webmaker-business && \
+./mvnw compile quarkus:dev -DdebugHost=0.0.0.0
 ```
 
 

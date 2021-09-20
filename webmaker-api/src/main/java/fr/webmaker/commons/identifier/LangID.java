@@ -2,12 +2,13 @@ package fr.webmaker.commons.identifier;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Getter @Setter @ToString
-public class LangID extends Identifier<Long> {
+@Data @EqualsAndHashCode(callSuper=true)
+@ToString(callSuper = true)
+public class LangID extends LongID {
 
 	/**
 	 * serialVersionUID

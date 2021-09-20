@@ -9,7 +9,7 @@ import org.omnifaces.cdi.ViewScoped;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
 import fr.webmaker.commons.response.SingleResponse;
 import fr.webmaker.microservices.catalog.products.data.ProductBasicData;
-import fr.webmaker.microservices.catalog.products.id.ProductID;
+import fr.webmaker.microservices.catalog.products.id.ProductLangID;
 import fr.webmaker.microservices.catalog.products.restclient.ProductBasicRestClient;
 import lombok.Getter;
 
@@ -20,7 +20,7 @@ import lombok.Getter;
  */
 @Named("adminProductBasicMB")
 @ViewScoped
-public class ProductBasicMB extends AbstractProductMB<ProductBasicData, ProductID> {
+public class ProductBasicMB extends AbstractProductMB<ProductBasicData, ProductLangID> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,7 @@ public class ProductBasicMB extends AbstractProductMB<ProductBasicData, ProductI
 	
 
 	@Override
-	public SingleResponse<ProductBasicData, ProductID> callServiceFindById(String identifier) {
+	public SingleResponse<ProductBasicData, ProductLangID> callServiceFindById(String identifier) {
 		return service.get("fr", Long.valueOf(identifier));
 	}
 
@@ -60,8 +60,8 @@ public class ProductBasicMB extends AbstractProductMB<ProductBasicData, ProductI
 	}
 	
 	@Override
-	public ProductID newIdentifier(){
-		return new ProductID(null, null);
+	public ProductLangID newIdentifier(){
+		return new ProductLangID(null, null);
 	}
 
 }

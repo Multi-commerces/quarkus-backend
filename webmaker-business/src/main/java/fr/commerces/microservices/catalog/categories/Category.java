@@ -21,6 +21,9 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import fr.commerces.microservices.catalog.products.entity.ProductCategory;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
@@ -44,7 +47,7 @@ public class Category extends PanacheEntityBase {
 	public Long id;
 
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-	public List<ProductCategory> products = new ArrayList<>();
+	public List<ProductCategory> productCategories = new ArrayList<>();
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "category_parent_id", nullable = true)
@@ -80,10 +83,12 @@ public class Category extends PanacheEntityBase {
 
 	@ToString.Include
 	@Column(columnDefinition = "timestamp default current_timestamp", nullable = false, updatable = false, insertable = true)
+	@CreationTimestamp
 	public LocalDateTime created;
 
 	@ToString.Include
 	@Column(columnDefinition = "timestamp default current_timestamp", nullable = false, updatable = true, insertable = true)
+	@UpdateTimestamp
 	public LocalDateTime updated;
 	
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = CategoryLang.class, mappedBy = "category", cascade = {

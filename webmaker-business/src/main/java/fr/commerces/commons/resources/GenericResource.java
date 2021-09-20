@@ -12,13 +12,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import fr.commerces.microservices.authentification.AuthenticationContextProvider;
+import fr.webmaker.commons.data.SingleCompositeData;
 import fr.webmaker.commons.identifier.Identifier;
-import fr.webmaker.commons.response.CollectionResponse;
-import fr.webmaker.commons.response.SingleResponse;
 import lombok.Getter;
 
 
-public abstract class GenericResource<R extends CollectionResponse<?, ?>> {
+public abstract class GenericResource {
 
 	@Inject
 	AuthenticationContextProvider authentication;
@@ -46,7 +45,7 @@ public abstract class GenericResource<R extends CollectionResponse<?, ?>> {
 	 */
 	protected Response buildResponse(final Serializable data, final Long id)
 	{
-		return Response.ok(new SingleResponse<>(new Identifier<Long>(id), data)).build();
+		return Response.ok(new SingleCompositeData<>(new Identifier<Long>(id), data)).build();
 
 	}
 	
@@ -58,7 +57,7 @@ public abstract class GenericResource<R extends CollectionResponse<?, ?>> {
 	 */
 	protected Response buildResponse(final Serializable data, final Identifier<?> identifier)
 	{
-		return Response.ok(new SingleResponse<>(identifier, data)).build();
+		return Response.ok(new SingleCompositeData<>(identifier, data)).build();
 	}
 
 	

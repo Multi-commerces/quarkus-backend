@@ -1,12 +1,16 @@
 package fr.webmaker.microservices.catalog.categories.data;
 
 import java.beans.Transient;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import fr.webmaker.commons.LocalDateTimeDeserializer;
+import fr.webmaker.commons.LocalDateTimeSerializer;
+import fr.webmaker.commons.data.SimpleData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,16 +18,20 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CategoryData implements Serializable {
+public class CategoryData implements SimpleData {
 
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "UTC")
 	public LocalDateTime created;
 
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "UTC")
 	public LocalDateTime updated;
 	

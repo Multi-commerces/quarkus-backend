@@ -3,7 +3,7 @@ package fr.webmaker.commons.response;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.webmaker.commons.LinkData;
+import fr.webmaker.commons.data.LinkData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

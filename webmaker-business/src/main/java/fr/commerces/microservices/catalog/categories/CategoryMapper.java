@@ -14,7 +14,7 @@ import com.neovisionaries.i18n.LanguageCode;
 
 import fr.commerces.commons.mapper.DefaultMappingConfig;
 import fr.webmaker.commons.identifier.LangID;
-import fr.webmaker.microservices.catalog.categories.data.CategoryData;
+import fr.webmaker.microservices.catalog.categories.data.CategoryLangData;
 import fr.webmaker.microservices.catalog.categories.data.CategoryHierarchyData;
 
 @ApplicationScoped
@@ -25,26 +25,26 @@ public abstract class CategoryMapper {
 	 * Mapper pour opération de création
 	 */
 
-	public abstract Category toEntity(CategoryData data);
+	public abstract Category toEntity(CategoryLangData data);
 
 	@Mapping(target = "category", source = ".")
-	public abstract CategoryLang toEntityLang(CategoryData data);
+	public abstract CategoryLang toEntityLang(CategoryLangData data);
 
 	/*
 	 * Mapper pour opération de mise à jour
 	 */
 
-	public abstract CategoryData toData(Category entity);
+	public abstract CategoryLangData toData(Category entity);
 	
 	@Mapping(target = ".", source = "category")
-	public abstract CategoryData toData(CategoryLang entity);
+	public abstract CategoryLangData toData(CategoryLang entity);
 
 	@Mapping(target = "category", source = ".")
-	public abstract CategoryLang toEntity(CategoryData data, @MappingTarget CategoryLang entity);
+	public abstract CategoryLang toEntity(CategoryLangData data, @MappingTarget CategoryLang entity);
 
 	@Mapping(target = "updated", ignore = true)
 	@Mapping(target = "created", ignore = true)
-	public abstract Category toEntity(CategoryData data, @MappingTarget Category entity);
+	public abstract Category toEntity(CategoryLangData data, @MappingTarget Category entity);
 
 	/*
 	 * Mapper pour opération de lecture

@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import fr.commerces.commons.abstracts.AbtractQuarkusApiTest;
 import fr.commerces.microservices.catalog.products.openapi.ProductResourceApi;
+import fr.webmaker.commons.PagingData;
+import fr.webmaker.commons.response.CollectionResponse;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -45,9 +47,12 @@ public class ProductApiTest extends AbtractQuarkusApiTest {
 		putPathParam("languageCode", LANG_CODE_FR);
 		
 		testEndpoint(HttpMethod.GET, Status.OK)
-			.body("paging.page", Matchers.is(1))
-			.body("paging.totalPages", Matchers.is(1))
-			.body("paging.totalItems", Matchers.is(3));
+			.body(String.join(".", CollectionResponse.JSON_NODE_PAGE, PagingData.JSON_NODE_NUMBER), 
+				Matchers.is(1))
+			.body(String.join(".", CollectionResponse.JSON_NODE_PAGE, PagingData.JSON_NODE_TOTAL_PAGES),
+				Matchers.is(1))
+			.body(String.join(".", CollectionResponse.JSON_NODE_PAGE, PagingData.JSON_NODE_TOTAL_ELEMENTS),
+				Matchers.is(3));
 	}
 	
 	@Test
@@ -59,7 +64,9 @@ public class ProductApiTest extends AbtractQuarkusApiTest {
 		putQueryParam("size", 1);
 		testEndpoint(HttpMethod.GET, Status.OK)
 			.assertThat()
-				.body("paging.page", Matchers.is(1), "paging.totalPages", Matchers.is(3), "paging.totalItems", Matchers.is(3))
+				.body("paging.page", Matchers.is(1), 
+						"paging.totalPages", Matchers.is(3), 
+						"paging.totalElements", Matchers.is(3))
 				.body( "collection.size()", Matchers.is(1));
 	}
 

@@ -1,6 +1,6 @@
 package fr.webmaker.commons.identifier;
 
-public interface ID<I> {
+public interface HasId<I> {
 
 	I getId();
 

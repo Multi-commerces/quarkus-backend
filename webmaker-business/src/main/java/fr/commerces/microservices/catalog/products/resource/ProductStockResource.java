@@ -7,13 +7,11 @@ import javax.ws.rs.core.Response;
 import fr.commerces.commons.resources.GenericResource;
 import fr.commerces.microservices.catalog.products.manager.ProductStockManager;
 import fr.commerces.microservices.catalog.products.openapi.ProductStockApi;
-import fr.webmaker.commons.identifier.Identifier;
-import fr.webmaker.commons.response.CollectionResponse;
 import fr.webmaker.microservices.catalog.products.data.ProductStockData;
 
 
 @RequestScoped
-public class ProductStockResource extends GenericResource<CollectionResponse<ProductStockData, Identifier<Long>>> implements ProductStockApi {
+public class ProductStockResource extends GenericResource implements ProductStockApi {
 
 	@Inject
 	ProductStockManager manager;

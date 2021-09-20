@@ -1,30 +1,24 @@
 package fr.webmaker.microservices.catalog.products.data;
 
-import java.io.Serializable;
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
-
 import fr.webmaker.commons.data.ImageData;
+import fr.webmaker.commons.data.SimpleData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * Représentation d'un produit (traduit dans une langue)
+ * Représentation d'un produit 
  * @author Julien ILARI
  *
  */
 @Data
 @EqualsAndHashCode
-public class ProductData implements Serializable {
+public class ProductData implements SimpleData {
 
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Référence produit
-	 */
-	private String reference;
 	
 	/**
 	 * Image de couverture
@@ -39,22 +33,6 @@ public class ProductData implements Serializable {
 	
 
 	/**
-	 * Nom du produit traduit
-	 */
-	private String name;
-
-	/**
-	 * Récapitulatif
-	 */
-	@NotNull
-	private String summary;
-
-	/**
-	 * Description
-	 */
-	private String description;
-
-	/**
 	 * Prix Hors taxe
 	 */
 	private Double priceHT;
@@ -64,10 +42,10 @@ public class ProductData implements Serializable {
 	 */
 	private Double taxRule;
 	
-//	@Transient
-//	public double getPriceTTC()
-//	{
-//		return priceHT * (1 + taxRule/100);
-//	}
+	@Transient
+	public double getPriceTTC()
+	{
+		return priceHT * (1 + taxRule/100);
+	}
 
 }

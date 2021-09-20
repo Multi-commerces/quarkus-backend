@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class ProductID extends Identifier<Long> {
+public class ProductLangID extends Identifier<Long> {
 
 	/**
 	 * serialVersionUID
@@ -17,11 +17,11 @@ public class ProductID extends Identifier<Long> {
 	 */
 	protected String languageCode;
 	
-	public ProductID() {
+	public ProductLangID() {
 		this(null, null);
 	}
 
-	public ProductID(Long id, String languageCode) {
+	public ProductLangID(Long id, String languageCode) {
 		super();
 		this.id = id;
 		this.languageCode = languageCode;

@@ -1,7 +1,7 @@
 package fr.commerces.commons.exceptions.crud;
 
 /**
- * Permet de forger une exception dans le cas d'une demande crud en
+ * Permet de forger une exception dans le cas d'une demande de mise en jour en
  * échec pour cause objet introuvable.
  * 
  * @author julien ILARI

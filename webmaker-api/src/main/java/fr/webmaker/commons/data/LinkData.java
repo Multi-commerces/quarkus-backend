@@ -1,8 +1,10 @@
-package fr.webmaker.commons;
+package fr.webmaker.commons.data;
 
 import java.util.List;
 
 import javax.ws.rs.HttpMethod;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +24,7 @@ public class LinkData {
 	/**
 	 * Lien vers la ressource (exemple : http://localhost:port/ressource)
 	 */
+	@JsonProperty("path")
 	private String href;
 
 	/**
@@ -41,8 +44,7 @@ public class LinkData {
 	 */
 	private String method;
 
-	private String desc;
-
+	@JsonProperty("title")
 	private String summary;
 
 	/**
@@ -59,7 +61,7 @@ public class LinkData {
 	}
 
 	public LinkData(REL rel, String href) {
-		this(rel.name(), href);
+		this(rel.value, href);
 	}
 
 	public LinkData(String rel, String href) {
@@ -70,7 +72,18 @@ public class LinkData {
 	}
 
 	public enum REL {
-		SELF, LIST, FIRST, NEXT, PREV, LAST;
+		SELF("self"), LIST("list"), FIRST("first"), NEXT("next"), PREV("prev"), LAST("last");
+
+		private String value;
+
+		private REL(String value) {
+			this.value = value;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
 	}
 
 }

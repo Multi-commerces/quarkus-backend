@@ -24,7 +24,7 @@ public abstract class AbtractQuarkusApiTest {
 	
 	private final Map<String, Object> pathParams = new HashMap<String, Object>();
 	private final Map<String, Object> queryPrams = new HashMap<String, Object>();
-	private Object body = null;
+	protected Object body = null;
 
 	@BeforeEach
 	public void beforeEach() {

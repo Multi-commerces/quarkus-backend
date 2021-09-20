@@ -5,18 +5,15 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import fr.commerces.commons.resources.GenericResource;
-import fr.commerces.microservices.catalog.products.manager.ProductManager;
+import fr.commerces.microservices.catalog.products.manager.ProductLangManager;
 import fr.commerces.microservices.catalog.products.openapi.ProductPricingApi;
-import fr.webmaker.commons.identifier.Identifier;
-import fr.webmaker.commons.response.CollectionResponse;
 import fr.webmaker.microservices.catalog.products.data.ProductStockData;
 
 @RequestScoped
-public class ProductPricingResource extends GenericResource<CollectionResponse<ProductStockData, Identifier<Long>>>
-		implements ProductPricingApi {
+public class ProductPricingResource extends GenericResource	implements ProductPricingApi {
 
 	@Inject
-	ProductManager manager;
+	ProductLangManager manager;
 
 	@Override
 	public Response getProductPricing(Long productId) {

@@ -13,14 +13,13 @@ import com.neovisionaries.i18n.LanguageCode;
 import fr.commerces.commons.resources.GenericResource;
 import fr.commerces.microservices.catalog.products.manager.ProductSeoManager;
 import fr.commerces.microservices.catalog.products.openapi.ProductSeoApi;
+import fr.webmaker.commons.data.SingleCompositeData;
 import fr.webmaker.commons.identifier.Identifier;
 import fr.webmaker.commons.response.CollectionResponse;
-import fr.webmaker.commons.response.SingleResponse;
 import fr.webmaker.microservices.catalog.products.data.ProductSeoData;
 
 @RequestScoped
-public class ProductSeoResource extends GenericResource<CollectionResponse<ProductSeoData, Identifier<Long>>>
-		implements ProductSeoApi {
+public class ProductSeoResource extends GenericResource implements ProductSeoApi {
 
 	@Inject
 	ProductSeoManager manager;
@@ -35,28 +34,28 @@ public class ProductSeoResource extends GenericResource<CollectionResponse<Produ
 		final CollectionResponse<ProductSeoData, Identifier<Long>> reponse = new CollectionResponse<ProductSeoData, Identifier<Long>>();
 
 		// embedded
-		final List<SingleResponse<ProductSeoData, Identifier<Long>>> collection = new ArrayList<>();
+		final List<SingleCompositeData<ProductSeoData, Identifier<Long>>> collection = new ArrayList<>();
 		items.entrySet().stream().forEach(entry -> {
-			final SingleResponse<ProductSeoData, Identifier<Long>> singleResponse = new SingleResponse<ProductSeoData, Identifier<Long>>();
+			final SingleCompositeData<ProductSeoData, Identifier<Long>> singleResponse = new SingleCompositeData<ProductSeoData, Identifier<Long>>();
 			singleResponse.setIdentifier(new Identifier<Long>(productId));
 			singleResponse.setData(entry.getValue());
 
 			collection.add(singleResponse);
 		});
-		reponse.setCollection(collection);
+		//reponse.setCollection(collection);
 
 		return reponse;
 	}
 
 	@Override
-	public SingleResponse<ProductSeoData, Identifier<Long>> getProductSeo(final String lang, final Long productId) {
+	public SingleCompositeData<ProductSeoData, Identifier<Long>> getProductSeo(final String lang, final Long productId) {
 		final LanguageCode languageCode = LanguageCode.getByCode(lang);
 
 		// CALL BUSINESS
 		final ProductSeoData data = manager.findSeoByProductLangPK(productId, languageCode);
 
 		// RESPONSE
-		final SingleResponse<ProductSeoData, Identifier<Long>> response = new SingleResponse<ProductSeoData, Identifier<Long>>();
+		final SingleCompositeData<ProductSeoData, Identifier<Long>> response = new SingleCompositeData<ProductSeoData, Identifier<Long>>();
 		response.setData(data);
 		response.setIdentifier(new Identifier<Long>(productId));
 

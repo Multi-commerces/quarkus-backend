@@ -14,9 +14,9 @@ import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import fr.webmaker.commons.response.CollectionResponse;
-import fr.webmaker.microservices.catalog.products.data.ProductData;
-import fr.webmaker.microservices.catalog.products.id.ProductID;
-import fr.webmaker.microservices.catalog.products.response.ProductResponse;
+import fr.webmaker.microservices.catalog.products.data.ProductLangData;
+import fr.webmaker.microservices.catalog.products.id.ProductLangID;
+import fr.webmaker.microservices.catalog.products.response.ProductLangResponse;
 
 @Dependent
 @Path("/languages/{languageCode}/products")
@@ -26,14 +26,14 @@ public interface ProductRestClient  {
 
 	@GET
 	@Path("/") 
-	CollectionResponse<ProductData, ProductID> getProducts(
+	CollectionResponse<ProductLangData, ProductLangID> getProducts(
 			@PathParam("languageCode") String languageCode,
 			@QueryParam(value = "page")  Integer page,
 			@QueryParam(value = "size") Integer size);
 	
 	@Path("/{productId}")
 	@GET
-	ProductResponse get(
+	ProductLangResponse get(
 			@PathParam("languageCode") String languageCode,
 			@PathParam("productId") Long id);
 
@@ -43,7 +43,7 @@ public interface ProductRestClient  {
 	@Path("/") 
 	Response create(
 			@PathParam("languageCode")  String languageCode,
-			 ProductData data);
+			 ProductLangData data);
 
 	/* ############################################################################################################# */
 
@@ -52,7 +52,7 @@ public interface ProductRestClient  {
 	void update(
 			@PathParam("languageCode") String languageCode,
 			@PathParam(value = "productId") Long productId, 
-			ProductData data);
+			ProductLangData data);
 
 	@DELETE
 	@Path("/{productId}")

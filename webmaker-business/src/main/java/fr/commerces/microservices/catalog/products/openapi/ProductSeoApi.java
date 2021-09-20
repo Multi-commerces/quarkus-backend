@@ -34,9 +34,9 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import fr.webmaker.commons.data.SingleCompositeData;
 import fr.webmaker.commons.identifier.Identifier;
 import fr.webmaker.commons.response.CollectionResponse;
-import fr.webmaker.commons.response.SingleResponse;
 import fr.webmaker.microservices.catalog.products.data.ProductSeoData;
 
 @Path(ProductSeoApi.PATH)
@@ -84,7 +84,7 @@ public interface ProductSeoApi {
 			@APIResponse(responseCode = "401", description = "[NOK] - Une identification est nécessaire"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun produit trouvé avec les critères de sélection fournis") 
 	})
-	SingleResponse<ProductSeoData, Identifier<Long>> getProductSeo(
+	SingleCompositeData<ProductSeoData, Identifier<Long>> getProductSeo(
 			/*
 			 * language
 			 */

@@ -46,6 +46,24 @@ VALUES(20000004 , 20000003, true, 1, '2021-04-04 11:07:16');
 INSERT INTO CATEGORY_LANG (category_id, code_lang, description, name)
 VALUES(20000004 , 'fr', 'DESCRIPTION 20000004', 'DESIGNATION 20000004');
 
+-- Category n°20000005 (traduction fr) - Root Category n°20000003
+INSERT INTO CATEGORY (category_id, category_parent_id, displayed, position, created)
+VALUES(20000005 , 20000003, true, 1, '2021-04-04 11:07:16');
+INSERT INTO CATEGORY_LANG (category_id, code_lang, description, name)
+VALUES(20000005 , 'fr', 'DESCRIPTION 20000005', 'DESIGNATION 20000005');
+
+-- Category n°20000006 (traduction fr) - Root Category n°20000004
+INSERT INTO CATEGORY (category_id, category_parent_id, displayed, position, created)
+VALUES(20000006 , 20000004, true, 1, '2021-04-04 11:07:16');
+INSERT INTO CATEGORY_LANG (category_id, code_lang, description, name)
+VALUES(20000006 , 'fr', 'DESCRIPTION 20000006', 'DESIGNATION 20000006');
+
+-- Category n°20000007 (traduction fr) - Root Category n°20000005
+INSERT INTO CATEGORY (category_id, category_parent_id, displayed, position, created)
+VALUES(20000007 , 20000005, true, 1, '2021-04-04 11:07:16');
+INSERT INTO CATEGORY_LANG (category_id, code_lang, description, name)
+VALUES(20000007 , 'fr', 'DESCRIPTION 20000007', 'DESIGNATION 20000007');
+
 /*************************************************************************************************************** 
  *********************************************** PRODUCT_CATEGORY ********************************************** 
  ***************************************************************************************************************/

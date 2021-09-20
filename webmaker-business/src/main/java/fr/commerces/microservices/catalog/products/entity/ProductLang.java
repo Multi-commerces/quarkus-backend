@@ -104,6 +104,10 @@ public class ProductLang extends PanacheEntityBase {
 	public static PanacheQuery<ProductLang> findByLanguageCode(final LanguageCode languageCode) {
 		return find("identity.language = ?1", languageCode);
 	}
+	
+	public static PanacheQuery<ProductLang> findByProductId(final Long idProduct) {
+		return find("identity.idProduct = ?1", idProduct);
+	}
 
 	/**
 	 * Recherche un produit dans une langue

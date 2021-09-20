@@ -75,17 +75,17 @@
 			<artifactId>quarkus-oidc</artifactId>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.tinify</groupId> -->
-<!-- 			<artifactId>tinify</artifactId> -->
-<!-- 			<version>1.6.4</version> -->
-<!-- 			<exclusions> -->
-<!-- 				<exclusion> -->
-<!-- 					<groupId>com.squareup.okhttp3</groupId> -->
-<!-- 					<artifactId>okhttp</artifactId> -->
-<!-- 				</exclusion> -->
-<!-- 			</exclusions> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.tinify</groupId> -->
+		<!-- <artifactId>tinify</artifactId> -->
+		<!-- <version>1.6.4</version> -->
+		<!-- <exclusions> -->
+		<!-- <exclusion> -->
+		<!-- <groupId>com.squareup.okhttp3</groupId> -->
+		<!-- <artifactId>okhttp</artifactId> -->
+		<!-- </exclusion> -->
+		<!-- </exclusions> -->
+		<!-- </dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
 		<dependency>
@@ -292,7 +292,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${surefire-plugin.version}</version>
 				<configuration>
-<!-- 					<skipTests>true</skipTests> -->
+					<!-- <skipTests>true</skipTests> -->
 					<systemPropertyVariables>
 						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
 						<maven.home>${maven.home}</maven.home>

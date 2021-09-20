@@ -11,13 +11,10 @@ import javax.ws.rs.core.Response;
 import fr.commerces.commons.resources.GenericResource;
 import fr.commerces.microservices.catalog.products.manager.ProductShippingManager;
 import fr.commerces.microservices.catalog.products.openapi.ProductShippingApi;
-import fr.webmaker.commons.identifier.Identifier;
-import fr.webmaker.commons.response.CollectionResponse;
 import fr.webmaker.microservices.catalog.products.data.ProductShippingData;
 
 @RequestScoped
-public class ProductShippingResource extends GenericResource<CollectionResponse<ProductShippingData, Identifier<Long>>>
-		implements ProductShippingApi {
+public class ProductShippingResource extends GenericResource implements ProductShippingApi {
 
 	@Inject
 	ProductShippingManager manager;

@@ -1,4 +1,4 @@
-package fr.commerces.commons.exceptions;
+package fr.commerces.commons.exceptions.mapper;
 
 import javax.validation.ValidationException;
 import javax.ws.rs.core.MediaType;

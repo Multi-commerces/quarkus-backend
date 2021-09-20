@@ -13,13 +13,10 @@ import javax.ws.rs.core.UriInfo;
 import fr.commerces.commons.resources.GenericResource;
 import fr.commerces.microservices.catalog.products.manager.ProductVariationManager;
 import fr.commerces.microservices.catalog.products.openapi.ProductVariationApi;
-import fr.webmaker.commons.response.CollectionResponse;
 import fr.webmaker.microservices.catalog.products.data.ProductVariationData;
-import fr.webmaker.microservices.catalog.products.id.ProductVariationID;
 import fr.webmaker.microservices.catalog.products.response.ProductVariationResponse;
 
-public class ProductVariationResource extends GenericResource<CollectionResponse<ProductVariationData, ProductVariationID>>
-		implements ProductVariationApi {
+public class ProductVariationResource extends GenericResource implements ProductVariationApi {
 
 	@Inject
 	ProductVariationManager manager;
@@ -34,11 +31,11 @@ public class ProductVariationResource extends GenericResource<CollectionResponse
 	}
 
 //	@RolesAllowed({ "gestionnaire" })
-//	@Override
-//	public Response deleteVariations(Long productId, List<Long> ids) {
-//		manager.delete(productId, ids);
-//		return Response.ok().build();
-//	}
+	@Override
+	public Response deleteVariations(Long productId, List<Long> ids) {
+		manager.delete(productId, ids);
+		return Response.ok().build();
+	}
 
 //	@RolesAllowed({ "gestionnaire" })
 	@Override

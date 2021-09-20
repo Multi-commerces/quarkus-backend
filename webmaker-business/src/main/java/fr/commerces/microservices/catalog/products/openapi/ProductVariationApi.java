@@ -19,6 +19,7 @@ package fr.commerces.microservices.catalog.products.openapi;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -61,9 +62,11 @@ public interface ProductVariationApi {
 	Response updateVariation(@PathParam(value = "productId") Long productId,
 			@PathParam(value = "variationId") Long variationId, ProductVariationData variation);
 
-//	@DELETE
-//	@Path("{ids}")
-//	@Operation(summary = "Supprimer variation produit", description = "Opération de suppression de la variation du produit .", operationId = "deleteVariations")
-//	Response deleteVariations(@PathParam(value = "productId") Long productId, List<Long> ids);
+
+
+	@DELETE
+	@Path("{ids}")
+	@Operation(summary = "Supprimer variation produit", description = "Opération de suppression de la variation du produit .", operationId = "deleteVariations")
+	Response deleteVariations(@PathParam(value = "productId") Long productId, List<Long> ids);
 
 }

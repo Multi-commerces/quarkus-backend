@@ -22,9 +22,13 @@ public @interface HypermediaApi {
 	
 	HttpMethod httpMethod()  default HttpMethod.GET;
 	
+	String version()  default "1.0";
+	
 	String title()  default "Informations";
 	
 	HypermediaLink delete() default @HypermediaLink;
+	HypermediaLink create() default @HypermediaLink;
+	HypermediaLink update() default @HypermediaLink;
 	
 	HypermediaLink[] links() default {};
 	

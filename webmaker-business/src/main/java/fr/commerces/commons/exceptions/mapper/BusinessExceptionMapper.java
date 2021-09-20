@@ -1,4 +1,4 @@
-package fr.commerces.commons.exceptions.handler;
+package fr.commerces.commons.exceptions.mapper;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -9,7 +9,7 @@ import fr.commerces.commons.exceptions.BusinessException;
 import fr.webmaker.commons.response.ErrorResponse;
 
 @Provider
-public class BusinessExceptionHandler implements ExceptionMapper<BusinessException> 
+public class BusinessExceptionMapper implements ExceptionMapper<BusinessException> 
 {
     @Override
     public Response toResponse(BusinessException exception) 

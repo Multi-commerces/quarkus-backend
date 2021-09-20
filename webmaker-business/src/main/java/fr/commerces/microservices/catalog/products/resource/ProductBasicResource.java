@@ -9,15 +9,11 @@ import com.neovisionaries.i18n.LanguageCode;
 import fr.commerces.commons.resources.GenericResource;
 import fr.commerces.microservices.catalog.products.manager.ProductBasicManager;
 import fr.commerces.microservices.catalog.products.openapi.ProductBasicResourceApi;
-import fr.webmaker.commons.response.CollectionResponse;
 import fr.webmaker.microservices.catalog.products.data.ProductBasicData;
-import fr.webmaker.microservices.catalog.products.data.ProductData;
-import fr.webmaker.microservices.catalog.products.id.ProductID;
 
 
 @RequestScoped
-public class ProductBasicResource extends GenericResource<CollectionResponse<ProductData, ProductID>>
-		implements ProductBasicResourceApi {
+public class ProductBasicResource extends GenericResource implements ProductBasicResourceApi {
 
 	@Inject
 	ProductBasicManager manager;

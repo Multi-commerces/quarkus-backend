@@ -21,9 +21,9 @@ import fr.mycommerce.commons.models.Model;
 import fr.mycommerce.commons.views.AbstractCrudView;
 import fr.mycommerce.commons.views.ActionType;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
-import fr.webmaker.microservices.catalog.products.data.ProductData;
-import fr.webmaker.microservices.catalog.products.id.ProductID;
-import fr.webmaker.microservices.catalog.products.response.ProductResponse;
+import fr.webmaker.microservices.catalog.products.data.ProductLangData;
+import fr.webmaker.microservices.catalog.products.id.ProductLangID;
+import fr.webmaker.microservices.catalog.products.response.ProductLangResponse;
 import fr.webmaker.microservices.catalog.products.restclient.ProductRestClient;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,8 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Named("adminProductMB")
 @ViewScoped
-public class AdminProductListMB extends AbstractCrudView<ProductData, ProductID>
-		implements Manager<ProductData, ProductID> {
+public class AdminProductListMB extends AbstractCrudView<ProductLangData, ProductLangID>
+		implements Manager<ProductLangData, ProductLangID> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -84,7 +84,7 @@ public class AdminProductListMB extends AbstractCrudView<ProductData, ProductID>
 	}
 
 	@Override
-	public void onRowDblSelect(SelectEvent<Model<ProductData, ProductID>> event) {
+	public void onRowDblSelect(SelectEvent<Model<ProductLangData, ProductLangID>> event) {
 		super.onRowDblSelect(event);
 
 		FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -93,7 +93,7 @@ public class AdminProductListMB extends AbstractCrudView<ProductData, ProductID>
 				FlowPage.BASIC.getPage() + "?faces-redirect=true&id=" + model.getIdentifier().getId());
 	}
 
-	public void onRowSelect(SelectEvent<Model<ProductData, ProductID>> event) {
+	public void onRowSelect(SelectEvent<Model<ProductLangData, ProductLangID>> event) {
 		model = event.getObject();
 		//variationMB.loadByProductId(event.getObject().getIdentifier().getId());
 	}
@@ -113,9 +113,9 @@ public class AdminProductListMB extends AbstractCrudView<ProductData, ProductID>
 	 * *****************************************************************************************/
 
 	@Override
-	public List<Model<ProductData, ProductID>> findAll() {
+	public List<Model<ProductLangData, ProductLangID>> findAll() {
 		return service.getProducts("fr", 1, 10).getCollection().stream()
-				.map(o -> new Model<ProductData, ProductID>(o.getIdentifier(), o.getData()))
+				.map(o -> new Model<ProductLangData, ProductLangID>(o.getIdentifier(), o.getData()))
 				.collect(Collectors.toList());
 	}
 
@@ -130,12 +130,12 @@ public class AdminProductListMB extends AbstractCrudView<ProductData, ProductID>
 				final Client client = ClientBuilder.newClient();
 				Response responseGet = client.target(location).request().get();
 				if (responseGet.getStatus() == Response.Status.OK.getStatusCode()) {
-					final ProductResponse dataResponse = responseGet.readEntity(ProductResponse.class);
+					final ProductLangResponse dataResponse = responseGet.readEntity(ProductLangResponse.class);
 
 					responseGet.close();
 					client.close();
 
-					items.add(new Model<ProductData, ProductID>(dataResponse.getIdentifier(), dataResponse.getData()));
+					items.add(new Model<ProductLangData, ProductLangID>(dataResponse.getIdentifier(), dataResponse.getData()));
 				}
 			} catch (Exception e) {
 				log.warn("impossible de récupérer item nouvellement créé, vérifier que le service est up");
@@ -151,17 +151,17 @@ public class AdminProductListMB extends AbstractCrudView<ProductData, ProductID>
 	}
 
 	@Override
-	public void delete(ProductID identifier) {
+	public void delete(ProductLangID identifier) {
 		service.delete(identifier.getLanguageCode(), identifier.getId());
 	}
 
 	@Override
-	protected ProductData newDataInstance() {
-		return new ProductData();
+	protected ProductLangData newDataInstance() {
+		return new ProductLangData();
 	}
 
 	@Override
-	protected void delete(List<ProductID> identifiers) {
+	protected void delete(List<ProductLangID> identifiers) {
 		identifiers.stream().forEach(identifier -> service.delete(identifier.getLanguageCode(), identifier.getId()));
 
 	}

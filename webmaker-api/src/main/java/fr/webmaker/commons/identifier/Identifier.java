@@ -2,18 +2,19 @@ package fr.webmaker.commons.identifier;
 
 import java.io.Serializable;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Data;
 
-@ToString
-@EqualsAndHashCode
-public class Identifier<I> implements ID<I>, Serializable {
+@Data
+public class Identifier<I> implements HasId<I>, Serializable, Comparable<Identifier<I>> {
 
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Identifiant
+	 */
 	protected I id;
 
 	public Identifier() {
@@ -26,13 +27,8 @@ public class Identifier<I> implements ID<I>, Serializable {
 	}
 
 	@Override
-	public I getId() {
-		return id;
-	}
-
-	@Override
-	public void setId(I id) {
-		this.id = id;
+	public int compareTo(Identifier<I> o) {
+		return this.id.toString().compareTo(o.id.toString());
 	}
 
 }

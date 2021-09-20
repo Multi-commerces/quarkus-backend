@@ -2,7 +2,6 @@ package fr.commerces.microservices.catalog.products.openapi;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -22,30 +21,26 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import fr.webmaker.commons.identifier.LangID;
-import fr.webmaker.commons.identifier.LongID;
-import fr.webmaker.commons.request.PageRequest;
 import fr.webmaker.commons.response.CollectionResponse;
-import fr.webmaker.microservices.catalog.categories.data.CategoryLangData;
 import fr.webmaker.microservices.catalog.products.data.ProductLangData;
+import fr.webmaker.microservices.catalog.products.id.ProductLangID;
 
 /**
  * Interface resource API pour les produits
  * @author Julien ILARI
  *
  */
-@Path(ProductResourceApi.PATH)
+@Path(ProductLangResourceApi.PATH)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "Resource Produits", description = "Resource de gestion des produits")
-public interface ProductResourceApi {
+@Tag(name = "Resource Produits - Langues", description = "Resource de gestion des traductions produits")
+public interface ProductLangResourceApi {
 
-	public static final String PATH = "/products";
+	public static final String PATH = "/products/{productId}/languages";
 	
-	@Path("/{productId}")
+	@Path("/{lanuageCode}")
 	@GET
 	@Operation(operationId = "getProductById", summary = "Recherche un produit", description = "Retourne les informations du produit.")
-	@Tag(ref = "Resource Produits")
 	@APIResponses(value = { 
 			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun porduit trouvé avec les paramètres fournis") 
@@ -55,7 +50,7 @@ public interface ProductResourceApi {
 			 * Langue @HeaderParam(HttpHeaders.CONTENT_LANGUAGE) String contentLanguage
 			 */
 			@Parameter(description = "Langue du produit") 
-			@QueryParam("languageCode") 
+			@PathParam("languageCode") 
 			@DefaultValue("fr") 
 			@NotNull String languageCode,
 			/*
@@ -78,21 +73,13 @@ public interface ProductResourceApi {
 	@Path("/") 
 	@Operation(operationId = "getProducts", summary = "Recherche les produits", 
 		description = "Retourne les informations des produits dans un langue précise (par défaut celle du client).")
-	@Tag(ref = "Resource Produits")
 	@APIResponses(value = { 
 			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun porduit trouvé avec les critères de recherche") 
 	})
-	CollectionResponse<ProductLangData, LangID> getProducts(
-			/*
-			 * language
-			 */
-			@Parameter(description = "Langue des produits (langue par défaut 'français')") 
-			@QueryParam("languageCode") 
-			@DefaultValue("fr") 
-			@NotNull
-			String languageCode,
-			@BeanParam @Valid PageRequest page);
+	CollectionResponse<ProductLangData, ProductLangID> getProducts(
+			@Parameter(description = "Identifiant du produit") 
+			@PathParam("productId") @NotNull Long productId);
 
 	/* ############################################################################################################# */
 
@@ -100,7 +87,6 @@ public interface ProductResourceApi {
 	@POST
 	@Path("/{languageCode}") 
 	@Operation(operationId = "createProduct", summary = "Création d'un produit", description = "Opération de création d'un nouveau produit .")
-	@Tag(ref = "Resource Produits")
 	@APIResponses(value = { 
 			@APIResponse(responseCode = "201", description = "[OK] - Opération de création effectuée avec succès") 
 	})
@@ -119,18 +105,17 @@ public interface ProductResourceApi {
 	/* ############################################################################################################# */
 	
 	@PUT
-	@Path("/{productId}")
+	@Path("/{languageCode}")
 	@Operation(operationId = "updateProduct", summary = "Modification d'un produit", description = "Opération de modification d'un produit existant.")
-	@Tag(ref = "Resource Produits")
 	@APIResponses(value = { 
 			@APIResponse(responseCode = "204", description = "[OK] - Opération de mise à jour effectuée avec succès") 
 	})
-	Response patchProductLang(
+	Response putProductLang(
 			/*
 			 * language
 			 */
 			@Parameter(description = "Code de la langue") 
-			@QueryParam("languageCode") 
+			@PathParam("languageCode") 
 			@DefaultValue("fr") String languageCode,
 			/*
 			 * Identifiant
@@ -146,7 +131,6 @@ public interface ProductResourceApi {
 	@DELETE
 	@Path("/{productId}")
 	@Operation(operationId = "deleteProductLang", summary = "Suppression (douce) d'un produit", description = "Opération de suppression d'un produit existant dans une langue spécifique.")
-	@Tag(ref = "Resource Produits")
 	@APIResponses(value = { 
 			@APIResponse(responseCode = "204", description = "[OK] - Opération de suppression effectuée avec succès"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Suppression du produit impossible car introuvable")
@@ -171,7 +155,8 @@ public interface ProductResourceApi {
 			description = "Retourne les informations des catégories.")
 	@Path("/{productId}/categories")
 	@GET
-	CollectionResponse<CategoryLangData, LongID> getCategories(@PathParam("productId") @NotNull Long productId);
+	Response getCategories(@PathParam("languageCode") @NotNull String languageCode,
+			@PathParam("productId") @NotNull Long productId);
 	
 
 }

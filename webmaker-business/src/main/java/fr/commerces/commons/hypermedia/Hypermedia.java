@@ -15,6 +15,10 @@ import javax.interceptor.InterceptorBinding;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface Hypermedia {
 	
-	
-	
+//	String self() ;
+//	
+//	String next();
+//	
+//	String last();
+//	
 }

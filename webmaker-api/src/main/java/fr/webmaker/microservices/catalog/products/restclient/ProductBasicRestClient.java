@@ -12,7 +12,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import fr.webmaker.commons.response.SingleResponse;
 import fr.webmaker.microservices.catalog.products.data.ProductBasicData;
-import fr.webmaker.microservices.catalog.products.id.ProductID;
+import fr.webmaker.microservices.catalog.products.id.ProductLangID;
 
 @Dependent
 @Path("/products")
@@ -22,7 +22,7 @@ public interface ProductBasicRestClient {
 
 	@GET
 	@Path("/{productId}/languages/{languageCode}/basic")
-	SingleResponse<ProductBasicData, ProductID> get(@PathParam("languageCode") String languageCode,
+	SingleResponse<ProductBasicData, ProductLangID> get(@PathParam("languageCode") String languageCode,
 			@PathParam("productId") Long id);
 
 	@PATCH

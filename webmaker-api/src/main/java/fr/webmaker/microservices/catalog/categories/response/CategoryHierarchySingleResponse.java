@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 import fr.webmaker.commons.identifier.LangID;
 import fr.webmaker.commons.response.SingleResponse;
@@ -13,6 +14,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@JsonRootName("category")
 @Data @NoArgsConstructor
 @EqualsAndHashCode(callSuper=true)
 public class CategoryHierarchySingleResponse extends SingleResponse<CategoryData, LangID> implements Serializable {
@@ -22,7 +24,6 @@ public class CategoryHierarchySingleResponse extends SingleResponse<CategoryData
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@EqualsAndHashCode.Exclude
 	@JsonProperty("subCategories")
 	private List<CategoryHierarchyData> subCategories;
 

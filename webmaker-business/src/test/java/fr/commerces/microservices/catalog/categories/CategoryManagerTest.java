@@ -7,10 +7,12 @@ import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_CREATED_200000
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_IDENTIFIER_20000001FR;
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_IDENTIFIER_20000002FR;
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_IDENTIFIER_20000003FR;
+import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_IDENTIFIER_20000004FR;
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_ID_20000003;
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_ID_20000004;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import com.neovisionaries.i18n.LanguageCode;
 
 import fr.webmaker.commons.identifier.LangID;
-import fr.webmaker.microservices.catalog.categories.data.CategoryData;
+import fr.webmaker.microservices.catalog.categories.data.CategoryLangData;
 import fr.webmaker.microservices.catalog.categories.data.CategoryHierarchyData;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
@@ -51,72 +53,87 @@ public class CategoryManagerTest {
 		Function<LangID, CategoryHierarchyData> findCategoryHierarchy = catId -> 
 				categories.stream().filter(o -> o.getIdentifier().equals(catId)).findAny().get();
 		
-
 		// Verification --------------------------------------
 		assertNotNull(categories);
 		assertThat(categories.size(), is(3));
 
-		CategoryHierarchyData categorySubCategories;
-		CategoryData categoryData;
+		CategoryHierarchyData subCategory;
+		CategoryLangData categoryData;
 
 		// CATEGORY_ID_20000001
-		categorySubCategories = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000001FR);
-		assertNotNull(categorySubCategories);
+		subCategory = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000001FR);
+		assertNotNull(subCategory);
 		
-		categoryData = categorySubCategories.getCategory();
+		categoryData = subCategory.getCategory();
 		assertNotNull(categoryData);
-		assertNotNull(categoryData.getDescription());
-		assertNotNull(categoryData.getName());
 		assertThat(categoryData.getCreated(), is(CATEGORY_CREATED_20000001));
+		assertThat(categoryData.getName(), is("DESIGNATION 20000001"));
+		assertThat(categoryData.getDescription(), is("DESCRIPTION 20000001"));
 
 		// CATEGORY_ID_20000002
-		categorySubCategories = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000002FR);
-		assertNotNull(categorySubCategories);
+		subCategory = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000002FR);
+		assertNotNull(subCategory);
 		
-		categoryData = categorySubCategories.getCategory();
+		categoryData = subCategory.getCategory();
 		assertNotNull(categoryData);
-		assertNotNull(categoryData.getDescription());
-		assertNotNull(categoryData.getName());
 		assertThat(categoryData.getCreated(), is(CATEGORY_CREATED_20000002));
+		assertThat(categoryData.getName(), is("DESIGNATION 20000002"));
+		assertThat(categoryData.getDescription(), is("DESCRIPTION 20000002"));
 
 		// CATEGORY_ID_20000003
-		categorySubCategories = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000003FR);
-		assertNotNull(categorySubCategories);
+		subCategory = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000003FR);
+		assertNotNull(subCategory);
 		
-		categoryData = categorySubCategories.getCategory();
+		categoryData = subCategory.getCategory();
 		assertNotNull(categoryData);
-		assertNotNull(categoryData.getDescription());
-		assertNotNull(categoryData.getName());
 		assertThat(categoryData.getCreated(), is(CATEGORY_CREATED_20000003));
+		assertThat(categoryData.getName(), is("DESIGNATION 20000003"));
+		assertThat(categoryData.getDescription(), is("DESCRIPTION 20000003"));
 
-		final List<CategoryHierarchyData> subCategories = categorySubCategories.getSubCategories();
+		final List<CategoryHierarchyData> subCategories = subCategory.getSubCategories();
 		assertThat(subCategories.size(), is(1));
+		
+		// CATEGORY_ID_20000004
+		subCategory = subCategories.get(0);
+		assertThat(subCategory.getIdentifier(), is(CATEGORY_IDENTIFIER_20000004FR));
+		
+		categoryData = subCategory.getCategory();
+		assertThat(categoryData.getCreated(), is(CATEGORY_CREATED_20000004));
+		assertThat(categoryData.getName(), is("DESIGNATION 20000004"));
+		assertThat(categoryData.getDescription(), is("DESCRIPTION 20000004"));
 	}
 
 	@Test
 	public void testFindById() {
 		// Execution -----------------------------------------
 		final CategoryHierarchyData categorySubCategories = manager.findCategoryHierarchyById(CATEGORY_ID_20000003, LanguageCode.fr);
-
+		
+		
 		// Verification --------------------------------------
 		assertNotNull(categorySubCategories);
+		final CategoryLangData categoryData = categorySubCategories.getCategory();
+		assertNotNull(categoryData);
+		
+		assertThat(categoryData.getName(), is("DESIGNATION 20000003"));
+		assertThat(categoryData.getDescription(), is("DESCRIPTION 20000003"));
 
 		final List<CategoryHierarchyData> subCategories = categorySubCategories.getSubCategories();
 		assertThat(subCategories.size(), is(1));
 	}
 
-	@Test
-	@TestTransaction
+	@Test @TestTransaction
 	public void testupdate() throws ParseException, InterruptedException {
-
-		LocalDateTime dateUpdate = LocalDateTime.now();
+		final CategoryLang oldCategoryLang = CategoryLang.findByCategoryLangPK(CATEGORY_ID_20000004, LanguageCode.fr).get();
+		LocalDateTime dateUpdated = oldCategoryLang.getCategory().getUpdated();
+		LocalDateTime dateCreated = oldCategoryLang.getCategory().getCreated();
+		
 		String nameUpdate = "NAME UPDATE";
 		String descUpdate = "DESCRIPTION UPDATE";
 		int positionUpdate = 2;
 		boolean displayedUpdate = false;
 
 		// Preparation --------------------------------------
-		final CategoryData data = new CategoryData();
+		final CategoryLangData data = new CategoryLangData();
 		data.setName(nameUpdate);
 		data.setDescription(descUpdate);
 		data.setPosition(positionUpdate);
@@ -130,7 +147,11 @@ public class CategoryManagerTest {
 		// Verification --------------------------------------
 		final CategoryLang categoryLang = CategoryLang.findByCategoryLangPK(CATEGORY_ID_20000004, LanguageCode.fr).get();
 		final Category category = categoryLang.getCategory();
-		assertTrue(dateUpdate.isBefore(category.getUpdated()), "La date de mise semble ne pas être mise à jour");
+		
+		assertTrue(dateCreated.equals(category.getCreated()), "La date de création ne doit pas changée");
+		
+		assertFalse(dateUpdated.equals(category.getUpdated()), "La date de mise à jour n'a pas changée");
+		assertTrue(dateUpdated.isBefore(category.getUpdated()), "La date de mise semble ne pas être mise à jour");
 
 		assertThat(categoryLang.getName(), is(nameUpdate));
 		assertThat(categoryLang.getDescription(), is(descUpdate));
@@ -139,8 +160,7 @@ public class CategoryManagerTest {
 		assertThat(category.isDisplayed(), is(displayedUpdate));
 	}
 
-	@Test
-	@TestTransaction
+	@Test @TestTransaction
 	public void testDeleteChildrenCategory() {
 		// Execution -----------------------------------------
 		manager.delete(CATEGORY_ID_20000004);
@@ -162,13 +182,12 @@ public class CategoryManagerTest {
 		// TODO : Tester la non suppression des produits
 	}
 
-	@Test
-	@TestTransaction
+	@Test @TestTransaction
 	public void testCreateChildrenCategory() {
 		LocalDateTime toDay = LocalDateTime.now();
 
 		// Preparation --------------------------------------
-		final CategoryData data = new CategoryData();
+		final CategoryLangData data = new CategoryLangData();
 		data.setName("BIDON NAME");
 		data.setDescription("BIDON DESC");
 		data.setPosition(2);
@@ -189,13 +208,12 @@ public class CategoryManagerTest {
 
 	}
 	
-	@Test
-	@TestTransaction
+	@Test @TestTransaction
 	public void testCreateRootCategory() {
 		LocalDateTime toDay = LocalDateTime.now();
 
 		// Preparation --------------------------------------
-		final CategoryData data = new CategoryData();
+		final CategoryLangData data = new CategoryLangData();
 		data.setName("BIDON NAME");
 		data.setDescription("BIDON DESC");
 		data.setPosition(2);
