@@ -1,18 +1,18 @@
-package fr.webmaker.commons.response;
+package fr.webmaker.commons.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.Link;
+import javax.annotation.Generated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fr.webmaker.commons.data.LinkData;
-import fr.webmaker.commons.data.RelationData;
 import fr.webmaker.commons.identifier.Identifier;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -28,17 +28,15 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = false)
-public class SingleResponse<M, I extends Identifier<?>>  implements Serializable {
+@AllArgsConstructor
+public class SingleCompositeData<M, I extends Identifier<?>>  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	public static final String JSON_NODE_IDENTIFIER = "identifier";
 	public static final String JSON_NODE_ATTRIBUTES = "attributes";
-	public static final String JSON_NODE_ACTIONS = "_actions";
 	public static final String JSON_NODE_RELATIONS = "_relationships";
 	public static final String JSON_NODE_LINKS = "_links";
-	
-	private String type;
 
 	/**
 	 * Identifiant
@@ -56,20 +54,16 @@ public class SingleResponse<M, I extends Identifier<?>>  implements Serializable
 	 */
 	@JsonProperty(JSON_NODE_ATTRIBUTES)
 	protected M data;
-
-	@JsonProperty(JSON_NODE_ACTIONS)
-	protected List<Link> actions = new ArrayList<>();
 	
 	/**
 	 * Objet de relations
 	 */
 	@JsonProperty(JSON_NODE_RELATIONS)
-	private Map<String, RelationData> relationships = new HashMap<>();
+	protected Map<String, RelationData> relationships;
 	
 	
 	/**
 	 * <h1>Liens de ressources</h1>
-	 * 
 	 * <p>
 	 * Le principe HATEOAS introduit tout simplement des transitions possibles entre
 	 * les différents états d’une même ressource, ainsi qu’entre les ressources
@@ -85,18 +79,28 @@ public class SingleResponse<M, I extends Identifier<?>>  implements Serializable
 	 * </p>
 	 */
 	@JsonProperty(JSON_NODE_LINKS)
-	private List<LinkData> links = new ArrayList<>();
+	protected List<LinkData> links;
 
 
-	public SingleResponse() {
+	@Generated("SparkTools")
+	private SingleCompositeData(Builder<M,I> builder) {
+		this.identifier = builder.identifier;
+		this.data = builder.data;
+		this.relationships = builder.relationships;
+		this.links = builder.links;
+	}
+
+
+	public SingleCompositeData() {
 		this(null, null);
 	}
 	
-	public SingleResponse(String type, I id, M data) {
+	public SingleCompositeData(String type, I id, M data) {
 		super();
+		this.relationships = new HashMap<>();
+		this.links = new ArrayList<>();
 		this.identifier = id;
 		this.data = data;
-		this.type = type;
 	}
 
 	/**
@@ -105,8 +109,57 @@ public class SingleResponse<M, I extends Identifier<?>>  implements Serializable
 	 * @param id
 	 * @param data
 	 */
-	public SingleResponse(I id, M data) {
+	public SingleCompositeData(I id, M data) {
 		this(null, id, data);
 	}
+
+	/**
+	 * Creates builder to build {@link SingleCompositeData}.
+	 * @return created builder
+	 */
+	@Generated("SparkTools")
+	public static <M, I extends Identifier<?>>Builder<M, I> builder() {
+		return new Builder<M, I>();
+	}
+
+	/**
+	 * Builder to build {@link SingleCompositeData}.
+	 */
+	@Generated("SparkTools")
+	public static final class Builder<M, I extends Identifier<?>> {
+		private I identifier;
+		private M data;
+		private Map<String, RelationData> relationships = Collections.emptyMap();
+		private List<LinkData> links = Collections.emptyList();
+
+		private Builder() {
+		}
+
+		public Builder<M,I> identifier(I identifier) {
+			this.identifier = identifier;
+			return this;
+		}
+
+		public Builder<M,I> data(M data) {
+			this.data = data;
+			return this;
+		}
+
+		public Builder<M,I> relationships(Map<String, RelationData> relationships) {
+			this.relationships = relationships;
+			return this;
+		}
+
+		public Builder<M,I> links(List<LinkData> links) {
+			this.links = links;
+			return this;
+		}
+
+		public SingleCompositeData<M,I> build() {
+			return new SingleCompositeData<M,I>(this);
+		}
+	}
+	
+	
 
 }

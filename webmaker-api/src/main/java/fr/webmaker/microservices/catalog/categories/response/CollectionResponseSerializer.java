@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 import fr.webmaker.commons.PagingData;
+import fr.webmaker.commons.data.SingleCompositeData;
 import fr.webmaker.commons.response.CollectionResponse;
-import fr.webmaker.commons.response.SingleResponse;
 
 public class CollectionResponseSerializer extends JsonSerializer<CollectionResponse<?, ?>> {
 
@@ -28,7 +28,7 @@ public class CollectionResponseSerializer extends JsonSerializer<CollectionRespo
 		
 		gen.writeFieldName("collection");
 		gen.writeStartArray();
-        for (SingleResponse<?, ?> singleResponse : value.getCollection()) {
+        for (SingleCompositeData<?, ?> singleResponse : value.getCollection()) {
         	gen.writeStartObject();
         	gen.writeObjectField(singleResponse.getIdentifier().getId().toString(),  singleResponse);
 			gen.writeEndObject();

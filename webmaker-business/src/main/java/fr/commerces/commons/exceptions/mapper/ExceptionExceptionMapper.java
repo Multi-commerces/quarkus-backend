@@ -8,12 +8,14 @@ import javax.ws.rs.ext.Provider;
 import fr.webmaker.commons.response.ErrorResponse;
 
 @Provider
-public class ExceptionExceptionMapper implements ExceptionMapper<Exception> 
-{
-    @Override
-    public Response toResponse(Exception exception) 
-    {
-    	ErrorResponse errorResponse = new ErrorResponse("500", exception.getMessage(), "error_technical", "nolink", null);
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();  
-    }
+public class ExceptionExceptionMapper implements ExceptionMapper<Exception> {
+	@Override
+	public Response toResponse(Exception exception) {
+		ErrorResponse errorResponse = new ErrorResponse("500",
+				exception.getMessage() + (exception.getStackTrace() != null && exception.getStackTrace().length > 0
+						? " " + exception.getStackTrace()[0].toString()
+						: ""),
+				"error_technical", "nolink", null);
+		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(errorResponse).build();
+	}
 }

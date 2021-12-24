@@ -27,7 +27,7 @@ public class RelationData {
 	 * liaison de ressources
 	 */
 	@JsonProperty("identifiers")
-	private List<Identifier<?>> data;
+	private List<? extends Identifier<?>> data;
 
 	/**
 	 * exemple :

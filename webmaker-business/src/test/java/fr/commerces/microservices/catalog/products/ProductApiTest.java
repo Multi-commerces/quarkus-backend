@@ -11,7 +11,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import fr.commerces.commons.abstracts.AbtractQuarkusApiTest;
-import fr.commerces.microservices.catalog.products.openapi.ProductResourceApi;
 import fr.webmaker.commons.PagingData;
 import fr.webmaker.commons.response.CollectionResponse;
 import io.quarkus.test.common.http.TestHTTPEndpoint;

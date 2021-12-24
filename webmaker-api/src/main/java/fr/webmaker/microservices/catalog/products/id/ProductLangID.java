@@ -26,6 +26,11 @@ public class ProductLangID extends Identifier<Long> {
 		this.id = id;
 		this.languageCode = languageCode;
 	}
+
+	@Override
+	public String toString() {
+		return "{languageCode=" + languageCode + "}";
+	}
 	
 	
 

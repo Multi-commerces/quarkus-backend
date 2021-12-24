@@ -17,7 +17,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import fr.commerces.commons.abstracts.AbtractQuarkusApiTest;
-import fr.webmaker.microservices.catalog.categories.data.CategoryLangData;
+import fr.commerces.microservices.catalog.categories.data.CategoryLangData;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
@@ -68,10 +68,10 @@ public class CategoryApiTest extends AbtractQuarkusApiTest {
 		
 		body = new CategoryLangData();
 		CategoryLangData data = (CategoryLangData) body;
-		data.setDescription("descrption");
-		data.setDisplayed(true);
-		data.setPosition(1);
-		data.setName("nom");
+//		data.setDescription("descrption");
+//		data.setDisplayed(true);
+//		data.setPosition(1);
+//		data.setName("nom");
 		
 		when(manager.createCategory(isNull(), any())).thenReturn(1L);
 		ValidatableResponse response = testEndpoint(HttpMethod.POST, Status.CREATED);
@@ -84,10 +84,10 @@ public class CategoryApiTest extends AbtractQuarkusApiTest {
 		// Preparation --------------------------------------
 		body = new CategoryLangData();
 		CategoryLangData data = (CategoryLangData) body;
-		data.setDescription("descrption");
-		data.setDisplayed(true);
-		data.setPosition(1);
-		data.setName("nom");
+//		data.setDescription("descrption");
+//		data.setDisplayed(true);
+//		data.setPosition(1);
+//		data.setName("nom");
 		
 		// Test EndPoint --------------------------------------
 		putPathParam("languageCode", LANG_CODE_FR);

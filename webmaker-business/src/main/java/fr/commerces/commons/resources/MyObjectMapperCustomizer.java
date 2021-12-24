@@ -12,6 +12,6 @@ public class MyObjectMapperCustomizer implements ObjectMapperCustomizer {
     @Override
     public void customize(ObjectMapper objectMapper) {
     	// Valeur qui indique que seules les propriétés avec des valeurs non nulles doivent être incluses.
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
     }
 }

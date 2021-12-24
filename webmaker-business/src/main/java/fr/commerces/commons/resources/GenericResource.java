@@ -6,27 +6,43 @@ import java.util.Locale;
 import java.util.function.Function;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jasminb.jsonapi.ResourceConverter;
 
 import fr.commerces.microservices.authentification.AuthenticationContextProvider;
 import fr.webmaker.commons.data.SingleCompositeData;
 import fr.webmaker.commons.identifier.Identifier;
 import lombok.Getter;
 
-
+@Produces("application/vnd.api+json")
+@Consumes("application/vnd.api+json")
 public abstract class GenericResource {
 
 	@Inject
-	AuthenticationContextProvider authentication;
+	protected AuthenticationContextProvider authentication;
 	
 	@Context 
-	HttpHeaders headers;
+	protected HttpHeaders headers;
 
 	@Context @Getter
-	UriInfo uriInfo;
+	protected UriInfo uriInfo;
+	
+	@Inject
+	protected ObjectMapper objectMapper;
+	
+	protected ResourceConverter converter;
+	
+	public GenericResource()
+	{			
+		
+	}
 
 	protected final Function<Long, Response> buildResponse = id -> {
 		if (id == null) {

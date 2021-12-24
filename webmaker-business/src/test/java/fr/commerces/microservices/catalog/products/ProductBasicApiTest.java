@@ -10,7 +10,7 @@ import org.eclipse.microprofile.openapi.models.PathItem.HttpMethod;
 import org.junit.jupiter.api.Test;
 
 import fr.commerces.commons.abstracts.AbtractQuarkusApiTest;
-import fr.commerces.microservices.catalog.products.openapi.ProductBasicResourceApi;
+import fr.commerces.microservices.catalog.products.basic.ProductBasicResourceApi;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;

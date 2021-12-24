@@ -12,9 +12,9 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 
+import fr.webmaker.commons.data.SingleCompositeData;
 import fr.webmaker.commons.identifier.Identifier;
 import fr.webmaker.commons.response.CollectionResponse;
-import fr.webmaker.commons.response.SingleResponse;
 
 /**
  * Interface APPLICATION_JSON CRUD (Create Read Update Delete)
@@ -38,7 +38,7 @@ public interface ICrudResource<Data, I extends Identifier<Object>> {
 	
 	@GET @Path("{id}")
 	@ClientHeaderParam(name = HttpHeaders.CONTENT_LANGUAGE, value = "{getLanguage}")
-	public SingleResponse<Data, I> getById(@PathParam("id") I identifiant);
+	public SingleCompositeData<Data, I> getById(@PathParam("id") I identifiant);
 
 	/**
 	 * Demander l'ajout d'un nouveau élément

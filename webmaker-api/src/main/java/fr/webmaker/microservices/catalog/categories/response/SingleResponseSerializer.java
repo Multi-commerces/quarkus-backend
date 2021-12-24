@@ -11,18 +11,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-import fr.webmaker.commons.response.SingleResponse;
+import fr.webmaker.commons.data.SingleCompositeData;
 
-public class SingleResponseSerializer extends JsonSerializer<SingleResponse<?, ?>> {
+public class SingleResponseSerializer extends JsonSerializer<SingleCompositeData<?, ?>> {
 
 	@Override
-	public void serialize(SingleResponse<?, ?> singleResponse, JsonGenerator gen, SerializerProvider serializers)
+	public void serialize(SingleCompositeData<?, ?> singleResponse, JsonGenerator gen, SerializerProvider serializers)
 			throws IOException, JsonProcessingException {
 
 		
 		gen.writeStartObject();
 		Field[] fields = Stream.concat(Arrays.stream(singleResponse.getClass().getDeclaredFields()),
-				Arrays.stream(SingleResponse.class.getDeclaredFields())).toArray(Field[]::new);		
+				Arrays.stream(SingleCompositeData.class.getDeclaredFields())).toArray(Field[]::new);		
 	
 		Stream.of(fields).forEach(field -> {
 			JsonProperty annotation = field.getAnnotation(JsonProperty.class);

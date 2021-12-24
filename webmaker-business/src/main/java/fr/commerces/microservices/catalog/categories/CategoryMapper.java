@@ -1,90 +1,99 @@
 package fr.commerces.microservices.catalog.categories;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import com.neovisionaries.i18n.LanguageCode;
+import org.mapstruct.Named;
 
 import fr.commerces.commons.mapper.DefaultMappingConfig;
-import fr.webmaker.commons.identifier.LangID;
-import fr.webmaker.microservices.catalog.categories.data.CategoryLangData;
-import fr.webmaker.microservices.catalog.categories.data.CategoryHierarchyData;
+import fr.commerces.commons.mapper.JsonNullableMapper;
+import fr.commerces.microservices.catalog.categories.data.CategoryData;
+import fr.commerces.microservices.catalog.categories.data.CategoryRelationData;
+import fr.commerces.microservices.catalog.categories.data.CategoryLangData;
+import fr.commerces.microservices.catalog.categories.data.CategoryLangRelationData;
+import fr.commerces.microservices.catalog.categories.entity.Category;
+import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
+import fr.commerces.microservices.catalog.categories.entity.CategoryLangPK;
 
 @ApplicationScoped
-@Mapper(config = DefaultMappingConfig.class)
+@Mapper(uses = JsonNullableMapper.class, config = DefaultMappingConfig.class)
 public abstract class CategoryMapper {
+	
 
 	/*
 	 * Mapper pour opération de création
 	 */
-
-	public abstract Category toEntity(CategoryLangData data);
-
-	@Mapping(target = "category", source = ".")
-	public abstract CategoryLang toEntityLang(CategoryLangData data);
+	@Mapping(target = "id", ignore = true)
+	public abstract Category toEntity(CategoryData data);
+	@Mapping(target = "id", ignore = true)
+	public abstract CategoryLang toEntity(CategoryLangData data);
 
 	/*
 	 * Mapper pour opération de mise à jour
 	 */
-
-	public abstract CategoryLangData toData(Category entity);
-	
-	@Mapping(target = ".", source = "category")
-	public abstract CategoryLangData toData(CategoryLang entity);
-
-	@Mapping(target = "category", source = ".")
-	public abstract CategoryLang toEntity(CategoryLangData data, @MappingTarget CategoryLang entity);
-
+	@InheritConfiguration
 	@Mapping(target = "updated", ignore = true)
 	@Mapping(target = "created", ignore = true)
-	public abstract Category toEntity(CategoryLangData data, @MappingTarget Category entity);
+	public abstract CategoryLang toEntity(CategoryLangData data, @MappingTarget CategoryLang entity);
+
+	@InheritConfiguration
+	@Mapping(target = "updated", ignore = true)
+	@Mapping(target = "created", ignore = true)
+	public abstract Category toEntity(CategoryData data, @MappingTarget Category entity);
 
 	/*
-	 * Mapper pour opération de lecture
+	 * Mapper pour opération de lecture 
 	 */
-	public CategoryHierarchyData toCategoryHierarchyData(CategoryLang entity)
-	{
-		final CategoryHierarchyData categoryHierarchyData = new CategoryHierarchyData(
-				new LangID(entity.getId(), entity.getLang()), // identifier
-				toData(entity), // category
-				subCategories(entity)); // subCategories
-		
-
-		categoryHierarchyData.setSubCategories(subCategories(entity));
-		
-		return categoryHierarchyData;
+	@Mapping(target = ".", source = ".")
+	public abstract CategoryLangData toData(Category entity);
+	
+	@Named("toCategoryData")
+	public abstract CategoryData toCategoryData(Category entity);
+	
+	@Mapping(target = "categoryId", source = "identity.categoryId")
+	@Mapping(target = "languageCode", source = "identity.languageCode")
+	@Mapping(target = "id", source = "identity", qualifiedByName = "categoryIdLang")
+	public abstract CategoryLangData toData(CategoryLang entity);
+	
+	@Mapping(target = "categoryId", source = "identity.categoryId")
+	@Mapping(target = "languageCode", source = "identity.languageCode")
+	@Mapping(target = "id", source = "identity", qualifiedByName = "categoryIdLang")
+	@Mapping(target = "category", source = "category", qualifiedByName = "toCategoryData")
+	public abstract CategoryLangRelationData toCompositeData(CategoryLang entity);
+	
+	@Named("categoryIdLang")
+	public String test(CategoryLangPK pk) {
+		return String.join("/", String.valueOf(pk.getCategoryId()), String.valueOf(pk.getLanguageCode()));
 	}
+	
+
+	@Mapping(target = "categoryLangs", source = "categoryLangs", qualifiedByName = "categoryLangs")
+	@Mapping(target = "subCategories", source = "childrenCategory", qualifiedByName = "subCategories")
+	public abstract CategoryRelationData toCategoryHierarchyData(Category entity);
 
 
-	private List<CategoryHierarchyData> subCategories(final CategoryLang entity) {
-		
-		final List<CategoryHierarchyData> subCategories = new ArrayList<>();
-		if (CollectionUtils.isEmpty(entity.getChildrenCategory())) {
-			return subCategories;
+	@Named("subCategories")
+	public List<CategoryRelationData> subCategories(final Set<Category> childrenCategory) {
+	
+		if (CollectionUtils.isEmpty(childrenCategory)) {
+			return Collections.emptyList();
 		}
-		
-		final LanguageCode lang = entity.getLang();
-		
-		// Pour chacune des sous-catégories
-		entity.getChildrenCategory().forEach(root -> {
-			// Traitement (la langue doit exister)
-			root.getCategoryLang().stream()
-				.filter(o -> o.getLang().equals(lang))
-				.findAny()
-				.ifPresent(rootLang -> {
-					CategoryHierarchyData c = toCategoryHierarchyData(rootLang);
-					subCategories.add(c);
-			});
-		});
 
-		return subCategories;
+		return childrenCategory.stream().map(this::toCategoryHierarchyData).collect(Collectors.toList());
+	}
+	
+	@Named("categoryLangs")
+	public List<CategoryLangData> toCategoryLangs(List<CategoryLang> entity){
+		return entity.stream().map(this::toData).collect(Collectors.toList());
 	}
 
 }

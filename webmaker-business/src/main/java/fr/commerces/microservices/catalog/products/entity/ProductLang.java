@@ -13,6 +13,9 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.neovisionaries.i18n.LanguageCode;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -36,6 +39,7 @@ public class ProductLang extends PanacheEntityBase {
 	@EmbeddedId
 	public ProductLangPK identity;
 
+	@Fetch(FetchMode.JOIN)
 	@MapsId("idProduct")
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Product.class, cascade = CascadeType.ALL)
 	@JoinColumn(name = "PRODUCT_ID")

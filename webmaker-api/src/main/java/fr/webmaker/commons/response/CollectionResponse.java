@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.webmaker.commons.PagingData;
 import fr.webmaker.commons.data.LinkData.REL;
 import fr.webmaker.commons.data.SimpleData;
+import fr.webmaker.commons.data.SingleCompositeData;
 import fr.webmaker.commons.identifier.Identifier;
 import lombok.Getter;
 
@@ -33,14 +34,12 @@ import lombok.Getter;
 @Getter
 public class CollectionResponse<M, I extends Identifier<?>> {
 	
-	public static final String JSON_NODE_PAGE = "page";
+	public static final String JSON_NODE_PAGE = "meta";
 	public static final String JSON_NODE_ITEMS = "data";
-	public static final String JSON_NODE_NAV = "navigation";
+	public static final String JSON_NODE_NAV = "links";
 	public static final String JSON_NODE_SELF = "self";
 	public static final String JSON_NODE_INCLUDES = "included";
-	
-	@JsonProperty(JSON_NODE_SELF)
-	protected Link self;
+
 
 	/**
 	 * Pagination Les clés suivantes DOIVENT être utilisées pour les liens de
@@ -69,7 +68,7 @@ public class CollectionResponse<M, I extends Identifier<?>> {
 	 * Liste des items
 	 */
 	@JsonProperty(JSON_NODE_ITEMS)
-	protected List<SingleResponse<M, I>> collection;
+	protected List<SingleCompositeData<M, I>> collection;
 	
 	/**
 	 * <h1>Ressources incluses</h1>
@@ -81,15 +80,14 @@ public class CollectionResponse<M, I extends Identifier<?>> {
 	 * </p>
 	 */
 	@JsonProperty(JSON_NODE_INCLUDES)
-	protected Map<String, List<SingleResponse<? extends SimpleData, ? extends Identifier<?>>>> included;
+	protected Map<String, List<? extends SingleCompositeData<? extends SimpleData, ? extends Identifier<?>>>> included;
 
 	
 	private CollectionResponse(Builder<M, I> builder) {
 		this.page = builder.page;
 		this.collection = builder.collection;
 		this.nagigation = builder.nagigation;
-		this.self = builder.self;
-		this.included = new HashMap<>();
+		this.included = builder.included;
 	}
 
 	public CollectionResponse() {
@@ -105,7 +103,7 @@ public class CollectionResponse<M, I extends Identifier<?>> {
 		this.included = new HashMap<>();
 	}
 
-	public CollectionResponse(final Collection<SingleResponse<M, I>> collection) {
+	public CollectionResponse(final Collection<SingleCompositeData<M, I>> collection) {
 		this();
 		this.collection.addAll(collection);
 	}
@@ -143,14 +141,14 @@ public class CollectionResponse<M, I extends Identifier<?>> {
 
 	@Transient
 	public M put(I arg0, M arg1) {
-		collection.add(new SingleResponse<M, I>(arg0, arg1));
+		collection.add(new SingleCompositeData<M, I>(arg0, arg1));
 		return arg1;
 	}
 
 	@Transient
 	public void putAll(Map<? extends I, ? extends M> arg0) {
 		arg0.entrySet().stream().forEach(entry -> {
-			final SingleResponse<M, I> singleResponse = new SingleResponse<M, I>();
+			final SingleCompositeData<M, I> singleResponse = new SingleCompositeData<M, I>();
 			singleResponse.setIdentifier(entry.getKey());
 			singleResponse.setData(entry.getValue());
 
@@ -187,18 +185,20 @@ public class CollectionResponse<M, I extends Identifier<?>> {
 	 */
 	public static final class Builder<M, I extends Identifier<?>> {
 		private PagingData page;
-		private List<SingleResponse<M, I>> collection = Collections.emptyList();
+		private List<SingleCompositeData<M, I>> collection = Collections.emptyList();
 		
-
 		private Map<REL, String> nagigation = new HashMap<>();
 		private Link self;
+		
+		private Map<String, List<? extends SingleCompositeData<? extends SimpleData, ? extends Identifier<?>>>> included;
+
 		
 		private Builder(UriInfo uriInfo) {
 			this.self = Link.fromUriBuilder(uriInfo.getRequestUriBuilder())
 	                .rel("self").build();
 		}
 
-		public Builder<M, I> withPaging(PagingData page) {
+		public Builder<M, I> paging(PagingData page) {
 			this.page = page;
 			URI uri =  self.getUri();
 			
@@ -216,8 +216,20 @@ public class CollectionResponse<M, I extends Identifier<?>> {
 			return this;
 		}
 
-		public Builder<M, I> withCollection(List<SingleResponse<M, I>> collection) {
+		public Builder<M, I> collection(List<SingleCompositeData<M, I>> collection) {
 			this.collection = collection;
+			return this;
+		}
+		
+		public Builder<M, I> included(String key, List<? extends SingleCompositeData<? extends SimpleData, ? extends Identifier<?>>> included) {
+			if(this.included == null)
+			{
+				this.included =new HashMap<String, List<? extends SingleCompositeData<? extends SimpleData, ? extends Identifier<?>>>>();
+			}
+			
+			this.included.put(key, included);
+			
+			
 			return this;
 		}
 

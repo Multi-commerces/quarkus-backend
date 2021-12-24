@@ -3,7 +3,7 @@ package fr.commerces.products.services;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.commerces.microservices.catalog.products.manager.ProductLangManager;
-import fr.webmaker.microservices.catalog.products.data.ProductLangData;
+import fr.commerces.microservices.catalog.products.lang.ProductLangData;
+import fr.commerces.microservices.catalog.products.lang.ProductLangManager;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
@@ -28,7 +28,7 @@ public class ProductServiceTest {
 	public void testFindAllByLanguageCode() {
 		int size = 2;
 
-		final Map<Long, ProductLangData> values = manager.findAllByLanguageCode(LanguageCode.fr, Optional.of(1),
+		final List<ProductLangData> values = manager.findAllByLanguageCode(LanguageCode.fr, Optional.of(1),
 				Optional.of(size));
 
 		assertThat("Le nombre d'item, doit correspondre au param.'size' fourni", values.size(), is(size));
@@ -36,7 +36,7 @@ public class ProductServiceTest {
 
 	@Test
 	public void testFindAllByLanguageCode_OptionalEmpty() {
-		final Map<Long, ProductLangData> values = manager.findAllByLanguageCode(LanguageCode.fr, Optional.empty(),
+		final List<ProductLangData> values = manager.findAllByLanguageCode(LanguageCode.fr, Optional.empty(),
 				Optional.empty());
 
 		assertThat(values.size(), is(3));
