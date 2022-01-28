@@ -21,7 +21,7 @@ import fr.mycommerce.commons.models.Model;
 import fr.mycommerce.commons.views.AbstractCrudView;
 import fr.mycommerce.commons.views.ActionType;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
-import fr.webmaker.microservices.catalog.products.data.ProductLangData;
+import fr.webmaker.data.product.ProductLangData;
 import fr.webmaker.microservices.catalog.products.id.ProductLangID;
 import fr.webmaker.microservices.catalog.products.response.ProductLangResponse;
 import fr.webmaker.microservices.catalog.products.restclient.ProductRestClient;

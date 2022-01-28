@@ -1,11 +1,11 @@
 package fr.commerces.microservices.catalog.categories.basic;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static fr.commerces.commons.resources.ConstApi.MEDIA_JSON_API;
 
-import javax.annotation.PostConstruct;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -28,65 +28,52 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.jasminb.jsonapi.DeserializationFeature;
 import com.github.jasminb.jsonapi.JSONAPIDocument;
-import com.github.jasminb.jsonapi.Link;
-import com.github.jasminb.jsonapi.Links;
-import com.github.jasminb.jsonapi.ResourceConverter;
-import com.github.jasminb.jsonapi.SerializationFeature;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
-import com.neovisionaries.i18n.LanguageCode;
 
-import fr.commerces.commons.resources.GenericResource;
-import fr.commerces.microservices.catalog.categories.data.CategoryData;
-import fr.commerces.microservices.catalog.categories.data.CategoryRelationData;
+import fr.commerces.commons.resources.ConstApi;
+import fr.commerces.commons.resources.JsonApiResource;
 import fr.commerces.microservices.catalog.categories.data.ShemaCategoryData;
 import fr.commerces.microservices.catalog.categories.data.ShemaCreateCategoryData;
-import fr.commerces.microservices.catalog.categories.lang.CategoryLangBaseData;
+import fr.commerces.microservices.catalog.categories.lang.CategoryLangData;
 import fr.commerces.microservices.catalog.categories.lang.CategoryLangRelationData;
+import fr.webmaker.data.category.CategoryData;
+import fr.webmaker.data.category.CategoryRelationData;
 
 @Path(CategoryResource.PATH)
-@Produces("application/vnd.api+json")
-@Consumes("application/vnd.api+json")
+@Produces(MEDIA_JSON_API)
+@Consumes(MEDIA_JSON_API)
 @Tag(name = "Ressource Catégories", description = "Ressource pour la gestion des catégories")
-public class CategoryResource extends GenericResource {
+public class CategoryResource extends JsonApiResource<CategoryData> {
 
 	public static final String PATH = "/categories";
-
-	final Map<String, String> meta = new HashMap<>();
-	final Map<String, Link> linkMap = new HashMap<String, Link>();
-	final Links links = new Links(linkMap);
 
 	@Inject
 	CategoryManager manager;
 
-	@PostConstruct
-	public void categoryResource() {
-
-		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-		converter = new ResourceConverter(objectMapper, CategoryLangRelationData.class, CategoryRelationData.class,
-				CategoryLangBaseData.class);
-
-		converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
-		converter.enableSerializationOption(SerializationFeature.INCLUDE_LINKS);
-		converter.enableSerializationOption(SerializationFeature.INCLUDE_META);
+	public CategoryResource() {
+		super(CategoryData.class, CategoryRelationData.class);
+	}
+	
+	@Override
+	public List<Class<?>> getClazz() {
+		return List.of(CategoryLangData.class, CategoryLangRelationData.class);
 	}
 
 	@APIResponses(value = {
-			@APIResponse(responseCode = "200", description = "[OK] - Opération de recherche effectuée avec succès.", content = @Content(mediaType = "application/vnd.api+json", schema = @Schema(title = "category", type = SchemaType.OBJECT, implementation = ShemaCategoryData.class))) })
-	@Operation(operationId = "getCategories", summary = "Rechercher des catégories", description = "<h2>Opération de recherche des catégories</h2>"
-			+ "<ul><b>Relations (relationships) :</b><ul>." + "<li>sous-catégories =>"
-			+ CategoryRelationData.RELATION_SUB_CATEGORIES + "<li>traductions =>" + CategoryRelationData.RELATION_LANG)
+			@APIResponse(responseCode = "200", 
+					description = "[OK] - Opération de recherche effectuée avec succès.", 
+					content = @Content(mediaType = ConstApi.MEDIA_JSON_API, 
+					schema = @Schema(title = "category", type = SchemaType.OBJECT, implementation = ShemaCategoryData.class))) })
+	@Operation(operationId = "getCategories", 
+		summary = "Rechercher des catégories", 
+		description = "Opération de recherche des catégories")
 	@GET
 	@Path("/")
-	public byte[] getCategories() throws Exception {
-		var data = manager.findCategoryHierarchy();
+	public Response getCategories() throws Exception {
+		return writeResponse(manager.findCategoryHierarchy(), Collections.emptyList());
 
-		return converter.writeDocumentCollection(
-				new JSONAPIDocument<List<CategoryRelationData>>(data, links, null, objectMapper));
 	}
 
 	@Operation(operationId = "getCategoryProducts", summary = "Recherche les produits de la catégorie", description = "Retourne les informations du produit.")
@@ -99,51 +86,6 @@ public class CategoryResource extends GenericResource {
 		final CategoryRelationData value = manager.findCategoryHierarchyById(categoryId);
 
 		return converter.writeDocument(new JSONAPIDocument<CategoryRelationData>(value, objectMapper));
-	}
-
-	@GET
-	@Path("/{categoryId}/langs")
-	public byte[] getCategoryLangs(
-			@Parameter(description = "Identifiant de la catégorie") @PathParam("categoryId") @NotNull Long categoryId)
-			throws JsonProcessingException, IllegalAccessException, DocumentSerializationException {
-		final List<CategoryLangRelationData> value = manager.findCategoryLangCompositeDataByCategoryId(categoryId);
-
-		return converter
-				.writeDocumentCollection(new JSONAPIDocument<List<CategoryLangRelationData>>(value, objectMapper));
-	}
-
-	@Operation(operationId = "getCategoryRelationshipsLang", summary = "Recherche les produits de la catégorie", description = "Retourne les informations du produit.")
-	@GET
-	@Path("/{id}/relationships/langs")
-	public byte[] getCategoryRelationshipsLang(
-			@Parameter(description = "Identifiant de la catégorie") @PathParam("id") @NotNull @NotNull Long categoryId)
-			throws DocumentSerializationException {
-		final List<CategoryLangBaseData> relationships = manager.findRelationshipsLangs(categoryId);
-		converter.enableSerializationOption(SerializationFeature.INCLUDE_ID);
-//		converter.disableSerializationOption(SerializationFeature.INCLUDE_ID);
-		converter.disableSerializationOption(SerializationFeature.INCLUDE_META);
-		converter.disableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
-
-		return converter
-				.writeDocumentCollection(new JSONAPIDocument<List<CategoryLangBaseData>>(relationships, objectMapper));
-	}
-
-	@Operation(operationId = "getCategoryLang", 
-			summary = "Recherche les produits de la catégorie", 
-			description = "Retourne les informations du produit.")
-	@Path("/{id}/langs/{languageCode}")
-	@GET
-	public byte[] getCategoryLang(
-			@Parameter(description = "Identifiant de la catégorie") 
-			@PathParam("id") 
-			@NotNull Long categoryId,
-			@Parameter(description = "Langue de la catégorie recherchée") 
-			@PathParam("languageCode") 
-			@NotNull LanguageCode languageCode)
-			throws DocumentSerializationException {
-		final CategoryLangRelationData data = manager.findCategoryLangCompositeData(categoryId, languageCode);
-
-		return converter.writeDocument(new JSONAPIDocument<CategoryLangRelationData>(data, objectMapper));
 	}
 
 	@Operation(operationId = "categoryPost", 
@@ -186,10 +128,10 @@ public class CategoryResource extends GenericResource {
 		}
 
 		// Mise à jour (partiel de la catégory)
-		if (categoryHierarchyData.getCategoryLangs() != null) {
-			LanguageCode lang = LanguageCode.getByCode("fr", false);
-			manager.update(categoryId, lang, document.get().getCategoryLangs().get(0));
-		}
+//		if (categoryHierarchyData.getCategory() != null) {
+//			LanguageCode lang = LanguageCode.getByCode("fr", false);
+//			manager.update(categoryId, lang, document.get().getCategories().get(0));
+//		}
 
 		if (categoryHierarchyData != null) {
 			manager.update(categoryId, categoryHierarchyData);

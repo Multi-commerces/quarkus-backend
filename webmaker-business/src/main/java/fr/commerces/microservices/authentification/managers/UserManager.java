@@ -15,12 +15,12 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.commerces.commons.logged.ManagerInterceptor;
 import fr.commerces.microservices.authentification.AuthenticationContext;
 import fr.commerces.microservices.authentification.data.AuthentificationData;
 import fr.commerces.microservices.authentification.data.UserData;
 import fr.commerces.microservices.authentification.entity.User;
 import fr.commerces.microservices.authentification.mapper.UserMapper;
+import fr.webmaker.annotation.ManagerInterceptor;
 
 @ManagerInterceptor
 @ApplicationScoped

@@ -6,7 +6,7 @@ import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
 import fr.commerces.microservices.catalog.categories.basic.CategoryResource;
-import fr.commerces.microservices.catalog.categories.data.CategoryData;
+import fr.webmaker.data.category.CategoryRelationData;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,8 +19,8 @@ public class CategoryLangRelationData extends CategoryLangData {
 
 	public static final String RELATION_CATEGORY = "categories";
 
-	@Relationship(value = "category", path = "/category", relatedPath = RELATION_CATEGORY)
-	protected CategoryData category;
+	@Relationship(value = "category")
+	protected CategoryRelationData category;
 
 	@Override
 	public Links getLinks() {

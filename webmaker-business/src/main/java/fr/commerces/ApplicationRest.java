@@ -12,6 +12,7 @@ import org.eclipse.microprofile.openapi.annotations.info.Info;
 import org.eclipse.microprofile.openapi.annotations.info.License;
 import org.eclipse.microprofile.openapi.annotations.security.OAuthFlow;
 import org.eclipse.microprofile.openapi.annotations.security.OAuthFlows;
+import org.eclipse.microprofile.openapi.annotations.security.OAuthScope;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.servers.Server;
@@ -24,9 +25,13 @@ import io.quarkus.runtime.StartupEvent;
 @ApplicationScoped
 @OpenAPIDefinition(
 	info = @Info(title = "Multi-commerces API", 
+			termsOfService = "https://github.com/lunatech-labs/lunatech-timekeeper",
 			description = "Cette API permet d'interagire avec votre boutique en ligne", 
-			version = "1.0.0", contact = @Contact(name = "web maker GitHub", url = "https://github.com/lunatech-labs/lunatech-timekeeper"), 
-			license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html")
+			version = "1.0.0", 
+			contact = @Contact(name = "web maker GitHub", 
+				url = "https://github.com/lunatech-labs/lunatech-timekeeper",
+				email = "julien.ilari@.com"), 
+			license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html")		
 	), 
 	servers = { 
 			@Server(url = "http://localhost:8081", description = "DEV Server"), 
@@ -44,7 +49,8 @@ import io.quarkus.runtime.StartupEvent;
 	type = SecuritySchemeType.OAUTH2, 
 	description = "authentication pour un access OAuth2", 
 	flows = @OAuthFlows(
-			implicit = @OAuthFlow(authorizationUrl = "http://localhost:8080/auth/realms/webmaker/protocol/openid-connect/auth")
+			implicit = @OAuthFlow(scopes = { @OAuthScope },
+			authorizationUrl = "http://localhost:8080/auth/realms/webmaker/protocol/openid-connect/auth")
 	)
 )
 @SecurityScheme(
@@ -52,7 +58,8 @@ import io.quarkus.runtime.StartupEvent;
     type = SecuritySchemeType.OAUTH2,
     description = "authentication pour un access OAuth2",
     flows = @OAuthFlows(
-            implicit = @OAuthFlow(authorizationUrl = "http://auth.web-maker.fr/auth/realms/webmaker/protocol/openid-connect/auth")
+            implicit = @OAuthFlow(scopes = { @OAuthScope },
+            	authorizationUrl = "http://auth.web-maker.fr/auth/realms/webmaker/protocol/openid-connect/auth")
     )
 )
 public class ApplicationRest extends Application {
@@ -61,7 +68,7 @@ public class ApplicationRest extends Application {
 	
 	void onStart(@Observes @Priority(value = 1) StartupEvent ev) {
 		logger.info("Serveur START [OK] =====================================================");
-		logger.info("http://localhost:8081/openapi");
+		logger.info("http://localhost:8081/openapi/ui");
 	}
 
 }

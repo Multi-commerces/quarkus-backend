@@ -1,0 +1,94 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Foundation | Welcome</title>
+<link rel="stylesheet"
+	href="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
+	
+<style type="text/css">
+.product figure
+{
+	margin: 0;
+}
+
+.product figure figcaption
+{
+    font-size: small;
+}
+
+</style>
+
+</head>
+<body>
+	<div id="err" class="callout alert" style="display:none">
+	  <h5>Call. error</h5>
+	   <p class="message"></p>
+	</div>
+	<div id="suc" class="callout success"  style="display:none">
+	  <h5>Call. success</h5>
+	  <p class="message"></p>
+	</div>
+	
+	<div class="row column text-center">
+		<h1>Bornes de recharge</h1>
+		<hr>
+		
+		<!-- Tableaude présentation des bornes de recharge -->
+		<table  class="grid-x hover">
+			<thead>
+			    <tr>
+			      <th width="10">#ID</th>
+			      <th width="200">Dénomination</th>
+			      <th width="800">Adresse</th>
+			    </tr>
+		  	</thead>
+		  	<tbody id="bornes_recharge">
+		  	</tbody>
+			<!-- javascript insertion -->
+		</table>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/kitsu-core"></script>
+	
+	
+<script type="text/javascript">
+	$(document).foundation();
+	$(document).ready(function () {
+		$.ajax({
+	         url: "https://dev.dev.interne.ocean.fr/ocean/restapi/borneRecharges/?customerId=11100000001",
+	         type: "GET",
+	         X-Auth-Token : "9cb7397b14625e658a9f352874941434eb76de750d843f41a9f4512339b0382c09ed6b63b5d7084a329c23e20835d16a0b663a834ebef4246058cf2d3fcc6383"
+	         contentType: "application/vnd.api+json",
+	         dataType: "json",
+	         async : true
+		}).done(function (response) {
+	    	 console.log(response)
+	    	 
+	    	 $.each(kitsuCore.deattribute(response), function( i, item) {
+	    		 // HTML - Les bornes de recharge
+	    		 var html = "<tr>";"
+	    		 html = html + "<td>" + item.idBorneRecharge + "</td>";
+   				 html = html + "<td>" + item.denomination + "</td>";
+   				 html = html + "<td>" + item.adresse + "</td>";
+   				 html = html + "</tr>";
+
+		 		// bornes de recharge
+				$("#bornes_recharge").append(html);
+			});
+	    	 
+			$("#err").hide();
+		    $("#suc").show();
+		    $(".message").html("Bornes de recharge (GET => OK)");
+		}).fail(function () {
+			$("#err").show();
+			$("#suc").hide();
+			$(".message").html("Unable to call the server");
+		});
+	});
+</script>
+</body>
+</html>

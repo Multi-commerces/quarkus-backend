@@ -1,8 +1,9 @@
 package fr.commerces.microservices.catalog.products.entity;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -13,13 +14,12 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import com.neovisionaries.i18n.LanguageCode;
 
+import fr.commerces.microservices.catalog.products.relationships.lang.ProductLangInclusion;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Parameters;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,9 +39,9 @@ public class ProductLang extends PanacheEntityBase {
 	@EmbeddedId
 	public ProductLangPK identity;
 
-	@Fetch(FetchMode.JOIN)
+//	@Fetch(FetchMode.JOIN)
 	@MapsId("idProduct")
-	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Product.class, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Product.class)
 	@JoinColumn(name = "PRODUCT_ID")
 	public Product product;
 
@@ -109,8 +109,30 @@ public class ProductLang extends PanacheEntityBase {
 		return find("identity.language = ?1", languageCode);
 	}
 	
-	public static PanacheQuery<ProductLang> findByProductId(final Long idProduct) {
-		return find("identity.idProduct = ?1", idProduct);
+	/**
+	 * Recherche les traductions d'un produits
+	 * @param idProduct
+	 * @param inlusions
+	 * @return
+	 */
+	public static PanacheQuery<ProductLang> findByProductId(final Long idProduct,
+			final ProductLangInclusion... inlusions) {
+		StringBuilder query = new StringBuilder("SELECT pl FROM ProductLang pl ");
+		if (List.of(inlusions).contains(ProductLangInclusion.PRODUCT)) {
+			query.append("INNER JOIN FETCH pl.product p ");
+		}
+		query.append("WHERE pl.identity.idProduct = :id");
+
+		return find(query.toString(), Parameters.with("id", idProduct));
+	}
+	
+	/**
+	 * Recherche les traductions des produits
+	 * @param productIds
+	 * @return
+	 */
+	public static PanacheQuery<ProductLang> findByProductIds(final Collection<Long> productIds) {
+		return find("identity.idProduct in (?1)", productIds);
 	}
 
 	/**
@@ -130,7 +152,7 @@ public class ProductLang extends PanacheEntityBase {
 	 * 
 	 * @param idProduct    idProduct de l'entity à supprimer.
 	 * @param languageCode languageCode de l'entity à supprimer.
-	 * @return false si l'entité n'a pas été supprimée (introuvable).
+	 * @return false si la langue du produit n'a pas été supprimée (introuvable).
 	 */
 	public static boolean deleteByProductLangPK(final Long idProduct, final LanguageCode languageCode) {
 		return deleteById(new ProductLangPK(idProduct, languageCode));
@@ -162,11 +184,12 @@ public class ProductLang extends PanacheEntityBase {
 	}
 
 	@Transient
-	public void setProductLangPK(final LanguageCode language) {
+	public void setProductLangPK(final Long productId, final LanguageCode language) {
 		if (identity == null) {
-			identity = new ProductLangPK(null, language);
+			identity = new ProductLangPK(productId, language);
 		} else {
 			identity.setLanguage(language);
+			identity.setIdProduct(productId);
 		}
 	}
 

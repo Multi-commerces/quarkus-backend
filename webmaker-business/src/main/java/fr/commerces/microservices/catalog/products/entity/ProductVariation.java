@@ -1,5 +1,7 @@
 package fr.commerces.microservices.catalog.products.entity;
 
+import java.util.Collection;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,6 +62,10 @@ public class ProductVariation extends PanacheEntityBase {
 	 */
 	public static PanacheQuery<ProductVariation> findByProductId(final Long productId) {
 		return find("product.id = ?1", productId);
+	}
+	
+	public static PanacheQuery<ProductVariation> findByProductIds(final Collection<Long> productIds) {
+		return find("product.id in (?1)", productIds);
 	}
 
 }

@@ -25,13 +25,13 @@ import javax.transaction.UserTransaction;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.MDC;
 
-import fr.commerces.commons.logged.ManagerInterceptor;
 import fr.commerces.microservices.catalog.images.entities.ShopImage;
 import fr.commerces.microservices.catalog.images.entities.ShopImageDimentionConfig;
 import fr.commerces.microservices.catalog.images.enums.ShopImageDirectoryType;
 import fr.commerces.microservices.catalog.images.exceptions.StorageException;
 import fr.commerces.microservices.catalog.products.entity.Product;
 import fr.commerces.microservices.catalog.products.entity.ProductImage;
+import fr.webmaker.annotation.ManagerInterceptor;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.ShutdownEvent;
 import lombok.extern.slf4j.Slf4j;

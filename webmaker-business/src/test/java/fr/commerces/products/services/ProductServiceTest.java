@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.commerces.microservices.catalog.products.lang.ProductLangData;
-import fr.commerces.microservices.catalog.products.lang.ProductLangManager;
+import fr.commerces.microservices.catalog.products.relationships.lang.ProductLangManager;
+import fr.webmaker.data.product.ProductLangCompositeData;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
@@ -28,7 +28,7 @@ public class ProductServiceTest {
 	public void testFindAllByLanguageCode() {
 		int size = 2;
 
-		final List<ProductLangData> values = manager.findAllByLanguageCode(LanguageCode.fr, Optional.of(1),
+		final List<ProductLangCompositeData> values = manager.findAllByLanguageCode(LanguageCode.fr, Optional.of(1),
 				Optional.of(size));
 
 		assertThat("Le nombre d'item, doit correspondre au param.'size' fourni", values.size(), is(size));
@@ -36,7 +36,7 @@ public class ProductServiceTest {
 
 	@Test
 	public void testFindAllByLanguageCode_OptionalEmpty() {
-		final List<ProductLangData> values = manager.findAllByLanguageCode(LanguageCode.fr, Optional.empty(),
+		final List<ProductLangCompositeData> values = manager.findAllByLanguageCode(LanguageCode.fr, Optional.empty(),
 				Optional.empty());
 
 		assertThat(values.size(), is(3));

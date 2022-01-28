@@ -11,17 +11,23 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import fr.commerces.microservices.catalog.images.entities.ShopImage;
+import fr.webmaker.exception.crud.NotFoundUpdateException;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "Product.findByRef", query = "from Product where reference = ?1")
+})
 @Getter
 @Setter
 @Table(name = "PRODUCT", uniqueConstraints = { @UniqueConstraint(columnNames = { "product_id" }) })
@@ -44,8 +50,8 @@ public class Product extends PanacheEntityBase {
 	@Column(name = "price_HT")
 	public Double priceHT;
 
-	@Column(name = "tax_Rule")
-	public Double taxRule;
+	@Column(name = "taxe_Rule")
+	public Double taxeRule;
 
 	@Column(name = "quantity")
 	public Long quantity;
@@ -73,7 +79,7 @@ public class Product extends PanacheEntityBase {
 
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = ProductLang.class, mappedBy = "product", cascade = {
 			CascadeType.REMOVE }, orphanRemoval = true)
-	private List<ProductLang> productLang = new ArrayList<>();
+	private List<ProductLang> productLangs = new ArrayList<>();
 
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = ProductVariation.class, mappedBy = "product", cascade = {
 			CascadeType.REMOVE }, orphanRemoval = true)
@@ -83,9 +89,22 @@ public class Product extends PanacheEntityBase {
 			CascadeType.REMOVE, CascadeType.MERGE }, orphanRemoval = true)
 	private List<ProductImage> images = new ArrayList<>();
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="IMAGE_ID")
-    private ShopImage coverImage ; 
+    private ShopImage coverImage ;
+
+	public static void main(String[] args) {
+		
+	} 
+	
+	public static Product findByIdOrElseThrow(final Long productId) {
+		return Product.<Product>findByIdOptional(productId)
+				.orElseThrow(() -> new NotFoundUpdateException(productId));
+	}
+	
+	public static Product findByRef(final String reference) {
+		return find("#Product.findByRef", reference).firstResult();
+	}
 	
 	
 }

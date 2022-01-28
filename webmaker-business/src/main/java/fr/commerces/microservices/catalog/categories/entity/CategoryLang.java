@@ -1,8 +1,8 @@
 package fr.commerces.microservices.catalog.categories.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -162,7 +162,7 @@ public class CategoryLang extends PanacheEntityBase {
 		if (identity != null) {
 			return identity.getLanguageCode();
 		} else {
-			return null;
+			return LanguageCode.undefined;
 		}
 	}
 
@@ -190,7 +190,7 @@ public class CategoryLang extends PanacheEntityBase {
 	}
 	
 	@Transient
-	public Set<Category> getChildrenCategory()
+	public List<Category> getChildrenCategory()
 	{
 		return category.getChildrenCategory();
 	}

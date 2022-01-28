@@ -2,9 +2,9 @@ package fr.commerces.microservices.catalog.categories.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -22,8 +22,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import fr.commerces.microservices.catalog.products.entity.ProductCategory;
@@ -49,7 +47,7 @@ public class Category extends PanacheEntityBase {
 	@ToString.Include
 	public Long id;
 
-	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
 	public List<ProductCategory> productCategories = new ArrayList<>();
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -59,11 +57,10 @@ public class Category extends PanacheEntityBase {
 	/**
 	 * Liste des sous-catégories FetchType.LAZY
 	 */
-	@Fetch(FetchMode.JOIN)
 	@OneToMany(cascade = {
 			CascadeType.ALL }, mappedBy = "parentCategory", fetch = FetchType.LAZY, orphanRemoval = false)
 	@OrderBy("position")
-	public Set<Category> childrenCategory = new HashSet<>();
+	public List<Category> childrenCategory = new ArrayList<>();
 
 	@Column(nullable = false)
 	@ToString.Include
@@ -93,8 +90,7 @@ public class Category extends PanacheEntityBase {
 	@UpdateTimestamp
 	public LocalDateTime updated;
 	
-	@Fetch(FetchMode.JOIN)
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = CategoryLang.class, mappedBy = "category", cascade = {
+	@OneToMany(fetch = FetchType.EAGER, targetEntity = CategoryLang.class, mappedBy = "category", cascade = {
 			CascadeType.REMOVE }, orphanRemoval = true)
 	private List<CategoryLang> categoryLangs = new ArrayList<>();
 
@@ -107,4 +103,10 @@ public class Category extends PanacheEntityBase {
 	public static PanacheQuery<Category> findCategoryHierarchy() {
 		return Category.<Category>find("parentCategory is null");
 	}
+	
+	public static Stream<Category> findByIds(Collection<Long> ids) {
+		return Category.<Category>find("id in (?1)", ids)
+				.stream();
+	}
+	
 }

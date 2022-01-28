@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import com.github.jasminb.jsonapi.annotations.Type;
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.webmaker.commons.data.BaseResource;
+import fr.webmaker.data.BaseResource;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

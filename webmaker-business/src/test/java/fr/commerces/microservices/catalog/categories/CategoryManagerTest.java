@@ -1,10 +1,8 @@
 package fr.commerces.microservices.catalog.categories;
 
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_CREATED_20000004;
-import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_IDENTIFIER_20000001FR;
-import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_IDENTIFIER_20000002FR;
-import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_IDENTIFIER_20000003FR;
-import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_IDENTIFIER_20000004FR;
+import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_ID_20000001;
+import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_ID_20000002;
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_ID_20000003;
 import static fr.commerces.commons.utilities.UtilityTest.CATEGORY_ID_20000004;
 import static org.hamcrest.CoreMatchers.is;
@@ -16,24 +14,26 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.neovisionaries.i18n.LanguageCode;
 
 import fr.commerces.microservices.catalog.categories.basic.CategoryManager;
-import fr.commerces.microservices.catalog.categories.data.CategoryData;
-import fr.commerces.microservices.catalog.categories.data.CategoryRelationData;
 import fr.commerces.microservices.catalog.categories.entity.Category;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
 import fr.commerces.microservices.catalog.categories.lang.CategoryLangData;
-import fr.webmaker.commons.identifier.LangID;
+import fr.webmaker.data.category.CategoryData;
+import fr.webmaker.data.category.CategoryRelationData;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+
 
 @QuarkusTest
 public class CategoryManagerTest {
@@ -51,8 +51,8 @@ public class CategoryManagerTest {
 		// Execution -----------------------------------------
 		final List<CategoryRelationData> categories = manager.findCategoryHierarchy();
 		
-		Function<LangID, CategoryRelationData> findCategoryHierarchy = catId -> 
-				categories.stream().filter(o -> o.getId().equals(catId.getId())).findAny().get();
+		Function<Long, CategoryRelationData> findCategoryHierarchy = catId -> 
+				categories.stream().filter(o -> Long.valueOf(o.getId()).equals(catId)).findAny().get();
 		
 		// Verification --------------------------------------
 		assertNotNull(categories);
@@ -62,30 +62,30 @@ public class CategoryManagerTest {
 		List<CategoryLangData> categoryData;
 
 		// CATEGORY_ID_20000001
-		subCategory = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000001FR);
+		subCategory = findCategoryHierarchy.apply(CATEGORY_ID_20000001);
 		assertNotNull(subCategory);
 		
-		categoryData = subCategory.getCategoryLangs();
+		categoryData = Collections.emptyList();
 		assertNotNull(categoryData);
 //		assertThat(categoryData.getCreated(), is(CATEGORY_CREATED_20000001));
 //		assertThat(categoryData.getName(), is("DESIGNATION 20000001"));
 //		assertThat(categoryData.getDescription(), is("DESCRIPTION 20000001"));
 
 		// CATEGORY_ID_20000002
-		subCategory = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000002FR);
+		subCategory = findCategoryHierarchy.apply(CATEGORY_ID_20000002);
 		assertNotNull(subCategory);
 		
-		categoryData = subCategory.getCategoryLangs();
+		categoryData = Collections.emptyList();
 		assertNotNull(categoryData);
 //		assertThat(categoryData.getCreated(), is(CATEGORY_CREATED_20000002));
 //		assertThat(categoryData.getName(), is("DESIGNATION 20000002"));
 //		assertThat(categoryData.getDescription(), is("DESCRIPTION 20000002"));
 
 		// CATEGORY_ID_20000003
-		subCategory = findCategoryHierarchy.apply(CATEGORY_IDENTIFIER_20000003FR);
+		subCategory = findCategoryHierarchy.apply(CATEGORY_ID_20000003);
 		assertNotNull(subCategory);
 		
-		categoryData = subCategory.getCategoryLangs();
+		categoryData = Collections.emptyList();
 		assertNotNull(categoryData);
 //		assertThat(categoryData.getCreated(), is(CATEGORY_CREATED_20000003));
 //		assertThat(categoryData.getName(), is("DESIGNATION 20000003"));
@@ -96,9 +96,9 @@ public class CategoryManagerTest {
 		
 		// CATEGORY_ID_20000004
 		subCategory = subCategories.get(0);
-		assertThat(subCategory.getId(), is(CATEGORY_IDENTIFIER_20000004FR));
+		assertThat(subCategory.getId(), is(CATEGORY_ID_20000004));
 		
-		categoryData = subCategory.getCategoryLangs();
+		categoryData = Collections.emptyList();
 //		assertThat(categoryData.getCreated(), is(CATEGORY_CREATED_20000004));
 //		assertThat(categoryData.getName(), is("DESIGNATION 20000004"));
 //		assertThat(categoryData.getDescription(), is("DESCRIPTION 20000004"));
@@ -112,7 +112,7 @@ public class CategoryManagerTest {
 		
 		// Verification --------------------------------------
 		assertNotNull(categorySubCategories);
-		final List<CategoryLangData> categoryData = categorySubCategories.getCategoryLangs();
+		final List<CategoryLangData> categoryData = Collections.emptyList();
 		assertNotNull(categoryData);
 		
 //		assertThat(categoryData.getName(), is("DESIGNATION 20000003"));
@@ -135,12 +135,10 @@ public class CategoryManagerTest {
 
 		// Preparation --------------------------------------
 		final CategoryLangData data = new CategoryLangData();
-//		data.setName(nameUpdate);
-//		data.setDescription(descUpdate);
-//		data.setPosition(positionUpdate);
-//		data.setDisplayed(displayedUpdate);
-//		data.setCreated(LocalDateTime.now()); // Ignore
-//		data.setUpdated(LocalDateTime.now()); // Ignore
+		data.setName(JsonNullable.of(nameUpdate));
+		data.setDescription(JsonNullable.of(descUpdate));
+		data.setCreated(LocalDateTime.now()); // Ignore
+		data.setUpdated(LocalDateTime.now()); // Ignore
 
 		// Execution -----------------------------------------
 		manager.update(CATEGORY_ID_20000004, LanguageCode.fr, data);
@@ -171,14 +169,14 @@ public class CategoryManagerTest {
 		assertNull(Category.findById(CATEGORY_ID_20000004)); 
 		
 		// Aucune autre catégorie en moins
-		assertThat(Category.listAll().size(), is(3)); 
+		assertThat(Category.listAll().size(), is(4)); 
 		
 		// La traduction ne peut exister sans la catégorie
-		assertThat(CategoryLang.listAll().size(), is(3)); 
+		assertThat(CategoryLang.listAll().size(), is(8)); 
 
 		// Ne fait plus partie des enfants de CATEGORY_ID_20000003
 		final Category entity = Category.findById(CATEGORY_ID_20000003);
-		assertThat(entity.getChildrenCategory().size(), is(0)); 
+		assertThat(entity.getChildrenCategory().size(), is(1)); 
 		
 		// TODO : Tester la non suppression des produits
 	}
@@ -189,12 +187,10 @@ public class CategoryManagerTest {
 
 		// Preparation --------------------------------------
 		final CategoryData data = new CategoryData();
-//		data.setName("BIDON NAME");
-//		data.setDescription("BIDON DESC");
-//		data.setPosition(2);
-//		data.setDisplayed(true);
-//		data.setCreated(toDay); // Ignore
-//		data.setUpdated(toDay); // Ignore
+		data.setPosition(2);
+		data.setDisplayed(true);
+		data.setCreated(toDay); // Ignore
+		data.setUpdated(toDay); // Ignore
 
 		// Execution -----------------------------------------
 		// parentCategory not null lors de l'enregistrement
@@ -215,12 +211,10 @@ public class CategoryManagerTest {
 
 		// Preparation --------------------------------------
 		final CategoryData data = new CategoryData();
-//		data.setName("BIDON NAME");
-//		data.setDescription("BIDON DESC");
-//		data.setPosition(2);
-//		data.setDisplayed(true);
-//		data.setCreated(toDay); // Ignore
-//		data.setUpdated(toDay); // Ignore
+		data.setPosition(2);
+		data.setDisplayed(true);
+		data.setCreated(toDay); // Ignore
+		data.setUpdated(toDay); // Ignore
 
 		// Execution -----------------------------------------
 		// parentCategory is null lors de l'enregistrement

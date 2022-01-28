@@ -7,9 +7,6 @@
 <link rel="stylesheet"
 	href="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
 	
-	<link rel="stylesheet"
-	href="css/nav.css">
-	
 <style type="text/css">
 .product figure
 {
@@ -22,6 +19,7 @@
 }
 
 </style>
+
 </head>
 <body>
 
@@ -49,11 +47,22 @@
     </div>
   </div>
 </nav>
+
+	<div id="err" class="callout alert" style="display:none">
+	  <h5>Call. error</h5>
+	   <p class="message"></p>
+	</div>
+	<div id="suc" class="callout success"  style="display:none">
+	  <h5>Call. success</h5>
+	  <p class="message"></p>
+	</div>
+
+
+
 	<!-- End Top Bar -->
 	<div class="row column text-center">
 		<h2>Nos produits les plus récents</h2>
 		<hr>
-		<div class="message"></div>
 	</div>
 
 	<div id="300_400" class="row small-up-2 large-up-4">
@@ -78,6 +87,11 @@
 	<div id="row_s2_m3_l6" class="row small-up-2 medium-up-3 large-up-6">
 		<!-- javascript insertion -->
 	</div>
+	
+	<div id="bornes_recharge" class="grid-x">
+		<!-- javascript insertion -->
+	</div>
+	
 
 	<hr>
 	<div class="row">
@@ -202,48 +216,87 @@
 	</div>
 
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-	<script
-		src="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.js"></script>
-	<script>
-      $(document).foundation();
-    </script>
-
+	<script src="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/kitsu-core"></script>
+	
+	
 	<script type="text/javascript">
+	$(document).foundation();
+    $(document).ready(function () {
+    	 $.ajax({
+             url: "https://dev.dev.interne.ocean.fr/ocean/restapi/borneRecharges/?customerId=1110000000232",
+             type: "GET",
+             contentType: "application/vnd.api+json",
+             dataType: "json",
+             async : true
+         }).done(function (response) {
+        	 console.log(response)
+        	 $.each( kitsuCore.deattribute(response), function( i, item) {
+        		 // HTML - Quelques autres produits soignés 
+        		 var html = "<div class='cell'>";
+        		 html = html.concat(Object.keys(item.idBorneRecharge) + ' ' + item.idBorneRecharge + ' ' + item.denomination + ' ' + item.adresse);
+        		 html = html.concat("</div>");
+     
+				 // bornes de recharge
+        		 $("#bornes_recharge").append(html);
+        	});
+	        	 $("#err").hide();
+	             $("#suc").show();
+	             $(".message").html("Bornes de recharge (GET => OK)");
+          	 }).fail(function () {
+                  $("#err").show();
+                  $("#suc").hide();
+                  $(".message").html("Unable to call the server");
+             });
+    	});
+	</script>
+	
+	
+	<script type="text/javascript">
+		console.log(kitsuCore.camel('hello-world'));
+	 	
+		$(document).foundation();
         $(document).ready(function () {
-
-        	
-        	
         	 $.ajax({
-                 url: "http://localhost:8081/products?languageCode=fr&page=1&size=20",
+                 url: "http://localhost:8081/products?page=1&size=20",
                  type: "GET",
-                 contentType: "application/json; charset=utf-8",
+                 contentType: "application/vnd.api+json",
                  dataType: "json",
                  async : true
              }).done(function (response) {
-            	 $.each( response._embedded, function( i, val) {
-            		 console.log(JSON.stringify(val)); 
-            		 
-            		 // Decomposition Json
-            		 let id = val.identifier.id;
-            		 let data = val.data;
-            		 let links = val.links;
-            		 let imageCover = data.imageCover;
-            		 
-            		 // HTML - Image 
-            		 var imageHtml = "<div class='column'>";
-            		 imageHtml = imageHtml.concat("<img class='thumbnail' src='".concat(imageCover.href ,"'>"));
-            		 imageHtml = imageHtml.concat("<h5>", data.summary);
-            		 imageHtml = imageHtml.concat("<p>", (typeof data.price === 'undefined') ? 0 : data.price, "€ (HT)</p>");
+            	 console.log(response)
+            	 
+            	 let includes = response.included;
+            	 console.log(includes)
+            	 $.each( kitsuCore.deattribute(response.data), function( i, product) {
+            		 let lang = undefined;
+            		
+            		 // relationship Json
+            		 let relationship = product.relationships.productLangs.data.find(element => element.id.includes('fr'));
+            		 if(relationship != undefined)
+           			 {
+            			 console.log(relationship)
+            			 // Decomposition Json (produit FR)
+            			 lang = kitsuCore.deattribute(kitsuCore.filterIncludes(includes, relationship));
+                		 console.log(lang); 
+           			 }
+
+            		 // HTML - Nos produits les plus récents 
+            		 var imageHtml = "<div class='column' style='min-height:370px'>";
+            		 imageHtml = imageHtml.concat("<img class='thumbnail' src='".concat(product?.imageCover.href ,"'>"));
+            		 imageHtml = imageHtml.concat(product?.reference || 'REFXXXXXXX');
+            		 imageHtml = imageHtml.concat("<h5>", lang?.summary||'xxxxxxxxxx');
+            		 imageHtml = imageHtml.concat("<p>", (typeof product.price === 'undefined') ? 0 : product.price, "€ (HT)</p>");
             		 imageHtml = imageHtml.concat("<a href='#' class='button expanded'>Acheter</a>");
             		 imageHtml = imageHtml.concat("</div>");
          			 
-            		 
+            		 // HTML - Quelques autres produits soignés 
             		 var imageHtmlHeight216 = "<div class='column product'>";
             		 imageHtmlHeight216 = imageHtmlHeight216.concat("<figure>");
-            		 imageHtmlHeight216 = imageHtmlHeight216.concat("<img title='tirere' alt='erer' class='thumbnail' src='".concat(imageCover.href ,"' />"));
+            		 imageHtmlHeight216 = imageHtmlHeight216.concat("<img title='tirere' alt='erer' class='thumbnail' src='".concat(product.imageCover.href ,"' />"));
             		 imageHtmlHeight216 = imageHtmlHeight216.concat("<figcaption>Nulla At Nulla Justo, Eget</figcaption>");
             		 imageHtmlHeight216 = imageHtmlHeight216.concat("</figure>");
-            		 imageHtmlHeight216 = imageHtmlHeight216.concat("<p>", (typeof data.price === 'undefined') ? 0 : data.price, "€ (HT)</p>");
+            		 imageHtmlHeight216 = imageHtmlHeight216.concat("<p>", (typeof product.price === 'undefined') ? 0 : product.price, "€ (HT)</p>");
             		 imageHtmlHeight216 = imageHtmlHeight216.concat("<a href='#' class='button small expanded hollow'>Acheter</a>");
             		 imageHtmlHeight216 = imageHtmlHeight216.concat("</div>");
          
@@ -253,25 +306,13 @@
             		 $("#row_s2_m3_l6").append(imageHtmlHeight216);
 
             	});
-            	 
-            	 
-                
-                 if (response.success) {
-                     $("#err").hide();
-                     $("#suc").show();
-                 } else {
-                     console.log("failure");
-                     $("#err").show();
-                     $("#suc").hide();
-                 }
-             }).fail(function () {
-                     $(".message").html("Unable to call the server");
-                     $("#err").show();
-                     $("#suc").hide();
-                 });
-        	
-        	
-        })
+            	
+               
+             }).fail(function () { // fail ajax
+                 
+             });
+        });
+        
     </script>
 </body>
 </html>

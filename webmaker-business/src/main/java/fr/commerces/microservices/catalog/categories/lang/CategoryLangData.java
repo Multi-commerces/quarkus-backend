@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.jasminb.jsonapi.annotations.Type;
 
-import fr.webmaker.commons.mapper.LocalDateTimeDeserializer;
-import fr.webmaker.commons.mapper.LocalDateTimeSerializer;
+import fr.webmaker.restfull.databind.LocalDateTimeDeserializer;
+import fr.webmaker.restfull.databind.LocalDateTimeSerializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

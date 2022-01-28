@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,18 +19,18 @@ import javax.validation.constraints.NotNull;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.commerces.commons.exceptions.crud.NotFoundCreateException;
-import fr.commerces.commons.exceptions.crud.NotFoundDeleteException;
-import fr.commerces.commons.exceptions.crud.NotFoundException;
-import fr.commerces.commons.exceptions.crud.NotFoundUpdateException;
-import fr.commerces.microservices.catalog.categories.data.CategoryData;
-import fr.commerces.microservices.catalog.categories.data.CategoryRelationData;
 import fr.commerces.microservices.catalog.categories.entity.Category;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
 import fr.commerces.microservices.catalog.categories.lang.CategoryLangBaseData;
 import fr.commerces.microservices.catalog.categories.lang.CategoryLangData;
 import fr.commerces.microservices.catalog.categories.lang.CategoryLangRelationData;
 import fr.commerces.microservices.catalog.products.entity.ProductCategory;
+import fr.webmaker.data.category.CategoryData;
+import fr.webmaker.data.category.CategoryRelationData;
+import fr.webmaker.exception.crud.NotFoundCreateException;
+import fr.webmaker.exception.crud.NotFoundDeleteException;
+import fr.webmaker.exception.crud.NotFoundException;
+import fr.webmaker.exception.crud.NotFoundUpdateException;
 
 //@ManagerInterceptor
 @ApplicationScoped
@@ -45,11 +46,11 @@ public class CategoryManager {
 	 * @return
 	 */
 	public final List<CategoryRelationData> findCategoryHierarchy() {
-		try (final Stream<Category> stream = Category.findCategoryHierarchy().stream()) {
-			return stream
-					.map(mapper::toCategoryHierarchyData)
-					.collect(Collectors.toList());
-		}
+		Supplier<Stream<Category>> stream = () -> Category.findCategoryHierarchy().stream();
+		return stream.get()
+				.map(mapper::toCategoryHierarchyData)
+				.collect(Collectors.toList());
+		
 	}
 	
 	public final List<CategoryLangBaseData> findRelationshipsLangs(Long categoryId) {
@@ -64,12 +65,6 @@ public class CategoryManager {
 		return categoryLangs.stream()
 				.map(o -> new CategoryLangBaseData(o.getId(), o.getLang()))
 				.collect(Collectors.toList());
-	}
-	
-	public final CategoryLangData findCategoryLangData(@NotNull Long categoryId, @NotNull LanguageCode languageCode) {
-		return CategoryLang.findByCategoryLangPK(categoryId, languageCode)
-				.map(mapper::toData)
-				.orElseThrow(() -> new NotFoundException(categoryId));
 	}
 	
 	public final List<CategoryLangRelationData> findCategoryLangCompositeDataByCategoryId(@NotNull Long categoryId) {
@@ -113,6 +108,14 @@ public class CategoryManager {
 		});
 		return map;
 
+	}
+	
+	public Map<Long, List<CategoryData>> findByProductIds(@NotNull final Collection<Long> productIds) {
+		try (final Stream<ProductCategory> streamEntity = ProductCategory.findByProductIds(productIds).stream()) {
+			return streamEntity
+					.collect(Collectors.groupingBy(o -> o.getProduct().getId(),
+							Collectors.mapping(mapper::toCategoryData, Collectors.toList())));
+		}
 	}
 
 	/**

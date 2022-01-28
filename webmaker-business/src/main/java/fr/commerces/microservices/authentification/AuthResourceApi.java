@@ -38,7 +38,7 @@ import fr.commerces.microservices.authentification.data.AuthentificationData;
 @Path("/api/auth")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "Resource Authentification", description = "Resource de gestion des produits")
+@Tag(name = "Ressource Authentification", description = "Ressource de gestion des produits")
 public interface AuthResourceApi {
 
 	

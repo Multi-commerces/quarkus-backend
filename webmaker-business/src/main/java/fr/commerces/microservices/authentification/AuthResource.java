@@ -80,9 +80,9 @@ public class AuthResource implements AuthResourceApi {
 
 	    List<ResourceRepresentation> resources = new ArrayList<>();
 
-	    resources.add(new ResourceRepresentation("Resource A", scopes));
-	    resources.add(new ResourceRepresentation("Resource B", scopes));
-	    resources.add(new ResourceRepresentation("Resource C", scopes));
+	    resources.add(new ResourceRepresentation("Ressource A", scopes));
+	    resources.add(new ResourceRepresentation("Ressource B", scopes));
+	    resources.add(new ResourceRepresentation("Ressource C", scopes));
 
 	    resources.forEach(resource -> authzClient.protection().resource().create(resource));
 	}

@@ -34,26 +34,7 @@
 		<!-- <primefaces-extensions.version>10.0.0</primefaces-extensions.version> -->
 		<!-- <primefaces.optimizer.version>2.3.5</primefaces.optimizer.version> -->
 	</properties>
-	<dependencyManagement>
-		<dependencies>
-			<!-- <dependency> -->
-			<!-- <groupId>io.quarkus</groupId> -->
-			<!-- <artifactId>quarkus-bom</artifactId> -->
-			<!-- <version>${quarkus.version}</version> -->
-			<!-- <type>pom</type> -->
-			<!-- <scope>import</scope> -->
-			<!-- </dependency> -->
 
-			<dependency>
-				<groupId>io.quarkus.platform</groupId>
-				<artifactId>quarkus-bom</artifactId>
-				<version>2.1.4.Final</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-		</dependencies>
-	</dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>io.quarkus</groupId>
@@ -88,16 +69,6 @@
 		<!-- </dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>fr.webmaker</groupId>
@@ -111,42 +82,32 @@
 			<version>0.1.5</version>
 		</dependency>
 
-
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.12</version>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
 			<scope>compile</scope>
 		</dependency>
+
 		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>1.4.1.Final</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
 		</dependency>
+
+
+
 
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-hibernate-validator</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>2.0.1.Final</version>
-			<scope>provided</scope>
-		</dependency>
+
+
 
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-smallrye-openapi</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-resteasy</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-resteasy-jackson</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-rest-client</artifactId>
@@ -160,20 +121,6 @@
 			<artifactId>quarkus-resteasy-multipart</artifactId>
 		</dependency>
 
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>com.neovisionaries</groupId>
 			<artifactId>nv-i18n</artifactId>
@@ -232,6 +179,7 @@
 			<artifactId>quarkus-test-security</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 	<build>
 		<finalName>${project.name}</finalName>

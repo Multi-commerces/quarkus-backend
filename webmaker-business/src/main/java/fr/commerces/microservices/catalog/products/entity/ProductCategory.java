@@ -1,6 +1,7 @@
 package fr.commerces.microservices.catalog.products.entity;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -16,11 +17,11 @@ import io.quarkus.panache.common.Parameters;
 import lombok.Getter;
 import lombok.Setter;
 
-
-
-@Entity @Getter @Setter
+@Entity
+@Getter
+@Setter
 @Table(name = "PRODUCT_CATEGORY")
-public class ProductCategory extends PanacheEntityBase  {
+public class ProductCategory extends PanacheEntityBase {
 
 	@EmbeddedId
 	private ProductCategoryPK identity;
@@ -35,12 +36,23 @@ public class ProductCategory extends PanacheEntityBase  {
 	@JoinColumn(name = "category_id")
 	private Category category;
 
+	public ProductCategory() {
+		super();
+	}
+
+	public ProductCategory(Product product, Category category) {
+		super();
+		this.product = product;
+		this.category = category;
+		this.identity = new ProductCategoryPK(product.getId(), category.getId());
+	}
+
 	/*
 	 * ###################################################################
 	 * ###################### METHODES PanacheQuery ######################
 	 * ###################################################################
 	 */
-	
+
 	/**
 	 * Recherche les catégories des produits
 	 * 
@@ -48,6 +60,23 @@ public class ProductCategory extends PanacheEntityBase  {
 	 * @return
 	 */
 	public static PanacheQuery<ProductCategory> findByProductIds(final Collection<Long> productIds) {
-		return find("product.id in (:productIds)", Parameters.with("productIds", productIds));
+		return find("SELECT pc FROM ProductCategory pc " 
+						+ "INNER JOIN FETCH pc.category c "
+						+ "INNER JOIN FETCH pc.product p " 
+						+ "WHERE p.id in (:productIds)",
+				Parameters.with("productIds", productIds));
 	}
+	
+	public static Stream<ProductCategory> findByIds(final Collection<Long> productIds, final Collection<Long> categoryIds) {
+		return find("SELECT pc FROM ProductCategory pc "
+						+ "INNER JOIN FETCH pc.category c "
+						+ "INNER JOIN FETCH pc.product p " 
+						+ "WHERE p.id in (?1) and c.id in (?2)", productIds, categoryIds)
+				.stream();
+	}
+	
+	public static long delete(final Collection<Long> productIds, final Collection<Long> categoryIds) {
+		return delete("ProductCategory pc WHERE pc.identity.productId in (?1) and pc.identity.categoryId in (?2)", productIds, categoryIds);
+	}
+
 }
