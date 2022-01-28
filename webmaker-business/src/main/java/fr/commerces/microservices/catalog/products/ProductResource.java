@@ -18,10 +18,10 @@ import com.neovisionaries.i18n.LanguageCode;
 
 import fr.commerces.commons.exceptions.crud.NotFoundException;
 import fr.commerces.commons.resources.GenericResource;
-import fr.commerces.microservices.catalog.categories.CategoryManager;
+import fr.commerces.microservices.catalog.categories.basic.CategoryManager;
 import fr.commerces.microservices.catalog.categories.data.CategoryData;
 import fr.commerces.microservices.catalog.categories.data.CategoryRelationData;
-import fr.commerces.microservices.catalog.categories.data.CategoryLangData;
+import fr.commerces.microservices.catalog.categories.lang.CategoryLangData;
 import fr.commerces.microservices.catalog.products.lang.ProductLangData;
 import fr.commerces.microservices.catalog.products.shipping.ProductShippingData;
 import fr.webmaker.commons.request.PageRequest;

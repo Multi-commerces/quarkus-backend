@@ -25,11 +25,12 @@ import org.junit.jupiter.api.Test;
 
 import com.neovisionaries.i18n.LanguageCode;
 
+import fr.commerces.microservices.catalog.categories.basic.CategoryManager;
 import fr.commerces.microservices.catalog.categories.data.CategoryData;
-import fr.commerces.microservices.catalog.categories.data.CategoryLangData;
 import fr.commerces.microservices.catalog.categories.data.CategoryRelationData;
 import fr.commerces.microservices.catalog.categories.entity.Category;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
+import fr.commerces.microservices.catalog.categories.lang.CategoryLangData;
 import fr.webmaker.commons.identifier.LangID;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;

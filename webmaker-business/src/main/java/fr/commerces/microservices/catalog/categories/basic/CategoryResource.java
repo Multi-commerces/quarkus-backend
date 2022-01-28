@@ -1,4 +1,4 @@
-package fr.commerces.microservices.catalog.categories;
+package fr.commerces.microservices.catalog.categories.basic;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -41,11 +41,11 @@ import com.neovisionaries.i18n.LanguageCode;
 
 import fr.commerces.commons.resources.GenericResource;
 import fr.commerces.microservices.catalog.categories.data.CategoryData;
-import fr.commerces.microservices.catalog.categories.data.CategoryLangBaseData;
-import fr.commerces.microservices.catalog.categories.data.CategoryLangRelationData;
 import fr.commerces.microservices.catalog.categories.data.CategoryRelationData;
 import fr.commerces.microservices.catalog.categories.data.ShemaCategoryData;
 import fr.commerces.microservices.catalog.categories.data.ShemaCreateCategoryData;
+import fr.commerces.microservices.catalog.categories.lang.CategoryLangBaseData;
+import fr.commerces.microservices.catalog.categories.lang.CategoryLangRelationData;
 
 @Path(CategoryResource.PATH)
 @Produces("application/vnd.api+json")

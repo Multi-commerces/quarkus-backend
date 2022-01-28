@@ -1,4 +1,4 @@
-package fr.commerces.microservices.catalog.categories;
+package fr.commerces.microservices.catalog.categories.basic;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -24,11 +24,11 @@ import fr.commerces.commons.exceptions.crud.NotFoundException;
 import fr.commerces.commons.exceptions.crud.NotFoundUpdateException;
 import fr.commerces.microservices.catalog.categories.data.CategoryData;
 import fr.commerces.microservices.catalog.categories.data.CategoryRelationData;
-import fr.commerces.microservices.catalog.categories.data.CategoryLangBaseData;
-import fr.commerces.microservices.catalog.categories.data.CategoryLangData;
-import fr.commerces.microservices.catalog.categories.data.CategoryLangRelationData;
 import fr.commerces.microservices.catalog.categories.entity.Category;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
+import fr.commerces.microservices.catalog.categories.lang.CategoryLangBaseData;
+import fr.commerces.microservices.catalog.categories.lang.CategoryLangData;
+import fr.commerces.microservices.catalog.categories.lang.CategoryLangRelationData;
 import fr.commerces.microservices.catalog.products.entity.ProductCategory;
 
 //@ManagerInterceptor

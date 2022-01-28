@@ -16,7 +16,7 @@ import javax.ws.rs.core.UriInfo;
 import com.neovisionaries.i18n.LanguageCode;
 
 import fr.commerces.commons.resources.GenericResource;
-import fr.commerces.microservices.catalog.categories.CategoryManager;
+import fr.commerces.microservices.catalog.categories.basic.CategoryManager;
 import fr.webmaker.commons.data.SingleCompositeData;
 import fr.webmaker.commons.response.CollectionResponse;
 import fr.webmaker.microservices.catalog.products.id.ProductLangID;

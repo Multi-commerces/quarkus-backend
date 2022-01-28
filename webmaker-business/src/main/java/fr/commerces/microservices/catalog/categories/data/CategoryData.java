@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.jasminb.jsonapi.annotations.Type;
 
-import fr.commerces.microservices.catalog.categories.CategoryResource;
+import fr.commerces.microservices.catalog.categories.basic.CategoryResource;
 import fr.webmaker.commons.data.BaseResource;
 import fr.webmaker.commons.mapper.LocalDateTimeDeserializer;
 import fr.webmaker.commons.mapper.LocalDateTimeSerializer;

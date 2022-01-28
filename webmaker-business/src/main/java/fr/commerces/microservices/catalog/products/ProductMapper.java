@@ -15,7 +15,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import fr.commerces.commons.mapper.DefaultMappingConfig;
 import fr.commerces.commons.mapper.JsonNullableMapper;
-import fr.commerces.microservices.catalog.categories.CategoryMapper;
+import fr.commerces.microservices.catalog.categories.basic.CategoryMapper;
 import fr.commerces.microservices.catalog.categories.data.CategoryData;
 import fr.commerces.microservices.catalog.products.basic.ProductBasicMapper;
 import fr.commerces.microservices.catalog.products.entity.Product;

@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
+import fr.commerces.microservices.catalog.categories.lang.CategoryLangData;
 import io.smallrye.common.constraint.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

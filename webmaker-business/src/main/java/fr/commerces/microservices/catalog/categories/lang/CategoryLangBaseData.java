@@ -1,4 +1,4 @@
-package fr.commerces.microservices.catalog.categories.data;
+package fr.commerces.microservices.catalog.categories.lang;
 
 import javax.validation.constraints.NotNull;
 

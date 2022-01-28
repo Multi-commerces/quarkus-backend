@@ -1,11 +1,12 @@
-package fr.commerces.microservices.catalog.categories.data;
+package fr.commerces.microservices.catalog.categories.lang;
 
 import com.github.jasminb.jsonapi.Link;
 import com.github.jasminb.jsonapi.Links;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
-import fr.commerces.microservices.catalog.categories.CategoryResource;
+import fr.commerces.microservices.catalog.categories.basic.CategoryResource;
+import fr.commerces.microservices.catalog.categories.data.CategoryData;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

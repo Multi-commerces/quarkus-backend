@@ -1,4 +1,4 @@
-package fr.commerces.microservices.catalog.categories;
+package fr.commerces.microservices.catalog.categories.basic;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,11 +18,11 @@ import fr.commerces.commons.mapper.DefaultMappingConfig;
 import fr.commerces.commons.mapper.JsonNullableMapper;
 import fr.commerces.microservices.catalog.categories.data.CategoryData;
 import fr.commerces.microservices.catalog.categories.data.CategoryRelationData;
-import fr.commerces.microservices.catalog.categories.data.CategoryLangData;
-import fr.commerces.microservices.catalog.categories.data.CategoryLangRelationData;
 import fr.commerces.microservices.catalog.categories.entity.Category;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLangPK;
+import fr.commerces.microservices.catalog.categories.lang.CategoryLangData;
+import fr.commerces.microservices.catalog.categories.lang.CategoryLangRelationData;
 
 @ApplicationScoped
 @Mapper(uses = JsonNullableMapper.class, config = DefaultMappingConfig.class)
