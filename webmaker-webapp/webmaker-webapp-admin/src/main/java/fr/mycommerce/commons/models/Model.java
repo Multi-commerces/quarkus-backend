@@ -2,39 +2,36 @@ package fr.mycommerce.commons.models;
 
 import java.io.Serializable;
 
-import fr.webmaker.commons.identifier.Identifier;
+import fr.webmaker.data.BaseResource;
 
-public class Model<Data extends Serializable, I extends Identifier<?>> implements Serializable {
+public class Model<M extends BaseResource> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private I identifier;
-
-	private Data data;
+	private M data;
 
 	public Model() {
 		super();		
 	}
 
-	public Model(final I id, final Data data) {
+	public Model(final M data) {
 		super();
-		this.identifier = id;
 		this.data = data;
 	}
 
-	public I getIdentifier() {
-		return identifier;
+	public String getIdentifier() {
+		return data.getId();
 	}
 
-	public void setIdentifier(I Identifier) {
-		this.identifier = Identifier;
+	public void setIdentifier(String Identifier) {
+		data.setId(Identifier);
 	}
 
-	public Data getData() {
+	public M getData() {
 		return data;
 	}
 
-	public void setData(Data data) {
+	public void setData(M data) {
 		this.data = data;
 	}
 

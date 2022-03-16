@@ -35,6 +35,27 @@
 		<!-- <primefaces.optimizer.version>2.3.5</primefaces.optimizer.version> -->
 	</properties>
 
+	<dependencyManagement>
+		<dependencies>
+			<!-- <dependency> -->
+			<!-- <groupId>io.quarkus</groupId> -->
+			<!-- <artifactId>quarkus-bom</artifactId> -->
+			<!-- <version>${quarkus.version}</version> -->
+			<!-- <type>pom</type> -->
+			<!-- <scope>import</scope> -->
+			<!-- </dependency> -->
+
+			<dependency>
+				<groupId>io.quarkus.platform</groupId>
+				<artifactId>quarkus-bom</artifactId>
+				<version>2.1.4.Final</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>io.quarkus</groupId>
@@ -107,7 +128,14 @@
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-smallrye-openapi</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-resteasy</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-resteasy-jackson</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-rest-client</artifactId>

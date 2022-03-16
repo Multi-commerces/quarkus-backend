@@ -1,9 +1,13 @@
 package fr.mycommerce.commons.managers;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.jasminb.jsonapi.JSONAPIDocument;
+import com.github.jasminb.jsonapi.ResourceConverter;
+import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 
-import fr.webmaker.commons.ICrudResource;
-import fr.webmaker.commons.identifier.Identifier;
+import fr.mycommerce.service.ICrudResource;
+import fr.webmaker.data.BaseResource;
 
 /**
  * </h1>Crud Manager (create, read, update et delete)</h1>
@@ -14,33 +18,62 @@ import fr.webmaker.commons.identifier.Identifier;
  * 
  * @author Julien ILARI
  *
- * @param <Data> Réprésentation des données (DTO) renvoyées par la resource api
+ * @param <M> Réprésentation des données (DTO) renvoyées par la resource api
  * @param <I>    Idenfiant de la représentation
  */
-public interface ManagerCrud<Data extends Serializable, I extends Identifier<Object>> extends Manager<Data, I> {
+public interface ManagerCrud<M extends BaseResource> extends Manager<M> {
 
-	ICrudResource<Data, I> getService();
+	
+	
+	ICrudResource getService();
 
 
 	/**
 	 * Requête de type post (création)
 	 */
 	default void create() {
-		getService().post(getModel().getData());
+		ResourceConverter converter = new ResourceConverter();
+		byte[] flux;
+		try {
+			flux = converter.writeDocument(new JSONAPIDocument<>(getModel().getData()));
+		} catch (DocumentSerializationException e) {
+			flux = null;
+		}
+		getService().post(flux);
 	}
 
 	/**
 	 * Requête de type put (modification)
 	 */
 	default void update() {
-		getService().put(getModel().getData());
+		ResourceConverter converter = new ResourceConverter();
+		byte[] flux;
+		try {
+			flux = converter.writeDocument(new JSONAPIDocument<>(getModel().getData()));
+		} catch (DocumentSerializationException e) {
+			flux = null;
+		}
+		getService().put(flux);
 	}
 
 	/**
 	 * Requête de type delete (suppression)
 	 */
-	default void delete(I id) {
-		getService().delete(id);
+	default void delete(String type, String id) {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		ObjectNode resultNode = mapper.createObjectNode();
+		resultNode.put("type", type);
+		resultNode.put("id", id);
+		
+		byte[] result = null;
+		try {
+			result = mapper.writeValueAsBytes(resultNode);
+		} catch (Exception e) {
+			// Ignore
+		}
+		
+		getService().delete(Long.valueOf(id) ,result);
 	}
 
 }

@@ -18,6 +18,7 @@ import javax.faces.model.ListDataModel;
 import javax.servlet.http.Part;
 
 import org.apache.commons.codec.binary.Base64;
+import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.primefaces.PrimeFaces;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.FileUploadEvent;
@@ -25,6 +26,8 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.file.UploadedFile;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
@@ -34,7 +37,7 @@ import fr.mycommerce.commons.models.Model;
 import fr.mycommerce.commons.tools.JavaFacesTool;
 import fr.mycommerce.exception.MissingArgumentException;
 import fr.mycommerce.exception.MissingModelException;
-import fr.webmaker.commons.identifier.Identifier;
+import fr.webmaker.data.BaseResource;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -49,15 +52,17 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-public abstract class AbstractCrudView<Data extends Serializable, I extends Identifier<?>>  implements Serializable {
+public abstract class AbstractCrudView<M extends BaseResource>  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	protected ObjectMapper objectMapper;
 	
 	/**
 	 * Opération de récupération d'un item
 	 * @return
 	 */
-	protected abstract List<Model<Data, I>> findAll();
+	protected abstract List<Model<M>> findAll();
 	
 	/**
 	 * Opération de création d'un nouveau item
@@ -73,15 +78,15 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	 * Opération de suppression d'un item existant
 	 * @param id identifiant de l'item existant
 	 */
-	protected abstract void delete(I id);
+	protected abstract void delete(String id);
 	
-	protected abstract void delete(List<I> ids);
+	protected abstract void delete(List<String> ids);
 
 	/**
 	 * Liste des items
 	 */
 	@Getter
-	protected DataModel<Model<Data, Identifier<?>>> dataModels;
+	protected DataModel<Model<M>> dataModels;
 	
 	@Getter
 	private TreeNode root;
@@ -98,7 +103,7 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	 * DataTable, nos éléments
 	 */
 	@Getter
-	protected List<Model<Data, I>> items;
+	protected List<Model<M>> items;
 
 	/**
 	 * <h1>DataTable, éléments filtrés</h1>
@@ -108,7 +113,7 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	 */
 	@Getter
 	@Setter
-	private List<Model<Data, I>> filteredItems;
+	private List<Model<M>> filteredItems;
 
 	/**
 	 * <h1>DataTable, selection multiple</h1>
@@ -118,7 +123,7 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	 */
 	@Getter
 	@Setter
-	private List<Model<Data, I>> selectedItems;
+	private List<Model<M>> selectedItems;
 
 	/**
 	 * <h1>DataTable, selection simple</h1>
@@ -128,7 +133,7 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	 */
 	@Getter
 	@Setter
-	protected Model<Data, I> model;
+	protected Model<M> model;
 
 	/**
 	 * Fichier upload
@@ -214,7 +219,11 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	private DataTable dataTable;
 
 	public AbstractCrudView() {
-		dataModels = new ListDataModel<Model<Data, Identifier<?>>>();
+		objectMapper = new ObjectMapper();
+		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		objectMapper.registerModule(new JsonNullableModule());
+		
+		dataModels = new ListDataModel<Model<M>>();
 		items = new ArrayList<>();
 
 		reset();
@@ -226,7 +235,7 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 		loadItems(findAll());
 	}
 	
-	protected void loadItems(List<Model<Data, I>> items)
+	protected void loadItems(List<Model<M>> items)
 	{
 		try {
 			this.items.clear();
@@ -267,18 +276,18 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	}
 	
 
-	protected Model<Data, I> newModelInstance() {
-		return new Model<Data, I>(null, newDataInstance());
+	protected Model<M> newModelInstance() {
+		return new Model<M>(newDataInstance());
 	}
 	
-	protected abstract Data newDataInstance();
+	protected abstract M newDataInstance();
 
 	/**
 	 * Action selectionner item
 	 * 
 	 * @param event
 	 */
-	public void onRowDblSelect(SelectEvent<Model<Data, I>> event) {
+	public void onRowDblSelect(SelectEvent<Model<M>> event) {
 		model = event.getObject();
 		action = ActionType.UPDATE;
 	}
@@ -292,7 +301,7 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 		final Object id = Optional.ofNullable(event.getComponent().getAttributes().get("itemId"))
 				.orElseThrow(() -> new MissingArgumentException("itemId"));
 
-		model = items.stream().filter(o -> o.getIdentifier().getId().equals(id)).findAny()
+		model = items.stream().filter(o -> o.getIdentifier().equals(id)).findAny()
 				.orElseThrow(() -> new MissingModelException());
 
 		action = ActionType.UPDATE;
@@ -333,8 +342,7 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	 * @param event
 	 */
 	public void deleteAction(ActionEvent event) {
-		@SuppressWarnings("unchecked")
-		final I identifier = (I) Optional.ofNullable(event.getComponent().getAttributes().get("identifier"))
+		final String identifier = (String) Optional.ofNullable(event.getComponent().getAttributes().get("identifier"))
 				.orElseThrow(() -> new MissingArgumentException("identifier"));
 		
 		// [BUSINESS] Opération de supression 
@@ -418,7 +426,7 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 	public void deleteSelectedItems() {	
 		if(!hasSelectedItems()) return;
 		
-		final List<I> identifiers = selectedItems.stream()
+		final List<String> identifiers = selectedItems.stream()
 				.map(Model::getIdentifier)
 				.collect(Collectors.toList());
 		
@@ -444,7 +452,7 @@ public abstract class AbstractCrudView<Data extends Serializable, I extends Iden
 		 * [WEB] Demande une nouvelle instance si le model en-cours de modification est celui
 		 * qui vient d'être supprimer
 		 */
-		Identifier<?> identifierModel = model.getIdentifier();
+		String identifierModel = model.getIdentifier();
 		if (identifierModel != null && identifiers.stream().anyMatch(identifierModel::equals)) {
 				reset();
 		}

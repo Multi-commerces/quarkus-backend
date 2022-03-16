@@ -4,18 +4,18 @@ import java.io.Serializable;
 import java.util.List;
 
 import fr.mycommerce.commons.models.Model;
-import fr.webmaker.commons.identifier.Identifier;
+import fr.webmaker.data.BaseResource;
 
-public interface Manager <Data extends Serializable, I extends Identifier<?>> extends Serializable {
+public interface Manager <M extends BaseResource> extends Serializable {
 	
-	Model<Data, I> getModel();
+	Model<M> getModel();
 	
-	List<Model<Data, I>> findAll();
+	List<Model<M>> findAll();
 	
 	void create();
 	
 	void update();
 	
-	void delete(I id);
+	void delete(String id);
 
 }

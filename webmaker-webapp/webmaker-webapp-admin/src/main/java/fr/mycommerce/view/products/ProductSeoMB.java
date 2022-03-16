@@ -6,11 +6,9 @@ import javax.inject.Named;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 
+import fr.mycommerce.service.product.ProductSeoRestClient;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
-import fr.webmaker.commons.identifier.Identifier;
-import fr.webmaker.commons.response.SingleResponse;
-import fr.webmaker.microservices.catalog.products.data.ProductSeoData;
-import fr.webmaker.microservices.catalog.products.restclient.ProductSeoRestClient;
+import fr.webmaker.data.product.ProductSeoData;
 import lombok.Getter;
 
 /**
@@ -20,7 +18,7 @@ import lombok.Getter;
  */
 @Named("adminProductSeoMB")
 @ViewScoped
-public class ProductSeoMB extends AbstractProductMB<ProductSeoData, Identifier<Long>> {
+public class ProductSeoMB extends AbstractProductMB<ProductSeoData> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,13 +31,14 @@ public class ProductSeoMB extends AbstractProductMB<ProductSeoData, Identifier<L
 	private ProductSeoRestClient service;
 
 	@Override
-	public SingleResponse<ProductSeoData, Identifier<Long>> callServiceFindById(String identifier) {
+	public byte[] callServiceFindById(String identifier) {
 		return service.get("fr", Long.valueOf(identifier));
 	}
 
 	@Override
 	public void callServiceUpdate() {
-		service.patch("fr", model.getIdentifier().getId(), model.getData());
+		model.getData();
+		service.patch("fr",Long.valueOf(model.getIdentifier()), null);
 	}
 
 	@Override
@@ -56,12 +55,6 @@ public class ProductSeoMB extends AbstractProductMB<ProductSeoData, Identifier<L
 	FlowPage getFlowPage() {
 		// TODO Auto-generated method stub
 		return  FlowPage.SEO;
-	}
-
-	@Override
-	public Identifier<Long> newIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

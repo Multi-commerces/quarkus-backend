@@ -16,15 +16,15 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 import org.primefaces.event.SelectEvent;
 
+import com.github.jasminb.jsonapi.ResourceConverter;
+
 import fr.mycommerce.commons.managers.Manager;
 import fr.mycommerce.commons.models.Model;
 import fr.mycommerce.commons.views.AbstractCrudView;
 import fr.mycommerce.commons.views.ActionType;
+import fr.mycommerce.service.product.ProductRestClient;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
-import fr.webmaker.data.product.ProductLangData;
-import fr.webmaker.microservices.catalog.products.id.ProductLangID;
-import fr.webmaker.microservices.catalog.products.response.ProductLangResponse;
-import fr.webmaker.microservices.catalog.products.restclient.ProductRestClient;
+import fr.webmaker.data.product.ProductCompositeData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Named("adminProductMB")
 @ViewScoped
-public class AdminProductListMB extends AbstractCrudView<ProductLangData, ProductLangID>
-		implements Manager<ProductLangData, ProductLangID> {
+public class AdminProductListMB extends AbstractCrudView<ProductCompositeData>
+		implements Manager<ProductCompositeData> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -84,16 +84,16 @@ public class AdminProductListMB extends AbstractCrudView<ProductLangData, Produc
 	}
 
 	@Override
-	public void onRowDblSelect(SelectEvent<Model<ProductLangData, ProductLangID>> event) {
+	public void onRowDblSelect(SelectEvent<Model<ProductCompositeData>> event) {
 		super.onRowDblSelect(event);
 
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		NavigationHandler myNav = facesContext.getApplication().getNavigationHandler();
 		myNav.handleNavigation(facesContext, null,
-				FlowPage.BASIC.getPage() + "?faces-redirect=true&id=" + model.getIdentifier().getId());
+				FlowPage.BASIC.getPage() + "?faces-redirect=true&id=" + model.getIdentifier());
 	}
 
-	public void onRowSelect(SelectEvent<Model<ProductLangData, ProductLangID>> event) {
+	public void onRowSelect(SelectEvent<Model<ProductCompositeData>> event) {
 		model = event.getObject();
 		//variationMB.loadByProductId(event.getObject().getIdentifier().getId());
 	}
@@ -105,7 +105,7 @@ public class AdminProductListMB extends AbstractCrudView<ProductLangData, Produc
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		NavigationHandler myNav = facesContext.getApplication().getNavigationHandler();
 		myNav.handleNavigation(facesContext, null,
-				FlowPage.BASIC.getPage() + "?faces-redirect=true&id=" + model.getIdentifier().getId());
+				FlowPage.BASIC.getPage() + "?faces-redirect=true&id=" + model.getIdentifier());
 	}
 
 	/* *****************************************************************************************
@@ -113,15 +113,20 @@ public class AdminProductListMB extends AbstractCrudView<ProductLangData, Produc
 	 * *****************************************************************************************/
 
 	@Override
-	public List<Model<ProductLangData, ProductLangID>> findAll() {
-		return service.getProducts("fr", 1, 10).getCollection().stream()
-				.map(o -> new Model<ProductLangData, ProductLangID>(o.getIdentifier(), o.getData()))
+	public List<Model<ProductCompositeData>> findAll() {
+		byte[] flux = service.getProducts("fr", 1, 10);
+		List<ProductCompositeData> collection = new ResourceConverter(objectMapper, ProductCompositeData.class)
+			.readDocumentCollection(flux, ProductCompositeData.class).get();
+
+		return collection.stream()
+				.map(o -> new Model<ProductCompositeData>(o))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public void create() {
-		Response response = service.create("fr", getModel().getData());
+		getModel().getData();
+		Response response = service.create("fr", null);
 		if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
 			String location = response.getHeaders().getFirst("location").toString();
 			response.close();
@@ -130,12 +135,15 @@ public class AdminProductListMB extends AbstractCrudView<ProductLangData, Produc
 				final Client client = ClientBuilder.newClient();
 				Response responseGet = client.target(location).request().get();
 				if (responseGet.getStatus() == Response.Status.OK.getStatusCode()) {
-					final ProductLangResponse dataResponse = responseGet.readEntity(ProductLangResponse.class);
+					
+					
+//					final ProductLangResponse dataResponse = null;
+//							responseGet.readEntity(ProductLangResponse.class);
 
 					responseGet.close();
 					client.close();
 
-					items.add(new Model<ProductLangData, ProductLangID>(dataResponse.getIdentifier(), dataResponse.getData()));
+					items.add(new Model<ProductCompositeData>(null));
 				}
 			} catch (Exception e) {
 				log.warn("impossible de récupérer item nouvellement créé, vérifier que le service est up");
@@ -147,22 +155,23 @@ public class AdminProductListMB extends AbstractCrudView<ProductLangData, Produc
 
 	@Override
 	public void update() {
-		service.update("fr", model.getIdentifier().getId(), getModel().getData());
+//		getModel().getData();
+		service.update("fr", Long.valueOf(model.getIdentifier()), null);
 	}
 
 	@Override
-	public void delete(ProductLangID identifier) {
-		service.delete(identifier.getLanguageCode(), identifier.getId());
+	public void delete(String identifier) {
+		service.delete("fr", Long.valueOf(model.getIdentifier()));
 	}
 
 	@Override
-	protected ProductLangData newDataInstance() {
-		return new ProductLangData();
+	protected ProductCompositeData newDataInstance() {
+		return new ProductCompositeData();
 	}
 
 	@Override
-	protected void delete(List<ProductLangID> identifiers) {
-		identifiers.stream().forEach(identifier -> service.delete(identifier.getLanguageCode(), identifier.getId()));
+	protected void delete(List<String> identifiers) {
+		identifiers.stream().forEach(identifier -> service.delete("fr", Long.valueOf(identifier)));
 
 	}
 

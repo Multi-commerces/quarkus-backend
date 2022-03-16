@@ -9,8 +9,7 @@ import javax.faces.event.ActionEvent;
 
 import fr.mycommerce.commons.models.Model;
 import fr.mycommerce.commons.tools.JavaFacesTool;
-import fr.webmaker.commons.identifier.Identifier;
-import fr.webmaker.commons.response.SingleResponse;
+import fr.webmaker.data.BaseResource;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-public abstract class AbstractView<Data extends Serializable, I extends Identifier<?>> implements Serializable {
+public abstract class AbstractView<M extends BaseResource> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,7 +31,7 @@ public abstract class AbstractView<Data extends Serializable, I extends Identifi
 
 	@Getter
 	@Setter
-	protected Model<Data, I> model;
+	protected Model<M> model;
 
 	/**
 	 * Constructeur
@@ -41,7 +40,7 @@ public abstract class AbstractView<Data extends Serializable, I extends Identifi
 	 * </p>
 	 */
 	public AbstractView() {
-		model = new Model<Data, I>();
+		model = new Model<M>();
 		this.action = ActionType.DEFAULT;
 	}
 
@@ -52,25 +51,21 @@ public abstract class AbstractView<Data extends Serializable, I extends Identifi
 	public void onLoad() {
 		final String id = JavaFacesTool.getValueParam("id");
 		if (id != null) {
-			SingleResponse<Data, I> response = callServiceFindById(id);
-			model.setIdentifier(response.getIdentifier());
-			model.setData(response.getData());
+			byte[] flux = callServiceFindById(id);
+			M response = null;// TODO convert JSON::API
+			model.setData(response);
+			
 			action = ActionType.UPDATE;
 		} else {
 			action = ActionType.CREATE;
 		}
 	}
 
-	public abstract I newIdentifier();
-
 	/**
 	 * Méthode de reset du 'model'
 	 * 
 	 **/
 	public void reset(ActionEvent event) {
-		if (action == ActionType.CREATE) {
-			model.setIdentifier(newIdentifier());
-		}
 		model.setData(null);
 	}
 
@@ -133,7 +128,7 @@ public abstract class AbstractView<Data extends Serializable, I extends Identifi
 	 * 
 	 * @return
 	 */
-	public abstract SingleResponse<Data, I> callServiceFindById(String identifier);
+	public abstract byte[] callServiceFindById(String identifier);
 
 	protected void handleNavigation(String outcome, boolean facesRedirect, String identifier) {
 		final FacesContext facesContext = FacesContext.getCurrentInstance();

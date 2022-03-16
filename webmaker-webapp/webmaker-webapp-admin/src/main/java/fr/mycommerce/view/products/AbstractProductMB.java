@@ -1,12 +1,10 @@
 package fr.mycommerce.view.products;
 
-import java.io.Serializable;
-
 import javax.faces.event.ActionEvent;
 
 import fr.mycommerce.commons.views.AbstractView;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
-import fr.webmaker.commons.identifier.Identifier;
+import fr.webmaker.data.BaseResource;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +14,7 @@ import lombok.Setter;
  *
  * @param <Data>
  */
-public abstract class AbstractProductMB<Data extends Serializable, I extends Identifier<?>> extends AbstractView<Data, I> {
+public abstract class AbstractProductMB<M extends BaseResource> extends AbstractView<M> {
 
 	/**
 	 * serialVersionUID
@@ -47,9 +45,8 @@ public abstract class AbstractProductMB<Data extends Serializable, I extends Ide
 		final FlowPage flowProductPage = FlowPage.stream().parallel()
 				.filter(o -> o.getTabNUm().equals(activeIndexTabMenu)).findAny().orElse(FlowPage.BASIC);
 
-
 		// Nagigation vers la tab détectée
-		handleNavigation(flowProductPage.getPage(), true, String.valueOf(model.getIdentifier().getId()));
+		handleNavigation(flowProductPage.getPage(), true, model.getIdentifier());
 	}
 
 }

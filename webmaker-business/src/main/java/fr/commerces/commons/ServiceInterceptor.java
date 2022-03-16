@@ -1,4 +1,4 @@
-package fr.webmaker.annotation;
+package fr.commerces.commons;
 
 import java.io.Serializable;
 
@@ -13,6 +13,7 @@ import javax.validation.ConstraintViolationException;
 
 import org.jboss.logging.MDC;
 
+import fr.webmaker.annotation.ManagerInterceptor;
 import fr.webmaker.exception.crud.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 

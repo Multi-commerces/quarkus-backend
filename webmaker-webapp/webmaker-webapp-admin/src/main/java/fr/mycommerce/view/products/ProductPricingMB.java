@@ -6,11 +6,9 @@ import javax.inject.Named;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 
+import fr.mycommerce.service.product.ProductPricingRestClient;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
-import fr.webmaker.commons.identifier.Identifier;
-import fr.webmaker.commons.response.SingleResponse;
-import fr.webmaker.microservices.catalog.products.data.ProductPricingData;
-import fr.webmaker.microservices.catalog.products.restclient.ProductPricingRestClient;
+import fr.webmaker.data.product.ProductPricingData;
 import lombok.Getter;
 
 /**
@@ -20,7 +18,7 @@ import lombok.Getter;
  */
 @Named("adminProductPricingMB")
 @ViewScoped
-public class ProductPricingMB extends AbstractProductMB<ProductPricingData, Identifier<Long>> {
+public class ProductPricingMB extends AbstractProductMB<ProductPricingData> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,13 +31,14 @@ public class ProductPricingMB extends AbstractProductMB<ProductPricingData, Iden
 	private ProductPricingRestClient service;
 	
 	@Override
-	public SingleResponse<ProductPricingData, Identifier<Long>> callServiceFindById(String identifier) {
+	public byte[] callServiceFindById(String identifier) {
 		return service.get(Long.valueOf(identifier));
 	}
 
 	@Override
 	public void callServiceUpdate() {
-		service.patch(model.getIdentifier().getId(), model.getData());
+		//model.getData()
+		service.patch(Long.valueOf(model.getIdentifier()), null);
 	}
 
 	@Override
@@ -55,11 +54,6 @@ public class ProductPricingMB extends AbstractProductMB<ProductPricingData, Iden
 	@Override
 	FlowPage getFlowPage() {
 		return FlowPage.PRICING;
-	}
-
-	@Override
-	public Identifier<Long> newIdentifier() {
-		return new Identifier<Long>();
 	}
 
 }

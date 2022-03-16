@@ -2,6 +2,7 @@ package fr.mycommerce.view.products;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,14 +16,13 @@ import fr.mycommerce.commons.models.Model;
 import fr.mycommerce.commons.tools.JavaFacesTool;
 import fr.mycommerce.commons.views.AbstractCrudView;
 import fr.mycommerce.commons.views.ActionType;
-import fr.webmaker.microservices.catalog.products.data.ProductVariationData;
-import fr.webmaker.microservices.catalog.products.id.ProductVariationID;
-import fr.webmaker.microservices.catalog.products.restclient.ProductVariationRestClient;
+import fr.mycommerce.service.product.ProductVariationRestClient;
+import fr.webmaker.data.product.ProductVariationData;
 import lombok.Getter;
 
 @Named("adminProductVariationMB")
 @ViewScoped
-public class ProductVariationMB extends AbstractCrudView<ProductVariationData, ProductVariationID> implements Serializable {
+public class ProductVariationMB extends AbstractCrudView<ProductVariationData> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -52,13 +52,15 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData, P
 	}
 
 	@Override
-	public List<Model<ProductVariationData, ProductVariationID>> findAll() {
+	public List<Model<ProductVariationData>> findAll() {
 		if (productId == null) {
 			return new ArrayList<>();
 		}
+		byte[] flux = service.getVariations(productId);
+		List<ProductVariationData> data = Collections.emptyList();
 
-		final List<Model<ProductVariationData, ProductVariationID>> values = service.getVariations(productId).stream()
-		.map(o -> new Model<ProductVariationData, ProductVariationID>(o.getIdentifier(), o.getData()))
+		final List<Model<ProductVariationData>> values = data.stream()
+		.map(o -> new Model<ProductVariationData>(o))
 		.collect(Collectors.toList());
 		
 		return values;
@@ -66,35 +68,36 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData, P
 
 	@Override
 	public void create() {
-		service.create(productId, model.getData());
+		model.getData();
+		service.create(productId, null);
 	}
 
 	@Override
 	public void update() {
-		service.update(model.getIdentifier().getProductId(), model.getIdentifier().getVariationId(), model.getData());
-		
+		model.getData();
+		service.update(Long.valueOf(model.getIdentifier()), Long.valueOf(model.getIdentifier()), null);
 	}
 
 	@Override
-	public void delete(ProductVariationID identifier) {
-		getService().delete(productId, identifier.getId());
+	public void delete(String identifier) {
+		getService().delete(productId, Long.valueOf(identifier));
 	}
 
-	public List<Model<ProductVariationData, ProductVariationID>> loadByProductId(final Long productId) {
+	public List<Model<ProductVariationData>> loadByProductId(final Long productId) {
 		this.productId = productId;
 		//TODO reprendre loadItems(getService().get("fr", productId));
 
-		return new ArrayList<Model<ProductVariationData,ProductVariationID>>();//this.items;
+		return new ArrayList<Model<ProductVariationData>>();//this.items;
 	}
 
 	@Override
-	protected void loadItems(final List<Model<ProductVariationData, ProductVariationID>> items) {
+	protected void loadItems(final List<Model<ProductVariationData>> items) {
 		super.loadItems(items);
 
 		if (variationId != null) {
-			setModel(this.items.stream().filter(o -> o.getIdentifier().getId().equals(variationId)).findAny().orElse(null));
+			setModel(this.items.stream().filter(o -> Long.valueOf(o.getIdentifier()).equals(variationId)).findAny().orElse(null));
 
-			if (model != null && model.getIdentifier().getId() != null) {
+			if (model != null && model.getIdentifier() != null) {
 				this.action = ActionType.UPDATE;
 			}
 		}
@@ -106,7 +109,7 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData, P
 	}
 
 	@Override
-	protected void delete(List<ProductVariationID> ids) {
+	protected void delete(List<String> ids) {
 		// TODO Auto-generated method stub
 		
 	}

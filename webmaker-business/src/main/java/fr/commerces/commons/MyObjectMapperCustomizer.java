@@ -1,4 +1,4 @@
-package fr.webmaker.mapper;
+package fr.commerces.commons;
 
 import javax.inject.Singleton;
 
