@@ -9,8 +9,12 @@ public class ProductFlowPage
 {
 	enum FlowPage {
 
-		DEFAULT(-1, "product"), BASIC(0, "product-edit"), COMBINATIONS(1, "product-combinations"),
-		STOCK(2, "product-stock"), SHIPPING(3, "product-shipping"), PRICING(4, "product-pricing"),
+		DEFAULT(-1, "product"), 
+		BASIC(0, "product-edit"), 
+		COMBINATIONS(1, "product-combinations"),
+		STOCK(2, "product-stock"), 
+		SHIPPING(3, "product-shipping"), 
+		PRICING(4, "product-pricing"),
 		SEO(5, "product-seo");
 
 		@Getter

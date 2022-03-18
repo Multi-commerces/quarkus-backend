@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import fr.commerces.commons.resources.JsonApiResource;
-import fr.commerces.microservices.catalog.categories.basic.CategoryManager;
+import fr.commerces.microservices.catalog.categories.CategoryManager;
 import fr.commerces.microservices.catalog.products.manager.ProductManager;
 import fr.commerces.microservices.catalog.products.model.ProductRelation;
 import fr.webmaker.data.category.CategoryData;
@@ -24,15 +24,6 @@ public class ProductCategoryResource extends JsonApiResource<CategoryData> imple
 	
 	public ProductCategoryResource() {
 		super(CategoryData.class);
-	}
-	
-	/**
-	 * GET CATEGORIES - CATEGORIES (Related)
-	 *
-	 */
-	@Override
-	public Response getRelatedProductCategories(long productId) {
-		return writeJsonApiResponse(productManager.findById(productId, List.of(ProductRelation.CATEGORIES)).getCategories());
 	}
 	
 	/**

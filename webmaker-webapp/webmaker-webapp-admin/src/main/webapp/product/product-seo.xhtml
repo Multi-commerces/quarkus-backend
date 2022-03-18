@@ -26,13 +26,13 @@
 
 	<!--  Formulaire d'édition  -->
 	<ui:define name="form-edit">
-		<ui:param name="seo" value="#{model.data}" />
+		<ui:param name="seo" value="#{model}" />
 		<p:fieldset legend="Référencement">
 			<div class="ui-g ui-fluid form-group ui-panelgrid-blank">
 
 				<!-- Balise titre  -->
 				<w:inputText styleClass="ui-g-12 ui-md-4" id="metatitle"
-					label="Meta title" value="#{seo.metatitle}" icon="pencil" />
+					label="Meta title" value="#{seo.metaTitle}" icon="pencil" />
 
 				<!-- Meta description -->
 				<w:inputText styleClass="ui-g-12 ui-md-4" id="metaDescription"

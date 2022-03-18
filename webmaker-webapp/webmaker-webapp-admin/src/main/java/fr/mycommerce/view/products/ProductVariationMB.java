@@ -2,7 +2,6 @@ package fr.mycommerce.view.products;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +31,7 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData> i
 	private ProductVariationRestClient service;
 
 	@Getter
-	private Long productId;
+	private String productId;
 
 	@Getter
 	private Long variationId;
@@ -42,7 +41,7 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData> i
 
 		final String param1 = JavaFacesTool.getValueParam("id");
 		if (param1 != null) {
-			productId = Long.valueOf(param1);
+			productId = param1;
 		}
 		final String param2 = JavaFacesTool.getValueParam("variationId");
 		if (param2 != null) {
@@ -56,12 +55,11 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData> i
 		if (productId == null) {
 			return new ArrayList<>();
 		}
-		byte[] flux = service.getVariations(productId);
-		List<ProductVariationData> data = Collections.emptyList();
+		byte[] flux = service.getVariations(Long.valueOf(productId));
 
-		final List<Model<ProductVariationData>> values = data.stream()
-		.map(o -> new Model<ProductVariationData>(o))
-		.collect(Collectors.toList());
+		final List<Model<ProductVariationData>> values = converter.readDocumentCollection(flux, ProductVariationData.class).get().stream()
+				.map(o -> new Model<ProductVariationData>(o))
+				.collect(Collectors.toList());
 		
 		return values;
 	}
@@ -69,7 +67,7 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData> i
 	@Override
 	public void create() {
 		model.getData();
-		service.create(productId, null);
+		service.create(Long.valueOf(productId), null);
 	}
 
 	@Override
@@ -80,12 +78,17 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData> i
 
 	@Override
 	public void delete(String identifier) {
-		getService().delete(productId, Long.valueOf(identifier));
+		getService().delete(Long.valueOf(productId), Long.valueOf(identifier));
 	}
 
-	public List<Model<ProductVariationData>> loadByProductId(final Long productId) {
+	public List<Model<ProductVariationData>> loadByProductId(final String productId) {
 		this.productId = productId;
-		//TODO reprendre loadItems(getService().get("fr", productId));
+		
+		
+		List<ProductVariationData> items = converter.readDocumentCollection(getService().getVariations(Long.valueOf(productId)), ProductVariationData.class).get();
+		loadItems(items.stream()
+				.map(o -> new Model<ProductVariationData>(o))
+				.collect(Collectors.toList()));
 
 		return new ArrayList<Model<ProductVariationData>>();//this.items;
 	}
@@ -95,7 +98,10 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData> i
 		super.loadItems(items);
 
 		if (variationId != null) {
-			setModel(this.items.stream().filter(o -> Long.valueOf(o.getIdentifier()).equals(variationId)).findAny().orElse(null));
+			setModel(this.items.stream()
+						.filter(o -> Long.valueOf(o.getIdentifier()).equals(variationId))
+						.findAny()
+						.orElse(null));
 
 			if (model != null && model.getIdentifier() != null) {
 				this.action = ActionType.UPDATE;

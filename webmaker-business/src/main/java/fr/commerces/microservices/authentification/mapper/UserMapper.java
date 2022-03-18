@@ -4,7 +4,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.mapstruct.Mapper;
 
-import fr.commerces.commons.resources.DefaultMappingConfig;
+import fr.commerces.commons.mapper.DefaultMappingConfig;
 import fr.commerces.microservices.authentification.AuthenticationContext;
 import fr.commerces.microservices.authentification.data.AuthentificationData;
 import fr.commerces.microservices.authentification.data.UserData;

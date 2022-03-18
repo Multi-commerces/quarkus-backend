@@ -1,4 +1,4 @@
-package fr.commerces.commons;
+package fr.commerces.commons.mapper;
 
 import java.util.Optional;
 

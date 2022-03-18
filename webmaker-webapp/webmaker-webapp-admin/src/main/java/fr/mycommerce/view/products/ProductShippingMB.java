@@ -30,6 +30,10 @@ public class ProductShippingMB extends AbstractProductMB<ProductShippingData> {
 	@Getter
 	private ProductShippingRestClient service;
 	
+	public ProductShippingMB() {
+		super(FlowPage.SHIPPING);
+	}
+	
 	@Override
 	public byte[] callServiceFindById(String identifier) {
 		return service.get(Long.valueOf(identifier));
@@ -37,8 +41,7 @@ public class ProductShippingMB extends AbstractProductMB<ProductShippingData> {
 
 	@Override
 	public void callServiceUpdate() {
-		model.getData();
-		service.patch(Long.valueOf(model.getIdentifier()), null);
+		service.patch(Long.valueOf(model.getIdentifier()), writeDocument(model.getData()));
 	}
 
 	@Override
@@ -49,11 +52,6 @@ public class ProductShippingMB extends AbstractProductMB<ProductShippingData> {
 	@Override
 	protected void callServiceDelete(Long id) {
 		// Ignore (Non applicable)
-	}
-
-	@Override
-	FlowPage getFlowPage() {
-		return FlowPage.SHIPPING;
 	}
 
 }

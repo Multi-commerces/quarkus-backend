@@ -10,7 +10,7 @@
 
 	<p:card  rendered="#{controller.action eq 'DEFAULT'}">
 		<f:facet name="title">
-			<h:outputText value="#{panelListHeader}" />
+			<h:outputText value="🐙 #{panelListHeader}" />
 		</f:facet>
 
 
@@ -73,7 +73,7 @@
 						title="edit" immediate="true" resetValues="true"
 						actionListener="#{controller.editAction}">
 						<f:attribute name="activeIndexTabMenu" value="0" />
-						<f:attribute name="itemId" value="#{item.identifier.id}" />
+						<f:attribute name="itemId" value="#{item.identifier}" />
 					</p:commandButton>
 					<!-- DELETE -->
 					<p:commandButton title="delete" style="margin:0.2em"

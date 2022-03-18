@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ProductCompositeData extends ProductData {
-	
+
 	@Relationship(relatedPath = "/cover", value = "imageCover")
 	private ImageData imageCover = new ImageData();
 
@@ -34,15 +34,16 @@ public class ProductCompositeData extends ProductData {
 	@Relationship(relatedPath = "/languages", path = "/relationships/languages", value = "productLangs")
 	private List<ProductLangData> productLangs = Collections.emptyList();
 
+	@Relationship(relatedPath = "/seo", path = "/relationships/seo", value = "seo")
+	private List<ProductSeoData> seo = Collections.emptyList();
+
 	@Relationship(relatedPath = "/shipping", path = "/relationships/shipping", value = "shipping")
 	private ProductShippingData shipping;
 
 	@Relationship(relatedPath = "/stock", path = "/relationships/stock", value = "stock")
 	private ProductStockData stock;
-	
+
 	@Relationship(relatedPath = "/pricing", path = "/relationships/pricing", value = "pricing")
 	private ProductPricingData pricing;
-	
-	
 
 }

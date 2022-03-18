@@ -11,9 +11,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import fr.commerces.commons.GenericMapper;
-import fr.commerces.commons.resources.DefaultMappingConfig;
-import fr.commerces.microservices.catalog.categories.basic.CategoryMapper;
+import fr.commerces.commons.mapper.DefaultMappingConfig;
+import fr.commerces.commons.mapper.GenericMapper;
+import fr.commerces.microservices.catalog.categories.CategoryMapper;
 import fr.commerces.microservices.catalog.products.entity.ProductLang;
 import fr.commerces.microservices.catalog.products.entity.ProductLangPK;
 import fr.commerces.microservices.catalog.products.manager.ProductMapper;

@@ -3,14 +3,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core">
 
 <ui:composition>
 	<div class="#{styleClass}">
 		<div class="ui-inputgroup " >
 			<span class="ui-inputgroup-addon"><i class="pi pi-#{icon}"></i>#{addon}</span>
 			<div class="ui-float-label" style="width: 100%">
-				<p:inputText id="#{id}" required="true" value="#{value}" />
+				<p:inputText id="#{id}" required="true" value="#{value}">
+				
+						
+					
+				</p:inputText>
 				<p:outputLabel for="@previous" value="#{label}" />
 			</div>
 		</div>

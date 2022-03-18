@@ -28,7 +28,7 @@
 		
 	<!--  Formulaire d'édition  -->
 	<ui:define name="form-edit">
-		<ui:param name="pricing" value="#{model.data}" />
+		<ui:param name="pricing" value="#{model}" />
 		
 		<p:fieldset legend="Prix de vente" class="ui-g ui-fluid form-group ui-panelgrid-blank">
 			
@@ -40,12 +40,12 @@
 			<div class="ui-g-12 ui-md-4">
 				<div class="ui-inputgroup">
 					<div class="md-inputfield">
+						<p:outputLabel for="ref" value="Taxe" />
 						<p:selectOneMenu id="ref" required="true"  value="#{pricing.taxRule}">
 							<f:selectItem itemLabel="Taux réduit (TVA 5.5)" itemValue="5.5" />
 							<f:selectItem itemLabel="Taux standard (TVA 10)" itemValue="10" />
 							<f:selectItem itemLabel="Taux supérieure (TVA 20)" itemValue="20" />
 						</p:selectOneMenu>
-						<p:outputLabel for="ref" value="Taxe" />
 					</div>
 				</div>
 			</div>

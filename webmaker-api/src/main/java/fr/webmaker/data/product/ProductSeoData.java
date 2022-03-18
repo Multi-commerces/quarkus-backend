@@ -1,11 +1,14 @@
 package fr.webmaker.data.product;
 
+import com.github.jasminb.jsonapi.annotations.Type;
+
 import fr.webmaker.data.BaseResource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@Type(value = "seo", path="/products/{id}/seo")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -20,7 +23,7 @@ public class ProductSeoData extends BaseResource {
 	 * d’être lu par les moteurs de recherche.
 	 * </p>
 	 */
-	private String metatitle;
+	private String metaTitle;
 
 	/**
 	 * Contrairement à la balise title, la méta description a pour simple et unique

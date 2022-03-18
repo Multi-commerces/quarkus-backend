@@ -1,9 +1,8 @@
 package fr.commerces.microservices.catalog.products.relationships.variations;
 
 import java.net.URI;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -12,7 +11,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
@@ -29,6 +27,10 @@ public class ProductVariationResource extends JsonApiResource<ProductVariationDa
 	ObjectMapper objectMapper;
 
 	private ResourceConverter converter;
+	
+	public ProductVariationResource() {
+		super(ProductVariationData.class);
+	}
 
 	@PostConstruct
 	public void postConstruct() {
@@ -39,11 +41,10 @@ public class ProductVariationResource extends JsonApiResource<ProductVariationDa
 	}
 
 	@Override
-	public byte[] getVariations(final Long productId) throws DocumentSerializationException {
-		final Map<Long, ProductVariationData> data = manager.list(productId);
+	public Response getVariations(final Long productId) throws DocumentSerializationException {
+		var data = manager.list(productId);
 
-		return converter.writeDocumentCollection(
-				new JSONAPIDocument<Collection<ProductVariationData>>(data.values()));
+		return writeResponse(data, Collections.emptyList());
 	}
 
 	@Override

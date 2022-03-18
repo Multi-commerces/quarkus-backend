@@ -3,9 +3,9 @@
  ***************************************************************************************************************/
 -- Produit n°10000001 (traduction fr)
 INSERT INTO PRODUCT (product_id, reference) VALUES (10000001, 'REF10000001');
-INSERT INTO PRODUCT_LANG (PRODUCT_ID, CODE_LANG, NAME, DESCRIPTION, DESCRIPTION_SHORT)
-VALUES (10000001, 'fr', 'NOM-10000001', 'DESCRIPTIF, PRODUIT 10000001', 'DESCRIPTIF COURT, PRODUIT 10000001'),
-	(10000001, 'an', 'NAME-10000001', 'DESCRIPTION, PRODUCT 10000001', 'DESCRIPTION SHORT, PRODUCT 10000001');
+INSERT INTO PRODUCT_LANG (PRODUCT_ID, CODE_LANG, NAME, DESCRIPTION, DESCRIPTION_SHORT, friendly_url, meta_description, meta_title)
+VALUES (10000001, 'fr', 'NOM-10000001', 'DESCRIPTIF, PRODUIT 10000001', 'DESCRIPTIF COURT, PRODUIT 10000001', '/produit001', 'meta description fr produit 001', 'meta title fr produit 001'),
+	(10000001, 'an', 'NAME-10000001', 'DESCRIPTION, PRODUCT 10000001', 'DESCRIPTION SHORT, PRODUCT 10000001', '/produit001', 'meta description an produit 001', 'meta title an produit 001');
 	
 -- Produit n°10000002 (traduction fr)
 INSERT INTO PRODUCT (product_id, reference) VALUES (10000002, 'REF10000002');
@@ -18,6 +18,19 @@ INSERT INTO PRODUCT (product_id, reference) VALUES (10000003, 'REF10000003');
 INSERT INTO PRODUCT_LANG (PRODUCT_ID, CODE_LANG, NAME, DESCRIPTION, DESCRIPTION_SHORT)
 VALUES (10000003, 'fr', 'NOM-10000003', 'DESCRIPTIF, PRODUIT 10000003', 'DESCRIPTIF COURT, PRODUIT 10000003'),
 	(10000003, 'an', 'NAME-10000003', 'DESCRIPTION, PRODUCT 10000003', 'DESCRIPTION SHORT, PRODUCT 10000003');
+	
+/*************************************************************************************************************** 
+ ********************************************** VARIATION PRODUIT ********************************************** 
+ ***************************************************************************************************************/
+INSERT INTO PRODUCT_VARIATION (id_product_variation, name, id_product) VALUES(11000001, 'variation 01 pour 10000001', 10000001);
+INSERT INTO PRODUCT_VARIATION (id_product_variation, name, id_product) VALUES(11000002, 'variation 02 pour 10000001', 10000001);
+INSERT INTO PRODUCT_VARIATION (id_product_variation, name, id_product) VALUES(11000003, 'variation 03 pour 10000001', 10000001);
+
+
+/*************************************************************************************************************** 
+ ************************************************* PRODUIT SEO ************************************************* 
+ ***************************************************************************************************************/
+
 
 /*************************************************************************************************************** 
  *************************************************** CATEGORY ************************************************** 

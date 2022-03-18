@@ -1,20 +1,23 @@
 package fr.commerces.microservices.catalog.products.relationships.pricing;
 
-import javax.enterprise.context.RequestScoped;
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 
 import fr.commerces.commons.resources.JsonApiResource;
-import fr.commerces.microservices.catalog.products.relationships.lang.ProductLangManager;
-import fr.commerces.microservices.catalog.products.relationships.shipping.ProductPricingApi;
+import fr.commerces.microservices.catalog.products.manager.ProductManager;
+import fr.commerces.microservices.catalog.products.model.ProductRelation;
 import fr.webmaker.data.product.ProductPricingData;
-import fr.webmaker.data.product.ProductStockData;
 
-@RequestScoped
 public class ProductPricingResource extends JsonApiResource<ProductPricingData>	implements ProductPricingApi {
 
 	@Inject
-	ProductLangManager manager;
+	ProductManager manager;
+	
+	@Inject
+	ProductPricingMapper mapper;
 
 	public ProductPricingResource() {
 		super(ProductPricingData.class);
@@ -22,14 +25,13 @@ public class ProductPricingResource extends JsonApiResource<ProductPricingData>	
 
 	@Override
 	public Response getProductPricing(Long productId) {
-//		final ProductStockData data = null;
-//		return buildResponse(data, productId);
-		return null;
+		return writeJsonApiResponse(manager.findById(productId, List.of(ProductRelation.PRICING)).getPricing());
 	}
 
+	@Transactional
 	@Override
-	public Response patchProductPricing(Long productId, ProductStockData data) {
-		// TODO : Méthode non implémentée
+	public Response patchProductPricing(Long productId, byte[] data) {
+		mapper.unwrap(readData(data), productId);
 		return Response.noContent().build();
 	}
 

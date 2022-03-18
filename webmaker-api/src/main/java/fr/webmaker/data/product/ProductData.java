@@ -11,6 +11,7 @@ import fr.webmaker.data.BaseResource;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 
 @Data
@@ -21,7 +22,7 @@ public class ProductData extends BaseResource {
 
 	@Schema(description = "Référence unique du produit", example = "REF10000001", implementation = String.class)
 	@JsonProperty(value = "reference")
-	private JsonNullable<String> reference;
+	private JsonNullable<String> reference = JsonNullable.undefined();
 
 	@JsonIgnore
 	public boolean hasReference() {
@@ -30,6 +31,7 @@ public class ProductData extends BaseResource {
 
 	@Schema(description = "Quantité disponible", example = "32", implementation = Long.class)
 	@JsonProperty(value = "quantity")
+	@NonNull
 	private JsonNullable<Long> quantity = JsonNullable.undefined();
 
 	@JsonIgnore
@@ -39,7 +41,7 @@ public class ProductData extends BaseResource {
 
 	@Schema(description = "Prix unitaire (Hors Taxe)", example = "13", implementation = Double.class)
 	@JsonProperty(value = "priceHT")
-	private JsonNullable<Double> priceHT = JsonNullable.undefined();
+	private JsonNullable<@NonNull Double> priceHT = JsonNullable.undefined();
 
 	@JsonIgnore
 	public boolean hasPriceHT() {

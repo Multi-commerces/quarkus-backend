@@ -78,7 +78,7 @@ public class Product extends PanacheEntityBase {
 	private List<ProductCategory> categories = new ArrayList<>();
 
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = ProductLang.class, mappedBy = "product", cascade = {
-			CascadeType.REMOVE }, orphanRemoval = true)
+			CascadeType.REMOVE, CascadeType.PERSIST }, orphanRemoval = true)
 	private List<ProductLang> productLangs = new ArrayList<>();
 
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = ProductVariation.class, mappedBy = "product", cascade = {

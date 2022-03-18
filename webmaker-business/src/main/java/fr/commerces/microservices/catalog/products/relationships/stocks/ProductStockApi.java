@@ -1,9 +1,13 @@
 package fr.commerces.microservices.catalog.products.relationships.stocks;
 
+import static fr.commerces.commons.resources.ConstApi.MEDIA_JSON_API;
+
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PATCH;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -17,6 +21,8 @@ import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import fr.webmaker.data.product.ProductStockData;
 
 @Path(ProductStockApi.PATH)
+@Produces(MEDIA_JSON_API)
+@Consumes(MEDIA_JSON_API)
 @Tag(name = "Ressource Produits - Stock", description = "Ressource de gestion du stock produit")
 public interface ProductStockApi {
 	

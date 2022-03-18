@@ -1,4 +1,4 @@
-package fr.commerces.commons;
+package fr.commerces.commons.mapper;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;

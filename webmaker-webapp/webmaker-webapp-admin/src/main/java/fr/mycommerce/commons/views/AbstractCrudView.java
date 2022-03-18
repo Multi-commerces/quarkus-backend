@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.NavigationHandler;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
@@ -28,6 +30,11 @@ import org.primefaces.model.file.UploadedFile;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.jasminb.jsonapi.JSONAPIDocument;
+import com.github.jasminb.jsonapi.ResourceConverter;
+import com.github.jasminb.jsonapi.SerializationFeature;
+import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
@@ -38,6 +45,13 @@ import fr.mycommerce.commons.tools.JavaFacesTool;
 import fr.mycommerce.exception.MissingArgumentException;
 import fr.mycommerce.exception.MissingModelException;
 import fr.webmaker.data.BaseResource;
+import fr.webmaker.data.product.ProductCompositeData;
+import fr.webmaker.data.product.ProductData;
+import fr.webmaker.data.product.ProductLangCompositeData;
+import fr.webmaker.data.product.ProductPricingData;
+import fr.webmaker.data.product.ProductSeoData;
+import fr.webmaker.data.product.ProductShippingData;
+import fr.webmaker.data.product.ProductStockData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +70,21 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 
 	private static final long serialVersionUID = 1L;
 	
+	private Class<?>[] clazz = {ProductData.class, ProductCompositeData.class,
+			ProductLangCompositeData.class, 
+			ProductPricingData.class, 
+			ProductStockData.class, 
+			ProductShippingData.class,
+			ProductSeoData.class};
+	
+	/**
+	 * Pour la lecture et écriture des réponse WEB-API
+	 */
+	protected ResourceConverter converter;
+	
+	/**
+	 * ObjectMapper utilisé par le converter
+	 */
 	protected ObjectMapper objectMapper;
 	
 	/**
@@ -164,7 +193,7 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 	public String getImage() {
 		byte[] content = uploadedFile != null ? uploadedFile.getContent() : null;
 		if (content == null)
-			return "http://placehold.it/372x372";
+			return "https://bulma.io/images/placeholders/128x128.png";
 
 		return "data:image/png;base64," + Base64.encodeBase64String(content);
 	}
@@ -222,6 +251,7 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 		objectMapper = new ObjectMapper();
 		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 		objectMapper.registerModule(new JsonNullableModule());
+		converter = new ResourceConverter(objectMapper, clazz);
 		
 		dataModels = new ListDataModel<Model<M>>();
 		items = new ArrayList<>();
@@ -233,6 +263,51 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 	@PostConstruct
 	public void postConstructAbstractCrudView() {
 		loadItems(findAll());
+	}
+	
+	/**
+	 * Les données au format Json
+	 * @return
+	 * @throws IOException
+	 */
+	public String getJson() throws IOException {	
+		return objectMapper.readTree(writeDocument(model.getData())).toPrettyString().trim();
+	}
+	
+	protected byte[] writeDocument(Object data) {
+		try {
+			objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+			
+			
+			if (data == null) {
+				ObjectNode resultNode = objectMapper.createObjectNode();
+				resultNode.set("data", null);
+				
+				byte[] result = null;
+				try {
+					result = objectMapper.writeValueAsBytes(resultNode);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				
+				return result;
+			}
+			
+			converter.disableSerializationOption(SerializationFeature.INCLUDE_LINKS);
+			converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
+			byte[] flux = converter.writeDocument(new JSONAPIDocument<>(data, objectMapper));
+			
+			try {
+				objectMapper.readTree(flux).toPrettyString();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return flux;
+		} catch (DocumentSerializationException e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 	
 	protected void loadItems(List<Model<M>> items)
@@ -298,10 +373,13 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 	 * @param event
 	 */
 	public void editAction(ActionEvent event) {
-		final Object id = Optional.ofNullable(event.getComponent().getAttributes().get("itemId"))
+		final Object id = Optional
+				.ofNullable(event.getComponent().getAttributes().get("itemId"))
 				.orElseThrow(() -> new MissingArgumentException("itemId"));
 
-		model = items.stream().filter(o -> o.getIdentifier().equals(id)).findAny()
+		model = items.stream()
+				.filter(o -> o.getIdentifier().equals(id))
+				.findAny()
 				.orElseThrow(() -> new MissingModelException());
 
 		action = ActionType.UPDATE;
@@ -342,23 +420,23 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 	 * @param event
 	 */
 	public void deleteAction(ActionEvent event) {
-		final String identifier = (String) Optional.ofNullable(event.getComponent().getAttributes().get("identifier"))
+		final String identifier = (String) Optional
+				.ofNullable(event.getComponent().getAttributes().get("identifier"))
 				.orElseThrow(() -> new MissingArgumentException("identifier"));
 		
-		// [BUSINESS] Opération de supression 
+		// [BUSINESS] Opération de suppression 
 		try {
 			delete(identifier);
 		} catch (Exception e) {
 			failureOfAction();
-			return;
+			return; // !!! STOP !!!
 		}
 		
 		// [WEB] Opération de suppression 
 		items.removeIf(o -> identifier.equals(o.getIdentifier()));
 		
 		/**
-		 * Demande une nouvelle instance si le model en-cours de modification est celui
-		 * qui vient d'être supprimer
+		 * Demande une nouvelle instance si le model en-cours de modification est celui supprimé plus haut
 		 */
 		if (model != null && model.getIdentifier() != null && model.getIdentifier().equals(identifier)) {
 			model = newModelInstance();
@@ -370,6 +448,7 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 
 	/**
 	 * Succès de l'action
+	 * TODO : prendre en compte la traduction du message
 	 */
 	protected void successOfAction() {
 		JavaFacesTool.sendFacesMessage("success of the action " + getAction().name().toLowerCase(), 
@@ -461,4 +540,12 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 		action = ActionType.DEFAULT;
 	}
 
+	protected void handleNavigation(String page)
+	{
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		NavigationHandler myNav = facesContext.getApplication().getNavigationHandler();
+		myNav.handleNavigation(facesContext, null,
+				page + "?faces-redirect=true&id=" + model.getIdentifier());
+	
+	}
 }

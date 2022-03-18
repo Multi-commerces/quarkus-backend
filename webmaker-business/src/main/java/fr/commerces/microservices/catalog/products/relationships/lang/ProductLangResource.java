@@ -1,20 +1,15 @@
 package fr.commerces.microservices.catalog.products.relationships.lang;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Locale;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
-import com.github.jasminb.jsonapi.ResourceConverter;
-import com.github.jasminb.jsonapi.SerializationFeature;
 import com.neovisionaries.i18n.LanguageCode;
 
 import fr.commerces.commons.resources.JsonApiResource;
-import fr.commerces.microservices.catalog.categories.basic.CategoryManager;
-import fr.webmaker.data.product.ProductCompositeData;
-import fr.webmaker.data.product.ProductData;
 import fr.webmaker.data.product.ProductLangCompositeData;
 import fr.webmaker.data.product.ProductLangData;
 
@@ -23,17 +18,8 @@ public class ProductLangResource extends JsonApiResource<ProductLangData> implem
 	@Inject
 	ProductLangManager manager;
 
-	@Inject
-	CategoryManager categoryManager;
-
-	@PostConstruct
-	public void ProductLangResourcePostConstruct() {
-		converter = new ResourceConverter(objectMapper, ProductLangCompositeData.class, ProductCompositeData.class,
-				ProductLangData.class, ProductData.class);
-
-		converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
-		converter.enableSerializationOption(SerializationFeature.INCLUDE_LINKS);
-		converter.enableSerializationOption(SerializationFeature.INCLUDE_META);
+	public ProductLangResource() {
+		super(ProductLangData.class, ProductLangCompositeData.class);
 	}
 
 	/**
@@ -78,8 +64,15 @@ public class ProductLangResource extends JsonApiResource<ProductLangData> implem
 	 * PATCH Product-LANG BY ID&LANG
 	 */
 	@Override
-	public Response putProductLang(final LanguageCode languageCode, final Long productId, final ProductLangData data) {
-		manager.updateProductLang(languageCode, productId, data);
+	public Response patchProductLang(final LanguageCode languageCode, final Long productId, final byte[] flux) {
+		try {
+			objectMapper.readTree(flux).toPrettyString();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		manager.updateProductLang(languageCode, productId, readData(flux));
 		return Response.noContent().build();
 	}
 

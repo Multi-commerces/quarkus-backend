@@ -25,12 +25,11 @@ import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.commerces.microservices.catalog.categories.basic.CategoryManager;
 import fr.commerces.microservices.catalog.categories.entity.Category;
 import fr.commerces.microservices.catalog.categories.entity.CategoryLang;
-import fr.commerces.microservices.catalog.categories.lang.CategoryLangData;
 import fr.webmaker.data.category.CategoryData;
-import fr.webmaker.data.category.CategoryRelationData;
+import fr.webmaker.data.category.CategoryLangData;
+import fr.webmaker.data.category.CategoryCompositeData;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -49,16 +48,16 @@ public class CategoryManagerTest {
 		
 		
 		// Execution -----------------------------------------
-		final List<CategoryRelationData> categories = manager.findCategoryHierarchy();
+		final List<CategoryCompositeData> categories = manager.findCategoryHierarchy();
 		
-		Function<Long, CategoryRelationData> findCategoryHierarchy = catId -> 
+		Function<Long, CategoryCompositeData> findCategoryHierarchy = catId -> 
 				categories.stream().filter(o -> Long.valueOf(o.getId()).equals(catId)).findAny().get();
 		
 		// Verification --------------------------------------
 		assertNotNull(categories);
 		assertThat(categories.size(), is(3));
 
-		CategoryRelationData subCategory;
+		CategoryCompositeData subCategory;
 		List<CategoryLangData> categoryData;
 
 		// CATEGORY_ID_20000001
@@ -91,7 +90,7 @@ public class CategoryManagerTest {
 //		assertThat(categoryData.getName(), is("DESIGNATION 20000003"));
 //		assertThat(categoryData.getDescription(), is("DESCRIPTION 20000003"));
 
-		final List<CategoryRelationData> subCategories = subCategory.getSubCategories();
+		final List<CategoryCompositeData> subCategories = subCategory.getSubCategories();
 		assertThat(subCategories.size(), is(1));
 		
 		// CATEGORY_ID_20000004
@@ -107,7 +106,7 @@ public class CategoryManagerTest {
 	@Test
 	public void testFindById() {
 		// Execution -----------------------------------------
-		final CategoryRelationData categorySubCategories = manager.findCategoryHierarchyById(CATEGORY_ID_20000003);
+		final CategoryCompositeData categorySubCategories = manager.findCategoryHierarchyById(CATEGORY_ID_20000003);
 		
 		
 		// Verification --------------------------------------
@@ -118,7 +117,7 @@ public class CategoryManagerTest {
 //		assertThat(categoryData.getName(), is("DESIGNATION 20000003"));
 //		assertThat(categoryData.getDescription(), is("DESCRIPTION 20000003"));
 
-		final List<CategoryRelationData> subCategories = categorySubCategories.getSubCategories();
+		final List<CategoryCompositeData> subCategories = categorySubCategories.getSubCategories();
 		assertThat(subCategories.size(), is(1));
 	}
 

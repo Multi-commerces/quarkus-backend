@@ -21,6 +21,7 @@
 
 		<div class="ui-g">
 			<!--  INPUT TEXT  -->
+			
 			<div class="ui-g-12 ui-g-nopad">
 				<div class="ui-fluid form-group">
 					<w:inputText styleClass="ui-g-12 ui-md-6" id="metatitle"
@@ -28,7 +29,7 @@
 						value="#{product.reference}" />
 
 					<w:inputText styleClass="ui-g-12 ui-md-6" id="name" icon="pencil"
-						label="#{msg['product.name']}" value="#{product.name}" />
+						label="#{msg['product.name']}" value="#{product.reference}" />
 				</div>
 			</div>
 
@@ -39,8 +40,6 @@
 					<div class="ui-fluid form-group">
 						<w:inputText styleClass="ui-g-12" id="product-image-caption"
 							icon="pencil" label="#{msg['product.image.caption']}" />
-
-
 					</div>
 				</div>
 				<!--  FILE UPLOAD -->
@@ -48,9 +47,9 @@
 
 					<div class="ui-g-3  ui-g-nopad">
 						<div jsf:id="images" class="card hovereffect ui-g-nopad"
-							style="width: 250px; height: 250px; border: 1px">
-							<h:graphicImage styleClass="img-responsive" width="250"
-								height="250" alt="" value="#{controller.image}" />
+							style="width: 200px; height: 200px; border: 1px">
+							<h:graphicImage styleClass="img-responsive" width="200"
+								height="200" alt="" value="#{controller.image}" />
 
 							<div class="overlay">
 								<h2>#{msg.cover}</h2>
@@ -81,7 +80,7 @@
 							<div class="ui-g">
 								<p:textEditor styleClass="ui-g-12 ui-g-nopad"
 									placeholder="Enter your content" toolbarVisible="true"
-									widgetVar="editor1" value="#{model.data.description}"
+									widgetVar="editor1" value="#{controller.productLang.summary}"
 									height="200" />
 							</div>
 						</p:tab>
@@ -91,7 +90,7 @@
 							<div class="ui-g">
 								<p:textEditor styleClass="ui-g-12 ui-g-nopad"
 									placeholder="Enter your content" toolbarVisible="true"
-									widgetVar="editor2" value="#{model.data.summary}" height="200" />
+									widgetVar="editor2" value="#{controller.productLang.description}" height="200" />
 							</div>
 						</p:tab>
 					</p:tabView>
@@ -137,7 +136,7 @@
 							<button class="fa fa-trash"></button>
 						</div>
 						<div class="container">
-							<h:graphicImage value="http://placehold.it/124x124"
+							<h:graphicImage value="https://bulma.io/images/placeholders/128x128.png"
 								alt="image produit" width="124" height="124" />
 						</div>
 					</div>
@@ -153,11 +152,11 @@
 					<p:repeat value="#{controller.variationMB.items}" var="item">
 
 						<div class="box ui-g-3">
-							<a href="/products/#{model.id}/variations/#{item.id}"> <span
-								class="boxContent"> <h:graphicImage width="124"
-										height="124" alt="image produit"
-										value="#{controller.getImage(null)}" /> <span class="title">#{item.data.name}</span>
-							</span>
+							<a href="/products/#{model.id}/variations/#{item.id}"> 
+								<span class="boxContent"> 
+									<h:graphicImage width="124" height="124" alt="image produit" value="#{controller.getImage(null)}" /> 
+									<span class="title">#{item.data.name}</span>
+								</span>
 							</a>
 						</div>
 					</p:repeat>

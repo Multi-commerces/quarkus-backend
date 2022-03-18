@@ -102,7 +102,7 @@ public class JavaFacesTool implements Serializable {
 			severity = FacesMessage.SEVERITY_INFO;
 		}
 
-		FacesMessage facesMessage = new FacesMessage(severity, null, text);
+		FacesMessage facesMessage = new FacesMessage(severity, severity.toString(), text);
 
 		facesContext.addMessage(null, facesMessage);
 	}
@@ -249,11 +249,9 @@ public class JavaFacesTool implements Serializable {
 	 * Extraction de l'identifiant (param => id)
 	 * @return
 	 */
-	protected Long extractId()
-	{
+	protected Long extractId() {
 		String id = getValueParam("id");
-		if(id != null)
-		{
+		if (id != null) {
 			return Long.valueOf(id);
 		}
 		return null;

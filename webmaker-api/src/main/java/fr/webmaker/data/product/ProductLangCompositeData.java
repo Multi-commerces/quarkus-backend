@@ -21,6 +21,11 @@ public class ProductLangCompositeData extends ProductLangData {
 	@Relationship(relatedPath = "../../", value = "product")
 	private ProductData product;
 	
+	@Override
+	public String getId()
+	{
+		return product != null ? product.getId() : null;
+	}
 	
 
 }

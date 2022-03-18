@@ -23,6 +23,19 @@
 		</p:outputPanel>
 		
 		<f:facet name="footer">
+			<p:outputPanel style="border-style: outset;">
+			<p:autoUpdate></p:autoUpdate>
+			<div >
+				<pre id="json">
+		        	<h:outputText escape="true" value="#{controller.json}" />
+		    	</pre>
+			</div>
+				<p:commandButton style="margin:1rem" partialSubmit="true"
+					icon="pi pi-times"
+					value="Refresh JSON" update=":form-edit" process=":form-edit"
+					styleClass="secondary p-mr-2 ">
+				</p:commandButton>
+			</p:outputPanel>
 			<div style="margin-top: 1rem">
 				<p:commandButton style="margin-right:0.5rem" partialSubmit="true"
 					immediate="true" resetValues="true" ajax="true" icon="pi pi-times"

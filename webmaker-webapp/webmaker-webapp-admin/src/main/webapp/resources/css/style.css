@@ -32,6 +32,16 @@ body .ui-tabs .ui-tabs-panels .ui-tabs-panel
 	
 }
 
+#json {
+	display: block; 
+	padding: 0.5rem; 
+	color: darkblue; 
+	background-color: cornsilk; 
+	font-family: monospace; 
+	white-space: pre; 
+	margin: 0;
+	overflow-x: scroll;
+}
 
 /***************** BREAD-CRUMB *************************/
 #form-bread-crumb {

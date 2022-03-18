@@ -10,12 +10,12 @@ import org.omnifaces.cdi.ViewScoped;
 import fr.mycommerce.commons.managers.Manager;
 import fr.mycommerce.commons.models.Model;
 import fr.mycommerce.commons.views.AbstractCrudView;
-import fr.webmaker.data.category.CategoryRelationData;
+import fr.webmaker.data.category.CategoryCompositeData;
 
 @Named("adminCategoryMB")
 @ViewScoped
-public class AdminCategoryListMB extends AbstractCrudView<CategoryRelationData>
-		implements Manager<CategoryRelationData> {
+public class AdminCategoryListMB extends AbstractCrudView<CategoryCompositeData>
+		implements Manager<CategoryCompositeData> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -25,7 +25,7 @@ public class AdminCategoryListMB extends AbstractCrudView<CategoryRelationData>
 //	private CategoryRestClient service;
 
 	@Override
-	public List<Model<CategoryRelationData>> findAll() {
+	public List<Model<CategoryCompositeData>> findAll() {
 //		final CollectionResponse<CategoryData> response = service.getCategories("fr", true);
 //		if (response.getCollection() == null) {
 //			return new ArrayList<Model<CategoryData>>();
@@ -38,8 +38,8 @@ public class AdminCategoryListMB extends AbstractCrudView<CategoryRelationData>
 	}
 
 	@Override
-	protected CategoryRelationData newDataInstance() {
-		return new CategoryRelationData();
+	protected CategoryCompositeData newDataInstance() {
+		return new CategoryCompositeData();
 	}
 
 	@Override

@@ -23,9 +23,7 @@ public interface ProductRestClient  {
 
 	@GET
 	@Path("/") 
-	byte[] getProducts(
-			@QueryParam("languageCode") String languageCode,
-			@QueryParam(value = "page")  Integer page,
+	byte[] getProducts(@QueryParam(value = "page")  Integer page,
 			@QueryParam(value = "size") Integer size);
 	
 	@Path("/{productId}")
@@ -38,23 +36,17 @@ public interface ProductRestClient  {
 
 	@POST
 	@Path("/") 
-	Response create(
-			@QueryParam("languageCode")  String languageCode,
-			byte[] data);
+	Response create(byte[] data);
 
 	/* ############################################################################################################# */
 
 	@PUT
 	@Path("/{productId}")
-	void update(
-			@QueryParam("languageCode") String languageCode,
-			@PathParam(value = "productId") Long productId, 
+	void update(@PathParam(value = "productId") String productId, 
 			byte[] data);
 
 	@DELETE
 	@Path("/{productId}")
-	void delete(
-			@QueryParam("languageCode") String languageCode,
-			@PathParam(value = "productId") Long productId);
+	void delete(@PathParam(value = "productId") String productId);
 
 }

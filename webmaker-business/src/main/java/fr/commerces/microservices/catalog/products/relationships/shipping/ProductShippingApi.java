@@ -16,6 +16,8 @@
 
 package fr.commerces.microservices.catalog.products.relationships.shipping;
 
+import static fr.commerces.commons.resources.ConstApi.MEDIA_JSON_API;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -24,7 +26,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -38,8 +39,8 @@ import fr.webmaker.data.product.ProductShippingData;
 
 
 @Path(ProductShippingApi.PATH)
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MEDIA_JSON_API)
+@Consumes(MEDIA_JSON_API)
 @Tag(name = "Ressource Produits - Expédition", description = "Ressource pour la gestion d'expédition du produit")
 public interface ProductShippingApi {
 	

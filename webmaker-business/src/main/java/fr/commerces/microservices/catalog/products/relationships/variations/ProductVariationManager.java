@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,11 +23,12 @@ public class ProductVariationManager {
 	@Inject
 	private ProductVariationMapper mapper;
 
-	public Map<Long, ProductVariationData> list(@NotNull final Long productId) {
-		try (final Stream<ProductVariation> streamEntity = ProductVariation.findByProductId(productId).stream()) {
-			var map = streamEntity.collect(Collectors.toMap(ProductVariation::getId, Function.identity()));
-			return mapper.toMap(map);
-		}
+	public List<ProductVariationData> list(@NotNull final Long productId) {
+		var product = Product.<Product>findByIdOptional(productId).orElseThrow(NotFoundException::new);
+		
+		return product.getVariations().stream()
+				.map(mapper::bind)
+				.collect(Collectors.toList());	
 	}
 	
 	public Map<Long, List<ProductVariationData>> findByProductIds(@NotNull final Collection<Long> productIds) {
@@ -41,9 +41,9 @@ public class ProductVariationManager {
 
 	@Transactional
 	public Long create(@NotNull final Long productId, @NotNull final ProductVariationData productVariation) {
-		final Product product = Product.<Product>findByIdOptional(productId).orElseThrow(NotFoundException::new);
+		var product = Product.<Product>findByIdOptional(productId).orElseThrow(NotFoundException::new);
 		
-		final ProductVariation variation = mapper.unbind(productVariation);
+		var variation = mapper.unbind(productVariation);
 		variation.setProduct(product);
 		
 		// Enregistrement

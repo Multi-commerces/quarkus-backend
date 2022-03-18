@@ -25,7 +25,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -34,11 +33,12 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 
+import fr.commerces.commons.resources.ConstApi;
 import fr.webmaker.data.product.ProductVariationData;
 
 @Path(ProductVariationApi.PATH)
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@Produces(ConstApi.MEDIA_JSON_API)
+@Consumes(ConstApi.MEDIA_JSON_API)
 @Tag(name = "Ressource Produits - Variations", description = "Ressource de gestion des variations produit")
 public interface ProductVariationApi {
 
@@ -46,20 +46,24 @@ public interface ProductVariationApi {
 
 	@Path("/")
 	@GET
-	@Operation(summary = "Rechercher variations du produit", description = "Opération de recherche les variations du produit.", operationId = "getVariations")
-	@Produces("application/vnd.api+json")
-	@Consumes("application/vnd.api+json")
-	byte[] getVariations(@PathParam(value = "productId") Long productId) throws DocumentSerializationException;
+	@Operation(summary = "Rechercher variations du produit", 
+		description = "Opération de recherche les variations du produit.", 
+		operationId = "getVariations")
+	Response getVariations(@PathParam(value = "productId") Long productId) throws DocumentSerializationException;
 
 	@Path("/")
 	@POST
-	@Operation(summary = "Ajouter variation produit", description = "Opération de création d'une nouvelle variation du produit .", operationId = "createVariation")
+	@Operation(summary = "Ajouter variation produit", 
+		description = "Opération de création d'une nouvelle variation du produit .", 
+		operationId = "createVariation")
 	Response createVariation(@Context UriInfo uriInfo, @PathParam(value = "productId") Long productId,
 			ProductVariationData variation);
 
 	@PUT
 	@Path("/{variationId}")
-	@Operation(summary = "Modification variation produit", description = "Opération de modification d'une variation existante du produit .", operationId = "updateVariation")
+	@Operation(summary = "Modification variation produit", 
+		description = "Opération de modification d'une variation existante du produit .", 
+		operationId = "updateVariation")
 	Response updateVariation(@PathParam(value = "productId") Long productId,
 			@PathParam(value = "variationId") Long variationId, ProductVariationData variation);
 

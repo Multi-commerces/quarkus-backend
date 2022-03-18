@@ -30,6 +30,10 @@ public class ProductStockMB extends AbstractProductMB<ProductStockData> {
 	@Getter
 	private ProductStockRestClient service;
 	
+	public ProductStockMB() {
+		super(FlowPage.STOCK);
+	}
+
 	@Override
 	public byte[] callServiceFindById(String identifier) {
 		return service.get(Long.valueOf(identifier));
@@ -37,8 +41,7 @@ public class ProductStockMB extends AbstractProductMB<ProductStockData> {
 
 	@Override
 	public void callServiceUpdate() {
-		model.getData();
-		service.patch(Long.valueOf(model.getIdentifier()), null);
+		service.patch(Long.valueOf(model.getIdentifier()), writeDocument(model.getData()));
 	}
 
 	@Override
@@ -50,10 +53,4 @@ public class ProductStockMB extends AbstractProductMB<ProductStockData> {
 	protected void callServiceDelete(Long id) {
 		// Ignore (Non applicable)
 	}
-
-	@Override
-	FlowPage getFlowPage() {
-		return FlowPage.STOCK;
-	}
-
 }

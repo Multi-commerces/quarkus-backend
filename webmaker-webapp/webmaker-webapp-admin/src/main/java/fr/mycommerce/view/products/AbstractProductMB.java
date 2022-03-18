@@ -5,6 +5,7 @@ import javax.faces.event.ActionEvent;
 import fr.mycommerce.commons.views.AbstractView;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
 import fr.webmaker.data.BaseResource;
+import fr.webmaker.data.product.ProductLangCompositeData;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,11 +26,14 @@ public abstract class AbstractProductMB<M extends BaseResource> extends Abstract
 	@Getter
 	protected int activeIndexTabMenu;
 	
-	abstract FlowPage getFlowPage();
+	@Getter
+	private FlowPage flowPage;
 	
-	public AbstractProductMB()
+	public AbstractProductMB(FlowPage flowPage)
 	{
-		activeIndexTabMenu = getFlowPage().getTabNUm();
+		super();
+		this.flowPage = flowPage;
+		activeIndexTabMenu = flowPage.getTabNUm();
 	}
 
 	/**
@@ -46,7 +50,17 @@ public abstract class AbstractProductMB<M extends BaseResource> extends Abstract
 				.filter(o -> o.getTabNUm().equals(activeIndexTabMenu)).findAny().orElse(FlowPage.BASIC);
 
 		// Nagigation vers la tab détectée
-		handleNavigation(flowProductPage.getPage(), true, model.getIdentifier());
+		if(model != null)
+		{
+			if(model.getData() instanceof ProductLangCompositeData)
+			{
+				handleNavigation(flowProductPage.getPage(), true, 
+						((ProductLangCompositeData) model.getData()).getProductId().toString());
+			}
+			else{
+				handleNavigation(flowProductPage.getPage(), true, model.getIdentifier());
+			}
+		}
 	}
 
 }

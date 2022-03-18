@@ -29,6 +29,10 @@ public class ProductSeoMB extends AbstractProductMB<ProductSeoData> {
 	@RestClient
 	@Getter
 	private ProductSeoRestClient service;
+	
+	public ProductSeoMB() {
+		super(FlowPage.SEO);
+	}
 
 	@Override
 	public byte[] callServiceFindById(String identifier) {
@@ -37,8 +41,7 @@ public class ProductSeoMB extends AbstractProductMB<ProductSeoData> {
 
 	@Override
 	public void callServiceUpdate() {
-		model.getData();
-		service.patch("fr",Long.valueOf(model.getIdentifier()), null);
+		service.patch("fr",Long.valueOf(model.getIdentifier()), writeDocument(model.getData()));
 	}
 
 	@Override
@@ -49,12 +52,6 @@ public class ProductSeoMB extends AbstractProductMB<ProductSeoData> {
 	@Override
 	protected void callServiceDelete(Long id) {
 		// Ignore (Non applicable)
-	}
-	
-	@Override
-	FlowPage getFlowPage() {
-		// TODO Auto-generated method stub
-		return  FlowPage.SEO;
 	}
 
 }

@@ -13,7 +13,7 @@ import fr.webmaker.data.BaseResource;
  * </h1>Crud Manager (create, read, update et delete)</h1>
  * <p>
  * on retrouve ici les appels à une ressource, que nous retrouvons de manière
- * (presque) systématique
+ * (presque) systématique. 
  * </p>
  * 
  * @author Julien ILARI
@@ -26,6 +26,11 @@ public interface ManagerCrud<M extends BaseResource> extends Manager<M> {
 	
 	
 	ICrudResource getService();
+	
+	default void allClass()
+	{
+		
+	}
 
 
 	/**

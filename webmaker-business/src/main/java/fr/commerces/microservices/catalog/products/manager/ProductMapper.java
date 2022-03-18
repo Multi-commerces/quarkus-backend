@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import fr.commerces.commons.resources.DefaultMappingConfig;
+import fr.commerces.commons.mapper.DefaultMappingConfig;
 import fr.commerces.microservices.catalog.products.entity.Product;
 import fr.webmaker.data.BaseResource;
 import fr.webmaker.data.product.ProductCompositeData;

@@ -7,7 +7,7 @@
 	xmlns:util="http://java.sun.com/jsf/composite/components"
 	template="/WEB-INF/template.xhtml" >
 	
-	<ui:param name="model" value="#{controller.model}" />
+	<ui:param name="model" value="#{controller.model.data}" />
 	
 	<ui:define name="breadCrumb">
 		<p:menuitem value="#{msg.catalogue}" url="#" />
@@ -16,7 +16,7 @@
 	<ui:define name="content">
 		<!-- formulaire d'édition  jsf:rendered="#{controller.action eq 'CREATE' or controller.action eq 'UPDATE'}" -->
 		<ui:decorate template="/WEB-INF/includes/section/section-edit.xhtml">
-			<ui:param name="title" value="Produit n° : #{model.identifier.id}" />
+			<ui:param name="title" value="Produit n° : #{model.id}" />
 			<ui:define name="section-edit-header">
 			
 				<h:form prependId="false">

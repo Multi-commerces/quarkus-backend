@@ -23,13 +23,16 @@
 		</p:card>
 		<!-- formulaire d'édition -->
 		<ui:decorate template="/WEB-INF/includes/section/section-edit.xhtml">
-			<ui:param name="title" value="Nouveau #{title}" />
+			<ui:param name="title" value="🐸 Nouveau #{title}" />
 		</ui:decorate>
 		
 		<!-- fomulaire list -->
 		<ui:decorate template="/WEB-INF/includes/section/section-list.xhtml">
 			<ui:decorate template="/WEB-INF/includes/toolbar-crud.xhtml" />
 		</ui:decorate>
+		
+		<ui:insert name="content-footer" />
+		<ui:insert />
 	</ui:define>
 
 </ui:composition>

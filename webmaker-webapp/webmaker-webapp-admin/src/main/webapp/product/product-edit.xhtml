@@ -24,17 +24,17 @@
 				<!-- Référence et nom du produit -->
 				<div class="ui-g-12 ui-g-nopad">
 					<div class="ui-fluid form-group">
-						<w:inputText styleClass="ui-g-12" id="ref" icon="pencil"
-							label="#{msg['product.ref']}" value="#{model.data.reference}" />
+						<w:inputText styleClass="ui-g-12" id="ref" icon="pencil" jsonNullable="true"
+							label="#{msg['product.ref']}" value="#{model.product.reference}" />
 
 						<w:inputText styleClass="ui-g-12" id="name" icon="pencil"
-							label="#{msg['product.name']}" value="#{model.data.name}" />
+							label="#{msg['product.name']}" value="#{model.name}" />
 					</div>
 				</div>
 				<!-- description -->
 				<div class="ui-g-12">
 					<p:textEditor toolbarVisible="true" widgetVar="editor"
-						value="#{model.data.description}" height="250" />
+						value="#{model.description}" height="250" />
 				</div>
 			</div>
 		</p:fieldset>

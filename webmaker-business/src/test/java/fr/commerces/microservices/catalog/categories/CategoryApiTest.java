@@ -17,9 +17,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import fr.commerces.commons.abstracts.AbtractQuarkusApiTest;
-import fr.commerces.microservices.catalog.categories.basic.CategoryManager;
-import fr.commerces.microservices.catalog.categories.basic.CategoryResource;
-import fr.commerces.microservices.catalog.categories.lang.CategoryLangData;
+import fr.webmaker.data.category.CategoryLangData;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;

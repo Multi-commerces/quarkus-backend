@@ -1,4 +1,4 @@
-package fr.commerces.microservices.catalog.categories.lang;
+package fr.webmaker.data.category;
 
 import javax.validation.constraints.NotNull;
 

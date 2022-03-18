@@ -10,7 +10,6 @@ import static fr.commerces.commons.resources.ConstApi.MEDIA_JSON_API;
 
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -139,7 +138,7 @@ public interface ProductLangResourceApi {
 	@APIResponses(value = { 
 			@APIResponse(responseCode = "204", description = CODE204PUT) 
 	})
-	Response putProductLang(
+	Response patchProductLang(
 			/*
 			 * language
 			 */
@@ -154,7 +153,7 @@ public interface ProductLangResourceApi {
 			/*
 			 * Data
 			 */
-			@NotNull @Valid ProductLangData data);
+			byte[] data);
 
 	
 	@DELETE

@@ -16,10 +16,8 @@
 
 package fr.commerces.microservices.catalog.products.relationships.seo;
 
-import java.util.Map;
+import static fr.commerces.commons.resources.ConstApi.MEDIA_JSON_API;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -27,7 +25,6 @@ import javax.ws.rs.PATCH;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -36,13 +33,9 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import com.neovisionaries.i18n.LanguageCode;
-
-import fr.webmaker.data.product.ProductSeoData;
-
 @Path(ProductSeoApi.PATH)
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MEDIA_JSON_API)
+@Consumes(MEDIA_JSON_API)
 @Tag(name = "Ressource Produits - SEO (Search Engine Optimization)", description = "Ressource pour la gestion SEO des produits (multi-langues)")
 public interface ProductSeoApi {
 	
@@ -62,7 +55,7 @@ public interface ProductSeoApi {
 	@Operation(operationId = "getProductSeos", 
 		summary = "Informations SEO d'un produit (dans toutes les langues).", 
 		description = "Rechercher les informations SEO d'un produit et dans toutes les langues.")
-	Map<LanguageCode, ProductSeoData> getProductSeos(
+	Response getProductSeos(
 			/*
 			 * Identifiant du produit
 			 */
@@ -85,7 +78,7 @@ public interface ProductSeoApi {
 			@APIResponse(responseCode = "401", description = "[NOK] - Une identification est nécessaire"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun produit trouvé avec les critères de sélection fournis") 
 	})
-	ProductSeoData getProductSeo(
+	Response getProductSeo(
 			/*
 			 * language
 			 */
@@ -116,7 +109,7 @@ public interface ProductSeoApi {
 			@APIResponse(responseCode = "401", description = "[NOK] - Une identification est nécessaire"),
 			@APIResponse(responseCode = "404", description = "[NOK] - Aucun produit trouvé avec les critères de sélection fournis") 
 	})
-	Response updateProductSeo(
+	Response patchProductSeo(
 			/*
 			 * language
 			 */
@@ -131,6 +124,6 @@ public interface ProductSeoApi {
 			/*
 			 * SEO Data
 			 */
-			@NotNull @Valid ProductSeoData seo);
+			byte[] seo);
 
 }

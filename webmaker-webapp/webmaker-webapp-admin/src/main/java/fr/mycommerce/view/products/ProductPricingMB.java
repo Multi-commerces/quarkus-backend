@@ -30,6 +30,10 @@ public class ProductPricingMB extends AbstractProductMB<ProductPricingData> {
 	@Getter
 	private ProductPricingRestClient service;
 	
+	public ProductPricingMB() {
+		super(FlowPage.PRICING);
+	}
+	
 	@Override
 	public byte[] callServiceFindById(String identifier) {
 		return service.get(Long.valueOf(identifier));
@@ -37,8 +41,7 @@ public class ProductPricingMB extends AbstractProductMB<ProductPricingData> {
 
 	@Override
 	public void callServiceUpdate() {
-		//model.getData()
-		service.patch(Long.valueOf(model.getIdentifier()), null);
+		service.patch(Long.valueOf(model.getIdentifier()), writeDocument(model.getData()));
 	}
 
 	@Override
@@ -49,11 +52,6 @@ public class ProductPricingMB extends AbstractProductMB<ProductPricingData> {
 	@Override
 	protected void callServiceDelete(Long id) {
 		// Ignore (Non applicable)
-	}
-
-	@Override
-	FlowPage getFlowPage() {
-		return FlowPage.PRICING;
 	}
 
 }
