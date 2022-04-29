@@ -19,7 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import fr.commerces.microservices.catalog.images.entities.ShopImage;
-import fr.webmaker.exception.crud.NotFoundUpdateException;
+import fr.webmaker.exception.crud.NotFoundException;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Getter;
 import lombok.Setter;
@@ -99,7 +99,7 @@ public class Product extends PanacheEntityBase {
 	
 	public static Product findByIdOrElseThrow(final Long productId) {
 		return Product.<Product>findByIdOptional(productId)
-				.orElseThrow(() -> new NotFoundUpdateException(productId));
+				.orElseThrow(() -> new NotFoundException(productId));
 	}
 	
 	public static Product findByRef(final String reference) {

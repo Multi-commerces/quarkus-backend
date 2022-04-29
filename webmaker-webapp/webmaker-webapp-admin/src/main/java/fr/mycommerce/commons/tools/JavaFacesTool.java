@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.NavigationHandler;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -249,11 +250,25 @@ public class JavaFacesTool implements Serializable {
 	 * Extraction de l'identifiant (param => id)
 	 * @return
 	 */
-	protected Long extractId() {
+	public Long extractId() {
 		String id = getValueParam("id");
 		if (id != null) {
 			return Long.valueOf(id);
 		}
 		return null;
+	}
+	
+	public void handleNavigation(String outcome, boolean facesRedirect, String identifier) {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		NavigationHandler myNav = facesContext.getApplication().getNavigationHandler();
+
+		StringBuilder value = new StringBuilder(outcome)
+			.append("?faces-redirect=")
+			.append(facesRedirect);
+		if (identifier != null) {
+			value.append("&id=" + identifier);
+		}
+
+		myNav.handleNavigation(facesContext, null, value.toString());
 	}
 }

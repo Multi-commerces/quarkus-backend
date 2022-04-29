@@ -34,7 +34,7 @@ import fr.webmaker.restfull.hateos.schema.IShemaData;
 @Produces(MEDIA_JSON_API)
 @Consumes(MEDIA_JSON_API)
 @Tag(name = "Ressource Catégories - Children", description = "Ressource pour la gestion des sous-catégories")
-public class CategoryChildrenResource extends JsonApiResource<CategoryData> {
+public class CategoryChildrenResource extends JsonApiResource<CategoryCompositeData> {
 	
 	@Inject
 	CategoryManager manager;
@@ -48,7 +48,7 @@ public class CategoryChildrenResource extends JsonApiResource<CategoryData> {
 	}
 
 	public CategoryChildrenResource() {
-		super(CategoryData.class, CategoryCompositeData.class);
+		super(CategoryData.class);
 	}
 	
 	@Operation(operationId = "getCategoryRelationshipsLang", 
@@ -81,7 +81,7 @@ public class CategoryChildrenResource extends JsonApiResource<CategoryData> {
 	public Response getCategoryChildren(
 			@Parameter(description = "Identifiant de la catégorie") 
 			@PathParam("categoryId") final long categoryId) {
-		return writeJsonApiResponse(
+		return writeResponse(
 				manager.findCategoryHierarchyById(categoryId).getSubCategories());
 	}
 
@@ -100,7 +100,7 @@ public class CategoryChildrenResource extends JsonApiResource<CategoryData> {
 			@PathParam("categoryId") final long categoryId,
 			@Parameter(description = "Identifiant de la sous-catégorie") 
 			@PathParam("childrenId") final long childrenId) {
-		return writeJsonApiResponse(
+		return writeResponse(
 				manager.findCategoryHierarchyById(categoryId).getSubCategories().stream()
 						.filter(o -> Long.valueOf(o.getId()).equals(childrenId)).findAny()
 						.orElseThrow(() -> new NotFoundException(childrenId)));

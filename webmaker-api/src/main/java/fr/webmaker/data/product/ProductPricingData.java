@@ -25,7 +25,7 @@ public class ProductPricingData extends BaseResource {
 	private double priceTTC;
 
 	/**
-	 * Prix de base (tax excl.)
+	 * Prix unitaire (tax excl.)
 	 */
 	private double priceUnit;
 

@@ -13,6 +13,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import fr.mycommerce.commons.models.Model;
 import fr.mycommerce.commons.tools.JavaFacesTool;
+import fr.mycommerce.commons.tools.RestTool;
 import fr.mycommerce.commons.views.AbstractCrudView;
 import fr.mycommerce.commons.views.ActionType;
 import fr.mycommerce.service.product.ProductVariationRestClient;
@@ -57,7 +58,7 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData> i
 		}
 		byte[] flux = service.getVariations(Long.valueOf(productId));
 
-		final List<Model<ProductVariationData>> values = converter.readDocumentCollection(flux, ProductVariationData.class).get().stream()
+		final List<Model<ProductVariationData>> values = RestTool.readDocumentCollection(flux, ProductVariationData.class).get().stream()
 				.map(o -> new Model<ProductVariationData>(o))
 				.collect(Collectors.toList());
 		
@@ -73,7 +74,7 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData> i
 	@Override
 	public void update() {
 		model.getData();
-		service.update(Long.valueOf(model.getIdentifier()), Long.valueOf(model.getIdentifier()), null);
+		service.update(Long.valueOf(model.getId()), Long.valueOf(model.getId()), null);
 	}
 
 	@Override
@@ -84,13 +85,16 @@ public class ProductVariationMB extends AbstractCrudView<ProductVariationData> i
 	public List<Model<ProductVariationData>> loadByProductId(final String productId) {
 		this.productId = productId;
 		
-		
-		List<ProductVariationData> items = converter.readDocumentCollection(getService().getVariations(Long.valueOf(productId)), ProductVariationData.class).get();
-		loadItems(items.stream()
+		List<ProductVariationData> items = RestTool
+				.readDocumentCollection(getService().getVariations(Long.valueOf(productId)), ProductVariationData.class)
+				.get();
+		List<Model<ProductVariationData>> models = items.stream()
 				.map(o -> new Model<ProductVariationData>(o))
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList());
+		
+		loadItems(models);
 
-		return new ArrayList<Model<ProductVariationData>>();//this.items;
+		return models;
 	}
 
 	@Override

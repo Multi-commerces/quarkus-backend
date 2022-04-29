@@ -1,13 +1,13 @@
 package fr.mycommerce.commons.views;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -20,7 +20,6 @@ import javax.faces.model.ListDataModel;
 import javax.servlet.http.Part;
 
 import org.apache.commons.codec.binary.Base64;
-import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.primefaces.PrimeFaces;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.FileUploadEvent;
@@ -28,30 +27,19 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.file.UploadedFile;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.jasminb.jsonapi.JSONAPIDocument;
-import com.github.jasminb.jsonapi.ResourceConverter;
-import com.github.jasminb.jsonapi.SerializationFeature;
-import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 
+import fr.mycommerce.commons.managers.ICrudView;
 import fr.mycommerce.commons.models.Model;
 import fr.mycommerce.commons.tools.JavaFacesTool;
+import fr.mycommerce.commons.tools.RestTool;
 import fr.mycommerce.exception.MissingArgumentException;
 import fr.mycommerce.exception.MissingModelException;
+import fr.mycommerce.exception.ThrowingConsumer;
 import fr.webmaker.data.BaseResource;
-import fr.webmaker.data.product.ProductCompositeData;
-import fr.webmaker.data.product.ProductData;
-import fr.webmaker.data.product.ProductLangCompositeData;
-import fr.webmaker.data.product.ProductPricingData;
-import fr.webmaker.data.product.ProductSeoData;
-import fr.webmaker.data.product.ProductShippingData;
-import fr.webmaker.data.product.ProductStockData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -66,48 +54,10 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-public abstract class AbstractCrudView<M extends BaseResource>  implements Serializable {
+public abstract class AbstractCrudView<M extends BaseResource>  implements ICrudView<M> {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Class<?>[] clazz = {ProductData.class, ProductCompositeData.class,
-			ProductLangCompositeData.class, 
-			ProductPricingData.class, 
-			ProductStockData.class, 
-			ProductShippingData.class,
-			ProductSeoData.class};
-	
-	/**
-	 * Pour la lecture et écriture des réponse WEB-API
-	 */
-	protected ResourceConverter converter;
-	
-	/**
-	 * ObjectMapper utilisé par le converter
-	 */
-	protected ObjectMapper objectMapper;
-	
-	/**
-	 * Opération de récupération d'un item
-	 * @return
-	 */
-	protected abstract List<Model<M>> findAll();
-	
-	/**
-	 * Opération de création d'un nouveau item
-	 */
-	protected abstract void create();
-	
-	/**
-	 * Opération de mise à jour d'un item existant
-	 */
-	protected abstract void update();
-	
-	/**
-	 * Opération de suppression d'un item existant
-	 * @param id identifiant de l'item existant
-	 */
-	protected abstract void delete(String id);
 	
 	protected abstract void delete(List<String> ids);
 
@@ -163,6 +113,11 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 	@Getter
 	@Setter
 	protected Model<M> model;
+	
+	public String getJson() throws IOException
+	{
+		return RestTool.getJson(model.getData());
+	}
 
 	/**
 	 * Fichier upload
@@ -248,11 +203,6 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 	private DataTable dataTable;
 
 	public AbstractCrudView() {
-		objectMapper = new ObjectMapper();
-		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-		objectMapper.registerModule(new JsonNullableModule());
-		converter = new ResourceConverter(objectMapper, clazz);
-		
 		dataModels = new ListDataModel<Model<M>>();
 		items = new ArrayList<>();
 
@@ -265,57 +215,13 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 		loadItems(findAll());
 	}
 	
-	/**
-	 * Les données au format Json
-	 * @return
-	 * @throws IOException
-	 */
-	public String getJson() throws IOException {	
-		return objectMapper.readTree(writeDocument(model.getData())).toPrettyString().trim();
-	}
-	
-	protected byte[] writeDocument(Object data) {
-		try {
-			objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-			
-			
-			if (data == null) {
-				ObjectNode resultNode = objectMapper.createObjectNode();
-				resultNode.set("data", null);
-				
-				byte[] result = null;
-				try {
-					result = objectMapper.writeValueAsBytes(resultNode);
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
-				
-				return result;
-			}
-			
-			converter.disableSerializationOption(SerializationFeature.INCLUDE_LINKS);
-			converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
-			byte[] flux = converter.writeDocument(new JSONAPIDocument<>(data, objectMapper));
-			
-			try {
-				objectMapper.readTree(flux).toPrettyString();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return flux;
-		} catch (DocumentSerializationException e) {
-			// TODO: handle exception
-		}
-		return null;
-	}
-	
 	protected void loadItems(List<Model<M>> items)
 	{
 		try {
 			this.items.clear();
-			this.items = Optional.ofNullable(items).orElse(Collections.emptyList());
-			dataModels.setWrappedData(items);
+			this.items = Optional.ofNullable(items)
+					.orElse(Collections.emptyList());
+			this.dataModels.setWrappedData(items);
 		} catch (Exception e) {
 			JavaFacesTool.sendFacesMessage(
 					e.getMessage(), 
@@ -407,7 +313,6 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 				return;
 			}
 			successOfAction();
-			reset();
 		} catch (Exception e) {
 			failureOfAction();
 		}
@@ -443,7 +348,6 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 		}
 		
 		successOfAction();
-		this.action = ActionType.DEFAULT;
 	}
 
 	/**
@@ -453,7 +357,7 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 	protected void successOfAction() {
 		JavaFacesTool.sendFacesMessage("success of the action " + getAction().name().toLowerCase(), 
 				FacesMessage.SEVERITY_INFO,
-				true);
+				false);
 		
 		// ---- Refresh dataTable ---- //
 		if (null != dataTable) {
@@ -463,6 +367,8 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 			PrimeFaces.current().ajax().update("form-list:dataTable");
 //			PrimeFaces.current().executeScript("PF('" + dataTable.getWidgetVar() + "').filter();");
 		}
+		
+		reset();
 	}
 
 	/**
@@ -538,6 +444,42 @@ public abstract class AbstractCrudView<M extends BaseResource>  implements Seria
 		
 		successOfAction();
 		action = ActionType.DEFAULT;
+	}
+	
+	/**
+	 * Wrapper lambda capable de gérer tous les types de données et d'attraper
+	 * n'importe quel type d'exception spécifique et non la superclasse Exception .
+	 * 
+	 * @param <T>
+	 * @param <E>
+	 * @param consumer expression lambda.
+	 * @param clazz    type d' exception à intercepter.
+	 * @return
+	 */
+	protected static <T, E extends Exception> Consumer<T> handlingConsumerWrapper(
+			ThrowingConsumer<T, E> throwingConsumer, Class<E> exceptionClass) {
+
+		return i -> {
+			try {
+				throwingConsumer.accept(i);
+			} catch (Exception ex) {
+				try {
+					log.error("Exception occured : {}", exceptionClass.cast(ex).getMessage());
+				} catch (ClassCastException ccEx) {
+					throw new RuntimeException(ex);
+				}
+			}
+		};
+	}
+
+	protected static <T> Consumer<T> throwingConsumerWrapper(ThrowingConsumer<T, Exception> throwingConsumer) {
+		return i -> {
+			try {
+				throwingConsumer.accept(i);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+		};
 	}
 
 	protected void handleNavigation(String page)

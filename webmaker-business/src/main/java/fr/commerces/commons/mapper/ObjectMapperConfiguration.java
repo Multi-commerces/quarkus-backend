@@ -23,7 +23,7 @@ public class ObjectMapperConfiguration {
 	@Produces
 	public final ObjectMapper objectMapper(Instance<ObjectMapperCustomizer> customizers) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
 		objectMapper.registerModule(new JsonNullableModule());
 		
 		for (ObjectMapperCustomizer customizer : customizers) {

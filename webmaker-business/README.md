@@ -1,8 +1,20 @@
 # Projet (quarkus, lombok + mapstruct + RESTEasy + Jackson pour la sérialisation JSON + hibernate orm panache et plus encore)
 
-
 Le projet utilise Quarkus, Le Framework Java Supersonic Subatomic. <br />
 Website: https://quarkus.io/ . <br />
+
+# Installation Docker
+
+Suivre le guide d'installation https://docs.docker.com/engine/install/ubuntu/
+
+Il faut également faire l'installation de docker-compose.
+
+Services dans le fichier docker-compose.yum
+
+- Postgres
+- Keycloak
+- apache (production seulement)
+- nginx (production seulement)
 
 
 # Mode développement en local (localhost)
@@ -119,8 +131,8 @@ export access_token=$(\
     -H 'content-type: application/x-www-form-urlencoded' \
     -d 'username=<<adresse_mail>>&password=<<password>>&grant_type=password' | jq --raw-output '.access_token' \
  )
- ```
- 
+```
+
  ```
  curl -v -X GET \
   http://localhost:8081/languages/fr/products \
@@ -143,10 +155,10 @@ Sachez qu'il ne s'agit pas d'un uber jar car les dépendances sont copiées dans
 Si vous souhaitez créer un uber jar, exécutez la commande suivante:
 
 ```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
+./mvnw package -Dquarkus.package.type=uber-jar -Dmaven.test.skip=true
 ```
 
-L'application est désormais exécutable en utilisant `java -jar target/api-1.0.0-SNAPSHOT-runner.jar`.
+L'application est désormais exécutable en utilisant `java -jar target/webmaker-business-runner.jar`.
 
 
 
@@ -187,7 +199,7 @@ docker run -i --rm -p 8080:8080 quarkus/webmaker-api
 
 --net=host option est utilisée pour donner l'impression que les programmes à l'intérieur du conteneur Docker s'exécutent sur l'hôte lui-même, du point de vue du réseau. Il permet au conteneur un plus grand accès au réseau que ce qu'il peut normalement obtenir.
 
- 
+
  # SWAGGER 
 
 http://localhost:8081/openapi/ui/
@@ -222,8 +234,8 @@ OIDC server 'http://localhost:8080/auth/realms/multi-commerces'
 <li>https://quarkus.io/guides/security-oauth2
 <li>https://quarkus.io/guides/security-openid-connect
 <li>https://quarkus.io/guides/security-openid-connect-web-authentication
- 
- 
+
+
 # Authorization Client Java API
 
 https://github.com/keycloak/keycloak-documentation/blob/master/authorization_services/topics/service-client-api.adoc
@@ -271,7 +283,7 @@ Une fois la commande exécutée, si tout s’est bien déroulé, vous trouverez 
 		<version>${omnifaces.version}</version>
 		<scope>provided</scope>
 	</dependency>
-
+	
 	<dependency>
 		<groupId>com.github.adminfaces</groupId>
 		<artifactId>quarkus-omnifaces</artifactId>
@@ -289,5 +301,6 @@ Une fois la commande exécutée, si tout s’est bien déroulé, vous trouverez 
 		<version>10.0.0</version>
 	</dependency>
 
-		
+
+​		
 

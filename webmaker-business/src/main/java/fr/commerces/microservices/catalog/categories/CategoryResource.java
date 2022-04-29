@@ -4,7 +4,6 @@ import static fr.commerces.commons.resources.ConstApi.CODE204DELETE;
 import static fr.commerces.commons.resources.ConstApi.CODE404DELETE;
 import static fr.commerces.commons.resources.ConstApi.MEDIA_JSON_API;
 
-import java.net.URI;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,7 +28,6 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import com.github.jasminb.jsonapi.DeserializationFeature;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 
 import fr.commerces.commons.resources.ConstApi;
@@ -37,8 +35,6 @@ import fr.commerces.commons.resources.JsonApiResource;
 import fr.commerces.microservices.catalog.categories.lang.CategoryLangManager;
 import fr.webmaker.data.category.CategoryCompositeData;
 import fr.webmaker.data.category.CategoryData;
-import fr.webmaker.data.category.CategoryLangCompositeData;
-import fr.webmaker.data.category.CategoryLangData;
 import fr.webmaker.restfull.hateos.IInclusion;
 import fr.webmaker.restfull.hateos.schema.IShemaData;
 
@@ -46,7 +42,7 @@ import fr.webmaker.restfull.hateos.schema.IShemaData;
 @Produces(MEDIA_JSON_API)
 @Consumes(MEDIA_JSON_API)
 @Tag(name = "Ressource Catégories", description = "Ressource pour la gestion des catégories")
-public class CategoryResource extends JsonApiResource<CategoryData> {
+public class CategoryResource extends JsonApiResource<CategoryCompositeData> {
 
 	@Inject
 	CategoryManager manager;
@@ -60,16 +56,19 @@ public class CategoryResource extends JsonApiResource<CategoryData> {
 	
 	public abstract class ShemaSingleData  {
 		public abstract IShemaData<CategoryData> getData();
-	}
+	}	
 	
-	@Override
-	public List<Class<?>> getClazz() {
-		return List.of(CategoryData.class, CategoryCompositeData.class, CategoryLangData.class, CategoryLangCompositeData.class);
+	public CategoryResource() {
+		super(CategoryCompositeData.class, CategoryCompositeData.class);
 	}
-	
+
+
+
 	public enum CategorieRelation implements IInclusion {
 
-		CATEGORIES("category");
+		CATEGORIES("category"),
+		CATEGORIE_LANGS("categoryLangs");
+		
 
 		private String type;
 
@@ -115,7 +114,7 @@ public class CategoryResource extends JsonApiResource<CategoryData> {
 			throws DocumentSerializationException {
 		// meta-data (childrenCount, articleCount)
 		
-		return writeJsonApiResponse(manager.findCategoryHierarchyById(categoryId));
+		return writeResponse(manager.findCategoryHierarchyById(categoryId));
 	}
 
 	@Operation(operationId = "postCategory", 
@@ -131,17 +130,9 @@ public class CategoryResource extends JsonApiResource<CategoryData> {
 			@RequestBody(content = {
 					@Content(schema = @Schema(implementation = ShemaSingleData.class)) }) byte[] flux)
 			throws DocumentSerializationException {
-		converter.disableDeserializationOption(DeserializationFeature.REQUIRE_RESOURCE_ID);
-		converter.disableDeserializationOption(DeserializationFeature.ALLOW_UNKNOWN_TYPE_IN_RELATIONSHIP);
-
-		var document = converter.readDocument(flux, CategoryData.class);
-		final CategoryData data = document.get();
-
-		var newId = manager.createCategory(null, data);
-
-		final URI uri = uriInfo.getAbsolutePathBuilder().path(Long.toString(newId)).build();
-
-		return Response.created(uri).entity(getCategory(newId)).build();
+		
+		var newId = manager.createCategory(null, readData(flux));
+		return writeResponseCreated(manager.findCategoryHierarchyById(newId), String.valueOf(newId));
 	}
 
 	@Operation(operationId = "patchCategory", 
@@ -164,7 +155,7 @@ public class CategoryResource extends JsonApiResource<CategoryData> {
 		// Mise à jour (partiel de la catégory)
 		manager.update(categoryId, readData(flux));
 
-		return Response.noContent().build();
+		return writeResponse(manager.findCategoryHierarchyById(categoryId));
 	}
 	
 	@Operation(operationId = "deleteCategory", 

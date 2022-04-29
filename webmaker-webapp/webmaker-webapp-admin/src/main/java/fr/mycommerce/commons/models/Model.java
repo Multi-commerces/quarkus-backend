@@ -29,11 +29,11 @@ public class Model<M extends BaseResource> implements Serializable {
 	}
 
 	public String getIdentifier() {
-		return data != null ? data.getId() : "-1";
+		return data != null ? data.getId() : null;
 	}
 	
 	public String getId() {
-		return data != null ? data.getId() : "-1";
+		return data != null ? data.getId() : null;
 	}
 
 	public void setIdentifier(String Identifier) {

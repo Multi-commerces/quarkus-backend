@@ -17,6 +17,7 @@
 package fr.commerces.microservices.authentification;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
@@ -32,8 +33,11 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.keycloak.representations.idm.authorization.Permission;
 
 import fr.commerces.microservices.authentification.data.AuthentificationData;
+import io.quarkus.security.Authenticated;
+import io.smallrye.mutiny.Uni;
 
 @Path("/api/auth")
 @Produces(MediaType.APPLICATION_JSON)
@@ -74,6 +78,12 @@ public interface AuthResourceApi {
 			@APIResponse(responseCode = "409", description = "[NOK] - Ressource déjà existante") 
 	})
 	void createResourcesAndScopes() throws IOException;
+
+	@GET
+	@Path("permissions")
+	@Authenticated
+	@Operation(operationId = "permissions", summary = "Liste de authorisations")
+	Uni<List<Permission>> getPermission();
 
 	
 

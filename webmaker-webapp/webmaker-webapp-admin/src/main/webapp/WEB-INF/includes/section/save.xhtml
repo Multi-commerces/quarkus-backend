@@ -1,4 +1,43 @@
 
+
+            <!-- IMAGE PRODUIT -->
+			<div class="ui-g-3 ui-g-nopad">
+				<!--  TEXT CAPTION -->
+				<div class="ui-g-12 ui-g-nopad">
+					<div class="ui-fluid form-group">
+						<w:inputText styleClass="ui-g-12" id="product-image-caption"
+							icon="pencil" label="#{msg['product.image.caption']}" />
+					</div>
+				</div>
+				<!--  FILE UPLOAD -->
+				<div class="ui-g-12 ">
+
+					<div class="ui-g-3  ui-g-nopad">
+						<div jsf:id="images" class="card hovereffect ui-g-nopad"
+							style="width: 200px; height: 200px; border: 1px">
+							<h:graphicImage styleClass="img-responsive" width="200"
+								height="200" alt="" value="#{controller.image}" />
+
+							<div class="overlay">
+								<h2>#{msg.cover}</h2>
+								<div class="info">
+									<p:fileUpload id="upload-image" mode="advanced"
+										label="#{msg.select}" update="images"
+										uploadLabel="btn.upload.label" immediate="true" auto="true"
+										process="@this" listener="#{controller.fileUploadEvent}"
+										chooseIcon="fa fa-folder-open"
+										cancelLabel="#{msg['btn.cancel.label']}" />
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+
+
 					<h1>#{titlePage}</h1>
 					<h:form>
 						<h:selectOneMenu value="#{userData.localeCode}"

@@ -7,15 +7,13 @@ import javax.inject.Named;
 
 import org.omnifaces.cdi.ViewScoped;
 
-import fr.mycommerce.commons.managers.Manager;
 import fr.mycommerce.commons.models.Model;
 import fr.mycommerce.commons.views.AbstractCrudView;
 import fr.webmaker.data.category.CategoryCompositeData;
 
 @Named("adminCategoryMB")
 @ViewScoped
-public class AdminCategoryListMB extends AbstractCrudView<CategoryCompositeData>
-		implements Manager<CategoryCompositeData> {
+public class AdminCategoryListMB extends AbstractCrudView<CategoryCompositeData> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -59,6 +57,7 @@ public class AdminCategoryListMB extends AbstractCrudView<CategoryCompositeData>
 	
 	@Override
 	protected void delete(List<String> ids) {
+
 		
 	}
 

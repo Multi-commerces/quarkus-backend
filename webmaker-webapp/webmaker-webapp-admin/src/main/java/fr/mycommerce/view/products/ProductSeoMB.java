@@ -6,18 +6,20 @@ import javax.inject.Named;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 
+import fr.mycommerce.commons.tools.RestTool;
 import fr.mycommerce.service.product.ProductSeoRestClient;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
 import fr.webmaker.data.product.ProductSeoData;
 import lombok.Getter;
 
 /**
- * Backing Bean pour administration des données de base du produit
+ * Backing Bean pour administration des données seo du produit
+ * 
  * @author Julien ILARI
  *
  */
-@Named("adminProductSeoMB")
 @ViewScoped
+@Named("adminProductSeoMB")
 public class ProductSeoMB extends AbstractProductMB<ProductSeoData> {
 
 	private static final long serialVersionUID = 1L;
@@ -29,7 +31,7 @@ public class ProductSeoMB extends AbstractProductMB<ProductSeoData> {
 	@RestClient
 	@Getter
 	private ProductSeoRestClient service;
-	
+
 	public ProductSeoMB() {
 		super(FlowPage.SEO);
 	}
@@ -41,17 +43,7 @@ public class ProductSeoMB extends AbstractProductMB<ProductSeoData> {
 
 	@Override
 	public void callServiceUpdate() {
-		service.patch("fr",Long.valueOf(model.getIdentifier()), writeDocument(model.getData()));
-	}
-
-	@Override
-	protected void callServiceCreate() {
-//		service.create("fr", getModel().getData());
-	}
-
-	@Override
-	protected void callServiceDelete(Long id) {
-		// Ignore (Non applicable)
+		service.patch("fr", Long.valueOf(model.getIdentifier()), RestTool.writeDocument(model.getData()));
 	}
 
 }

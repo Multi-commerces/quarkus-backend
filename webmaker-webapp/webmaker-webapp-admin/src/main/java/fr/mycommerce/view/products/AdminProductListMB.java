@@ -1,7 +1,6 @@
 package fr.mycommerce.view.products;
 
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,20 +17,14 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 import org.primefaces.event.SelectEvent;
 
-import com.github.jasminb.jsonapi.JSONAPIDocument;
-import com.github.jasminb.jsonapi.ResourceConverter;
-import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
-import com.neovisionaries.i18n.LanguageCode;
-
-import fr.mycommerce.commons.managers.Manager;
 import fr.mycommerce.commons.models.Model;
+import fr.mycommerce.commons.tools.RestTool;
 import fr.mycommerce.commons.views.AbstractCrudView;
 import fr.mycommerce.commons.views.ActionType;
 import fr.mycommerce.service.product.ProductRestClient;
+import fr.mycommerce.service.product.ProductSheetRestClient;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
-import fr.webmaker.data.product.ProductCompositeData;
-import fr.webmaker.data.product.ProductData;
-import fr.webmaker.data.product.ProductLangData;
+import fr.webmaker.data.product.ProductSheetData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -39,15 +32,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Named("adminProductMB")
 @ViewScoped
-public class AdminProductListMB extends AbstractCrudView<ProductCompositeData>
-		implements Manager<ProductCompositeData> {
+public class AdminProductListMB extends AbstractCrudView<ProductSheetData> {
 
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	@RestClient
-	@Getter
 	private ProductRestClient service;
+	
+	@Inject
+	@RestClient
+	private ProductSheetRestClient sheetService;
 
 	@Inject
 	@Getter
@@ -57,18 +52,6 @@ public class AdminProductListMB extends AbstractCrudView<ProductCompositeData>
 	@Getter
 	@Setter
 	protected int activeIndexTabMenu = 0;
-	
-	@Getter
-	@Setter
-	private ProductLangData langData = new ProductLangData();
-	
-	public ProductLangData getProductLang()
-	{	
-		return model.getData().getProductLangs().stream()
-				.filter(p -> p.getLanguageCode() == LanguageCode.fr)
-				.findAny()
-				.orElse(new ProductLangData());
-	}
 
 	/**
 	 * Action : changement du menu active
@@ -108,15 +91,15 @@ public class AdminProductListMB extends AbstractCrudView<ProductCompositeData>
 	}
 
 	@Override
-	public void onRowDblSelect(SelectEvent<Model<ProductCompositeData>> event) {
+	public void onRowDblSelect(SelectEvent<Model<ProductSheetData>> event) {
 		super.onRowDblSelect(event);
 
 		handleNavigation(FlowPage.BASIC.getPage());
 	}
 
-	public void onRowSelect(SelectEvent<Model<ProductCompositeData>> event) {
+	public void onRowSelect(SelectEvent<Model<ProductSheetData>> event) {
 		model = event.getObject();
-		variationMB.loadByProductId(event.getObject().getIdentifier());
+		variationMB.loadByProductId(model.getId());
 	}
 
 	@Override
@@ -131,34 +114,24 @@ public class AdminProductListMB extends AbstractCrudView<ProductCompositeData>
 	 * *****************************************************************************************/
 
 	@Override
-	public List<Model<ProductCompositeData>> findAll() {
-		byte[] flux = service.getProducts(1, 10);
-		List<ProductCompositeData> collection = new ResourceConverter(objectMapper, ProductCompositeData.class)
-			.readDocumentCollection(flux, ProductCompositeData.class).get();
+	public List<Model<ProductSheetData>> findAll() {
+		byte[] flux = sheetService.search();
+		
+		List<ProductSheetData> collection = RestTool.readDocumentCollection(flux, ProductSheetData.class).get();
 
+		
 		return collection.stream()
-				.map(o -> new Model<ProductCompositeData>(o))
+				.map(o -> new Model<ProductSheetData>(o))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public void create() {
-		ResourceConverter converter = new ResourceConverter(objectMapper, ProductData.class, ProductCompositeData.class);
-		ProductCompositeData data = getModel().getData();
-		data.setId("-1");
+		ProductSheetData data = getModel().getData();
 		// Get response data
-		byte [] rawResponse = null;
-		try {
-			rawResponse = converter.writeDocument(new JSONAPIDocument<ProductData>(data, objectMapper));
-		} catch (DocumentSerializationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		
-		Response response = service.create(rawResponse);
+		Response response = sheetService.create(RestTool.writeDocument(data));
 		if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
-			String location = response.getHeaders().getFirst("location").toString() + "?relationships=CATEGORIES&relationships=LANGS&relationships=VARIATIONS";
+		String location = response.getHeaders().getFirst("location").toString();
 			response.close();
 
 			try {
@@ -169,13 +142,12 @@ public class AdminProductListMB extends AbstractCrudView<ProductCompositeData>
 				if (responseGet.getStatus() == Response.Status.OK.getStatusCode()) {
 					
 					InputStream dataResponse = responseGet.readEntity(InputStream.class);
-
-					data = converter.readDocument(dataResponse, ProductCompositeData.class).get();
+					data = RestTool.readDocument(dataResponse, ProductSheetData.class).get();
 
 					responseGet.close();
 					client.close();
 
-					items.add(new Model<ProductCompositeData>(data));
+					items.add(new Model<ProductSheetData>(data));
 				}
 			} catch (Exception e) {
 				log.warn("impossible de récupérer item nouvellement créé, vérifier que le service est up");
@@ -187,34 +159,25 @@ public class AdminProductListMB extends AbstractCrudView<ProductCompositeData>
 
 	@Override
 	public void update() {
-//		getModel().getData();
 		service.update(model.getIdentifier(), null);
 	}
 
 	@Override
 	public void delete(String identifier) {
-		service.delete(model.getIdentifier());
+		service.delete(identifier);
 	}
 
 	@Override
-	protected ProductCompositeData newDataInstance() {
-		ProductCompositeData data = new ProductCompositeData();
-		data.setId("-1");
-
-		// Langue par défaut du produit sera FR
-		ProductLangData value = new ProductLangData();
-		value.setId("-1");
-		value.setLanguageCode(LanguageCode.fr);
-		data.setProductLangs(Arrays.asList(value));
-		
+	protected ProductSheetData newDataInstance() {
+		ProductSheetData data = new ProductSheetData();
 		
 		return data;
 	}
 
 	@Override
-	protected void delete(List<String> identifiers) {
-		identifiers.stream().forEach(identifier -> service.delete(identifier));
-
+	protected void delete(final List<String> identifiers) {
+		identifiers.stream()
+			.forEach(handlingConsumerWrapper(identifier -> service.delete(identifier), Exception.class));
 	}
 
 }

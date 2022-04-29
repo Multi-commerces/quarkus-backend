@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import fr.mycommerce.ArquillianTool;
-import fr.mycommerce.view.products.ProductLangMB;
+import fr.mycommerce.view.products.ProductBasicMB;
 
 @RunWith(Arquillian.class)
 public class ExempleArquillianIT
@@ -31,7 +31,7 @@ public class ExempleArquillianIT
     private URL baseURL;
 
     @Inject
-    ProductLangMB managedBean;
+    ProductBasicMB managedBean;
 
 
     @Test

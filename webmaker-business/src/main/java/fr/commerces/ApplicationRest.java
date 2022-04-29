@@ -68,7 +68,7 @@ public class ApplicationRest extends Application {
 	
 	void onStart(@Observes @Priority(value = 1) StartupEvent ev) {
 		logger.info("Serveur START [OK] =====================================================");
-		logger.info("http://localhost:8081/openapi/ui");
+		logger.info("http://localhost:8081/swagger");
 	}
 
 }

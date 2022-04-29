@@ -8,6 +8,7 @@ import lombok.Setter;
 
 /**
  * ManagedBean pour l'administration des images du produit en-cours d'édition
+ * 
  * @author Julien ILARI
  *
  */
@@ -21,13 +22,9 @@ public class ProductImageMB implements Serializable {
 	@Getter
 	@Setter
 	private List<String> images;
-	
+
 	@Getter
 	@Setter
 	private String selectedImage;
-	
-
-	
-	
 
 }

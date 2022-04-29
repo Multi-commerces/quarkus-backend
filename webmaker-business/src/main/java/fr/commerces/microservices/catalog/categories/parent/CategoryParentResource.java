@@ -108,7 +108,7 @@ public class CategoryParentResource extends JsonApiResource<CategoryData> {
 			@PathParam("childrenId") 
 			@NotNull long childrenId)
 			throws DocumentSerializationException {
-		return writeJsonApiResponse(
+		return writeResponse(
 				Optional.ofNullable(manager.findCategoryHierarchyById(categoryId))
 						.orElseThrow(() -> new NotFoundException(categoryId)).getSubCategories().stream().findAny()
 						.orElseThrow(() -> new NotFoundException(childrenId)));

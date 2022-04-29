@@ -9,6 +9,9 @@ import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.security.auth.AuthPermission;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.SecurityContext;
 
@@ -28,6 +31,7 @@ import fr.commerces.microservices.authentification.data.AuthentificationData;
 import io.quarkus.oidc.IdToken;
 import io.quarkus.oidc.runtime.OidcJwtCallerPrincipal;
 import io.quarkus.security.identity.SecurityIdentity;
+import io.smallrye.mutiny.Uni;
 
 /**
  * https://quarkus.io/guides/security-jwt
@@ -159,6 +163,17 @@ public class AuthResource implements AuthResourceApi {
 			
 			return authData;
 		}
+	}
+	
+	@Override
+	@GET
+	public Uni<List<Permission>> getPermission() {
+		return identity.checkPermission(new AuthPermission("{resource_name}")).onItem().transform(granted -> {
+			if (granted) {
+				return identity.getAttribute("permissions");
+			}
+			throw new ForbiddenException();
+		});
 	}
 
 }

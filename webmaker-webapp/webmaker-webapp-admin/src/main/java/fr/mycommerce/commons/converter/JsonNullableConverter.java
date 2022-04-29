@@ -8,20 +8,19 @@ import javax.faces.convert.FacesConverter;
 
 import org.openapitools.jackson.nullable.JsonNullable;
 
-@FacesConverter(value = "JsonNullableConverter", forClass = JsonNullable.class)
-public class JsonNullableConverter implements Converter<JsonNullable<?>> {
+@FacesConverter(value = "jsonNullableConverter", forClass = JsonNullable.class)
+public class JsonNullableConverter implements Converter<JsonNullable<String>> {
 
 	@Override
-	public JsonNullable<?> getAsObject(FacesContext context, UIComponent component, String value)
-			throws ConverterException {
-		// TODO Auto-generated method stub
+	public JsonNullable<String> getAsObject(FacesContext context, UIComponent component, String value)
+			throws ConverterException {		
 		return value == null || value.isEmpty() ? JsonNullable.undefined() : JsonNullable.of(value);
 	}
 
 	@Override
-	public String getAsString(FacesContext context, UIComponent component, JsonNullable<?> value)
+	public String getAsString(FacesContext context, UIComponent component, JsonNullable<String> value)
 			throws ConverterException {
-		return value.isPresent() ? String.valueOf(value.get()) : "";
+		return value.isPresent() && value.get() != null ? value.get() : null;
 	}
 
 }

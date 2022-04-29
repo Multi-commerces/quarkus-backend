@@ -23,7 +23,27 @@
 		</attribute>
 
 	</tag>
-	
+	<tag>
+		<tag-name>inputNumberNullable</tag-name>
+		<source>tags/inputNumberNullable.xhtml</source>
+		<attribute>
+			<description>Valeur</description>
+			<name>value</name>
+		</attribute>
+		<attribute>
+			<description>libellé</description>
+			<name>label</name>
+		</attribute>
+		<attribute>
+			<description>Identifiant</description>
+			<name>id</name>
+		</attribute>
+		<attribute>
+			<description>Class css</description>
+			<name>styleClass</name>
+		</attribute>
+
+	</tag>
 	<tag>
 		<tag-name>colorbox</tag-name>
 		<source>tags/colorbox.xhtml</source>

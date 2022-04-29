@@ -11,19 +11,30 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.inject.Named;
 
+import com.neovisionaries.i18n.LanguageCode;
+
 @Named(value = "userData")
 @SessionScoped
 public class UserMB implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+	private Locale locale;
 
-	public Locale getLocale() {
-		return locale;
+	public UserMB() {
+		locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+		countries = new LinkedHashMap<String, Object>();
+		// TODO petit Hack qu'il faudra enlever
+		if (locale == Locale.FRENCH) {
+			countries.put("French", Locale.FRENCH);
+			countries.put("English", Locale.ENGLISH);
+		} else {
+			countries.put("English", Locale.ENGLISH);
+			countries.put("French", Locale.FRENCH);
+		}
 	}
 
-	public String getLanguage() {
-		return locale.getLanguage();
+	public LanguageCode getLanguageCode() {
+		return LanguageCode.getByLocale(locale);
 	}
 
 	public void changeLanguage(String language) {
@@ -31,40 +42,23 @@ public class UserMB implements Serializable {
 		FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale(language));
 	}
 
-	private String localeCode;
-
-	private static Map<String, Object> countries;
-	static {
-		countries = new LinkedHashMap<String, Object>();
-		countries.put("English", Locale.ENGLISH);
-		countries.put("French", Locale.FRENCH);
-	}
-
-	public UserMB() {
-		final Locale l = FacesContext.getCurrentInstance().getViewRoot().getLocale();
-		if (l == Locale.ENGLISH) {
-			localeCode = "English";
-		} else {
-			localeCode = "French";
-		}
-	}
+	private Map<String, Object> countries;
 
 	public Map<String, Object> getCountries() {
 		return countries;
 	}
 
 	public String getLocaleCode() {
-		return localeCode;
+		return LanguageCode.getByLocale(locale).getName();
 	}
 
 	public void setLocaleCode(String locale) {
 		String newLocaleValue = locale;
-
 		for (Map.Entry<String, Object> entry : countries.entrySet()) {
 
 			if (entry.getValue().toString().equals(newLocaleValue)) {
-				FacesContext.getCurrentInstance().getViewRoot().setLocale((Locale) entry.getValue());
-				this.localeCode = newLocaleValue;
+				this.locale = (Locale) entry.getValue();
+				FacesContext.getCurrentInstance().getViewRoot().setLocale(this.locale);
 			}
 		}
 	}
@@ -79,7 +73,6 @@ public class UserMB implements Serializable {
 
 		countries.entrySet().stream().map(Entry<String, Object>::getValue).filter(newLocaleValue::equals).findAny()
 				.ifPresent(o -> {
-					this.localeCode = String.valueOf(newLocaleValue);
 					this.locale = (Locale) o;
 					FacesContext.getCurrentInstance().getViewRoot().setLocale(locale);
 				});

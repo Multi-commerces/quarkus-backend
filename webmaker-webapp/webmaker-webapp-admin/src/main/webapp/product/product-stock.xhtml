@@ -32,11 +32,11 @@
 			<div class="ui-g ui-fluid form-group ui-panelgrid-blank">
 
 				<!-- Quantité  -->
-				<w:inputText styleClass="ui-g-6 ui-xs-12" id="stockQuantity" 
+				<w:inputNumberNullable styleClass="ui-g-6 ui-xs-12" id="stockQuantity" 
 					label="Quantité" value="#{stock.quantity}" addon="1..." />
 
 				<!-- Quantité minimale pour la vente  -->
-				<w:inputText styleClass="ui-g-6 ui-xs-12" id="metatitle"
+				<w:inputNumberNullable styleClass="ui-g-6 ui-xs-12" id="metatitle"
 					label="Quantité minimale pour la vente" icon="minus-circle"
 					value="#{stock.minimumQuantityForSale}" />
 
@@ -51,7 +51,7 @@
 					label="Emplacement du stock" value="#{stock.stockLocation}" />
 
 				<!-- Niveau de stock bas -->
-				<w:inputText styleClass="ui-g-6" id="stockLowLevel" icon="ban"
+				<w:inputNumberNullable styleClass="ui-g-6" id="stockLowLevel" icon="ban"
 					label="stock d'alerte" value="#{stock.stockLowLevel}" />
 			</div>
 

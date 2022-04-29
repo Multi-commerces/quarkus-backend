@@ -8,9 +8,13 @@ import javax.ws.rs.QueryParam;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class PageRequest {
@@ -24,7 +28,7 @@ public class PageRequest {
 	private int page;
 
 	@QueryParam("size")
-	@DefaultValue("10")
+	@DefaultValue("20")
 	@Positive
 	@Min(1)
 	@Parameter(description = "Taille de la page cible (> 1)")

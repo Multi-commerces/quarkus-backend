@@ -35,7 +35,7 @@ import fr.webmaker.restfull.hateos.schema.IShemaData;
 @Produces(MEDIA_JSON_API)
 @Consumes(MEDIA_JSON_API)
 @Tag(name = "Ressource Catégories - Langs", description = "Ressource pour la gestion des catégories")
-public class CategoryLangResource extends JsonApiResource<CategoryLangData> {
+public class CategoryLangResource extends JsonApiResource<CategoryLangCompositeData> {
 	
 	@Inject
 	CategoryLangManager manager;
@@ -49,7 +49,7 @@ public class CategoryLangResource extends JsonApiResource<CategoryLangData> {
 	}
 
 	public CategoryLangResource() {
-		super(CategoryLangData.class, CategoryLangCompositeData.class);
+		super(CategoryLangData.class);
 	}
 	
 	@Operation(operationId = "getCategoryRelationshipsLang", 
@@ -103,7 +103,7 @@ public class CategoryLangResource extends JsonApiResource<CategoryLangData> {
 			@PathParam("languageCode") 
 			@NotNull LanguageCode languageCode)
 			throws DocumentSerializationException {
-		return writeJsonApiResponse(manager.findCompositeByCategoryIdAndLanguageCode(categoryId, languageCode));
+		return writeResponse(manager.findCompositeByCategoryIdAndLanguageCode(categoryId, languageCode));
 	}
 
 }

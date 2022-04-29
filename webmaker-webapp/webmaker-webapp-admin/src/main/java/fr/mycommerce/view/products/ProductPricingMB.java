@@ -6,34 +6,31 @@ import javax.inject.Named;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.omnifaces.cdi.ViewScoped;
 
+import fr.mycommerce.commons.tools.RestTool;
 import fr.mycommerce.service.product.ProductPricingRestClient;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
 import fr.webmaker.data.product.ProductPricingData;
-import lombok.Getter;
 
 /**
  * Backing Bean pour administration des données de stock du produit
+ * 
  * @author Julien ILARI
  *
  */
-@Named("adminProductPricingMB")
 @ViewScoped
+@Named("adminProductPricingMB")
 public class ProductPricingMB extends AbstractProductMB<ProductPricingData> {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Service Business
-	 */
 	@Inject
 	@RestClient
-	@Getter
 	private ProductPricingRestClient service;
-	
+
 	public ProductPricingMB() {
 		super(FlowPage.PRICING);
 	}
-	
+
 	@Override
 	public byte[] callServiceFindById(String identifier) {
 		return service.get(Long.valueOf(identifier));
@@ -41,17 +38,7 @@ public class ProductPricingMB extends AbstractProductMB<ProductPricingData> {
 
 	@Override
 	public void callServiceUpdate() {
-		service.patch(Long.valueOf(model.getIdentifier()), writeDocument(model.getData()));
-	}
-
-	@Override
-	protected void callServiceCreate() {
-		// Ignore (Non applicable)
-	}
-
-	@Override
-	protected void callServiceDelete(Long id) {
-		// Ignore (Non applicable)
+		service.patch(Long.valueOf(model.getIdentifier()), RestTool.writeDocument(model.getData()));
 	}
 
 }

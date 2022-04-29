@@ -16,13 +16,16 @@ import lombok.Setter;
 @Type(value = "category", path = "/categories/{id}")
 public class CategoryCompositeData extends CategoryData {
 
-	@Relationship(value = "parentCategory", path = "/" + RELATIONS + "/parent", relatedPath = "/parent")
+	@Relationship(value = "parentCategory", resolve = true,
+			path = "/relationships/parent", relatedPath = "/parent")
 	private CategoryData parentCategory;
 
-	@Relationship(value = "subCategories", path = "/" + RELATIONS + "/children", relatedPath = "/children")
+	@Relationship(value = "subCategories", resolve = true,
+			path = "/relationships/children", relatedPath = "/children")
 	private List<CategoryCompositeData> subCategories = Collections.emptyList();
 
-	@Relationship(value = "categoryLangs", path = "/" + RELATIONS + "/langs", relatedPath = "/langs")
+	@Relationship(value = "categoryLangs", resolve = true,
+			path = "/relationships/langs", relatedPath = "/langs")
 	private List<CategoryLangData> categoryLangs = Collections.emptyList();
 	
 }

@@ -28,18 +28,15 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class ProductLangData extends BaseResource {
 
-	@Schema(readOnly = true)
-	private Long productId;
-
 	/**
 	 * Required. The two-letter ISO 639-1 language code for the item.
 	 */
-	@Schema(readOnly = true)
 	private LanguageCode languageCode = LanguageCode.fr;
+	
+	@Schema(description = "Quantité disponible", example = "tablet")
+	private String scope = "ecommerce";
 
-	/**
-	 * Nom du produit traduit
-	 */
+	@Schema(description = "Nom du produit traduit", example = "PRODUCT NAME")
 	private JsonNullable<String> name = JsonNullable.undefined();
 	
 	@JsonIgnore

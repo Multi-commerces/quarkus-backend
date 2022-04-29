@@ -2,10 +2,14 @@ package fr.mycommerce.view.products;
 
 import javax.faces.event.ActionEvent;
 
+import org.apache.commons.lang3.StringUtils;
+
+import fr.mycommerce.commons.tools.JavaFacesTool;
 import fr.mycommerce.commons.views.AbstractView;
 import fr.mycommerce.view.products.ProductFlowPage.FlowPage;
 import fr.webmaker.data.BaseResource;
 import fr.webmaker.data.product.ProductLangCompositeData;
+import fr.webmaker.data.product.ProductSeoData;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,14 +30,9 @@ public abstract class AbstractProductMB<M extends BaseResource> extends Abstract
 	@Getter
 	protected int activeIndexTabMenu;
 	
-	@Getter
-	private FlowPage flowPage;
-	
-	public AbstractProductMB(FlowPage flowPage)
-	{
+	public AbstractProductMB(FlowPage flowPage) {
 		super();
-		this.flowPage = flowPage;
-		activeIndexTabMenu = flowPage.getTabNUm();
+		this.activeIndexTabMenu = flowPage.getTabNUm();
 	}
 
 	/**
@@ -50,17 +49,28 @@ public abstract class AbstractProductMB<M extends BaseResource> extends Abstract
 				.filter(o -> o.getTabNUm().equals(activeIndexTabMenu)).findAny().orElse(FlowPage.BASIC);
 
 		// Nagigation vers la tab détectée
-		if(model != null)
-		{
-			if(model.getData() instanceof ProductLangCompositeData)
-			{
-				handleNavigation(flowProductPage.getPage(), true, 
-						((ProductLangCompositeData) model.getData()).getProductId().toString());
+		if (model != null) {
+			String identifier = "";
+			if (model.getData() instanceof ProductLangCompositeData) {
+				identifier = ((ProductLangCompositeData) model.getData()).getId().toString();
+			} else if (model.getData() instanceof ProductSeoData) {
+				identifier = StringUtils.split(((ProductSeoData) model.getData()).getId(), "/")[0];
+			} else {
+				identifier = model.getIdentifier();
 			}
-			else{
-				handleNavigation(flowProductPage.getPage(), true, model.getIdentifier());
-			}
+
+			JavaFacesTool.handleNavigation(flowProductPage.getPage(), true, identifier);
 		}
+	}
+
+	@Override
+	protected void callServiceCreate() {
+		// Ignore
+	}
+
+	@Override
+	protected void callServiceDelete(Long id) {
+		// Ignore
 	}
 
 }

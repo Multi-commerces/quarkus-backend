@@ -21,56 +21,19 @@
 
 		<div class="ui-g">
 			<!--  INPUT TEXT  -->
-			
+			<!-- EDITOR -->
 			<div class="ui-g-12 ui-g-nopad">
+			
 				<div class="ui-fluid form-group">
-					<w:inputText styleClass="ui-g-12 ui-md-6" id="metatitle"
+					<w:inputText styleClass="ui-g-12 ui-md-3" id="metatitle"
 						icon="pencil" label="#{msg['product.ref']}"
 						value="#{product.reference}" />
 
-					<w:inputText styleClass="ui-g-12 ui-md-6" id="name" icon="pencil"
-						label="#{msg['product.name']}" value="#{product.reference}" />
+					<w:inputText styleClass="ui-g-12" id="name" icon="pencil"
+						label="#{msg['product.name']}" value="#{product.name}" />
+						
 				</div>
-			</div>
-
-			<!-- IMAGE PRODUIT -->
-			<div class="ui-g-3 ui-g-nopad">
-				<!--  TEXT CAPTION -->
-				<div class="ui-g-12 ui-g-nopad">
-					<div class="ui-fluid form-group">
-						<w:inputText styleClass="ui-g-12" id="product-image-caption"
-							icon="pencil" label="#{msg['product.image.caption']}" />
-					</div>
-				</div>
-				<!--  FILE UPLOAD -->
-				<div class="ui-g-12 ">
-
-					<div class="ui-g-3  ui-g-nopad">
-						<div jsf:id="images" class="card hovereffect ui-g-nopad"
-							style="width: 200px; height: 200px; border: 1px">
-							<h:graphicImage styleClass="img-responsive" width="200"
-								height="200" alt="" value="#{controller.image}" />
-
-							<div class="overlay">
-								<h2>#{msg.cover}</h2>
-								<div class="info">
-									<p:fileUpload id="upload-image" mode="advanced"
-										label="#{msg.select}" update="images"
-										uploadLabel="btn.upload.label" immediate="true" auto="true"
-										process="@this" listener="#{controller.fileUploadEvent}"
-										chooseIcon="fa fa-folder-open"
-										cancelLabel="#{msg['btn.cancel.label']}" />
-
-								</div>
-							</div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-
-			<!-- EDITOR -->
-			<div class="ui-g-9 ui-g-nopad">
+			
 				<!--  INPUT TEXT  -->
 				<div class="ui-g-12">
 					<p:tabView styleClass="ui-g-12">
@@ -79,9 +42,48 @@
 						<p:tab title="summary">
 							<div class="ui-g">
 								<p:textEditor styleClass="ui-g-12 ui-g-nopad"
-									placeholder="Enter your content" toolbarVisible="true"
-									widgetVar="editor1" value="#{controller.productLang.summary}"
-									height="200" />
+									placeholder="Enter your content" widgetVar="editor1"
+									value="#{product.summary}" height="200">
+									<f:facet name="toolbar">
+										<span class="ql-formats"> <select class="ql-font" /> <select
+											class="ql-size" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-bold" />
+											<button class="ql-italic" />
+											<button class="ql-underline" />
+											<button class="ql-strike" />
+										</span>
+										<span class="ql-formats"> <select class="ql-color" />
+											<select class="ql-background" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-script" value="sub" />
+											<button class="ql-script" value="super" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-header" value="1" />
+											<button class="ql-header" value="2" />
+											<button class="ql-blockquote" />
+											<button class="ql-code-block" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-list" value="ordered" />
+											<button class="ql-list" value="bullet" />
+											<button class="ql-indent" value="-1" />
+											<button class="ql-indent" value="+1" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-direction" value="rtl" /> <select
+											class="ql-align" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-clean" />
+										</span>
+									</f:facet>
+
+
+								</p:textEditor>
 							</div>
 						</p:tab>
 						
@@ -90,7 +92,11 @@
 							<div class="ui-g">
 								<p:textEditor styleClass="ui-g-12 ui-g-nopad"
 									placeholder="Enter your content" toolbarVisible="true"
-									widgetVar="editor2" value="#{controller.productLang.description}" height="200" />
+									widgetVar="editor2" value="#{product.description}" height="200">
+
+
+								</p:textEditor>
+
 							</div>
 						</p:tab>
 					</p:tabView>
@@ -126,6 +132,7 @@
 
 	<ui:define name="content-footer">
 		<p:card header="variations">
+		
 			<div class="ui-g">
 				<div class="root-card">
 					<div class="child-card">
@@ -145,12 +152,13 @@
 		</p:card>
 		<p:card id="panel-product-variations" header="variations"
 			style="margin-bottom: 1em;border:none" widgetVar="panel-variations">
+			
+			
 			<h:form id="form"
 				rendered="#{not empty controller.variationMB.items}">
-
+	
 				<div class="ui-g">
 					<p:repeat value="#{controller.variationMB.items}" var="item">
-
 						<div class="box ui-g-3">
 							<a href="/products/#{model.id}/variations/#{item.id}"> 
 								<span class="boxContent"> 

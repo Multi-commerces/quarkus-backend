@@ -5,30 +5,14 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.application.NavigationHandler;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
-import org.openapitools.jackson.nullable.JsonNullableModule;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.jasminb.jsonapi.JSONAPIDocument;
-import com.github.jasminb.jsonapi.ResourceConverter;
-import com.github.jasminb.jsonapi.SerializationFeature;
-import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
+import org.apache.commons.lang3.StringUtils;
 
 import fr.mycommerce.commons.models.Model;
 import fr.mycommerce.commons.tools.JavaFacesTool;
+import fr.mycommerce.commons.tools.RestTool;
 import fr.webmaker.data.BaseResource;
-import fr.webmaker.data.product.ProductCompositeData;
-import fr.webmaker.data.product.ProductData;
-import fr.webmaker.data.product.ProductLangCompositeData;
-import fr.webmaker.data.product.ProductPricingData;
-import fr.webmaker.data.product.ProductSeoData;
-import fr.webmaker.data.product.ProductShippingData;
-import fr.webmaker.data.product.ProductStockData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -51,33 +35,17 @@ public abstract class AbstractView<M extends BaseResource> implements Serializab
 	@Getter
 	@Setter
 	protected Model<M> model;
-	
-	/**
-	 * Pour la lecture et écriture des réponse WEB-API
-	 */
-	protected ResourceConverter converter;
-	
-	/**
-	 * ObjectMapper utilisé par le converter
-	 */
-	protected ObjectMapper objectMapper;
-	
-	private Class<?>[] clazz = {ProductData.class, ProductCompositeData.class,
-			ProductLangCompositeData.class, 
-			ProductPricingData.class, 
-			ProductStockData.class, 
-			ProductShippingData.class,
-			ProductSeoData.class};
-	
-	private Class<?> classForConverter;
-	
+
+	private Class<M> classForConverter;
+
 	/**
 	 * Les données au format Json
+	 * 
 	 * @return
 	 * @throws IOException
 	 */
-	public String getJson() throws IOException {	
-		return objectMapper.readTree(writeDocument(model.getData())).toPrettyString().trim();
+	public String getJson() throws IOException {
+		return RestTool.getJson(model.getData());
 	}
 
 	/**
@@ -86,97 +54,46 @@ public abstract class AbstractView<M extends BaseResource> implements Serializab
 	 * Initilisation du 'model' et définition de l'action sur ActionType.DEFAULT
 	 * </p>
 	 */
+	@SuppressWarnings("unchecked")
 	public AbstractView() {
 		model = new Model<M>();
 		this.action = ActionType.DEFAULT;
-		
-		classForConverter = (Class<?>) ((ParameterizedType) getClass().getGenericSuperclass())
-				.getActualTypeArguments()[0];
 
-		
-		
-		objectMapper = new ObjectMapper();
-		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-		objectMapper.registerModule(new JsonNullableModule());
-		converter = new ResourceConverter(objectMapper, clazz);
-	}
-	
-	protected byte[] writeDocument(Object data) {
-		try {
-			objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-			
-			
-			if (data == null) {
-				ObjectNode resultNode = objectMapper.createObjectNode();
-				resultNode.set("data", null);
-				
-				byte[] result = null;
-				try {
-					result = objectMapper.writeValueAsBytes(resultNode);
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
-				
-				return result;
-			}
-			
-			converter.disableSerializationOption(SerializationFeature.INCLUDE_LINKS);
-			byte[] flux = converter.writeDocument(new JSONAPIDocument<>(data, objectMapper));
-			
-			try {
-				objectMapper.readTree(flux).toPrettyString();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return flux;
-		} catch (DocumentSerializationException e) {
-			// TODO: handle exception
-		}
-		return null;
+		classForConverter = (Class<M>) ((ParameterizedType) getClass().getGenericSuperclass())
+				.getActualTypeArguments()[0];
 	}
 
 	/**
 	 * Opération de Chargement (initialisation)
 	 * 
 	 **/
-	@SuppressWarnings("unchecked")
 	public void onLoad() {
+		if (classForConverter == null) {
+			throw new IllegalStateException("classForConverter est null");
+		}
+
 		final String id = JavaFacesTool.getValueParam("id");
-		if (id != null) {			
-			byte[] flux = callServiceFindById(id);	
-			// TODO : A vérifier !! Le flux ne sera jamais null !!
-			if(flux == null) 
-			{
-				// Initilisation (data : null)
-				try {
-					model.setData((M) classForConverter.newInstance());
-					model.setIdentifier(id);
-				} catch (Exception e) {
-					return;
-				} 
-			}
-			else
-			{
-				M response = (M) converter.readDocument(flux, classForConverter).get();
-				if(response == null)
-				{
-					// Initilisation (data : null)
-					try {
-						response = (M) classForConverter.newInstance();
-						model.setData(response);
-						model.setIdentifier(id);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
-				}
-				model.setData(response);
-			}		
-			
-			action = ActionType.UPDATE;
-		} else {
-			action = ActionType.CREATE;
+		this.action = !StringUtils.isBlank(id) ? ActionType.UPDATE : ActionType.CREATE;
+
+		final M response = action == ActionType.UPDATE 
+				? RestTool.readData(callServiceFindById(id), classForConverter)
+				: newInstance();
+
+		if (response == null) {
+			this.action = ActionType.DEFAULT;
+			return;
+		}
+
+		
+		model.setData(response);
+		model.setIdentifier(id);
+	}
+
+	private M newInstance() {
+		try {
+			return (M) classForConverter.newInstance();
+		} catch (Exception e) {
+			return null;
 		}
 	}
 
@@ -185,7 +102,8 @@ public abstract class AbstractView<M extends BaseResource> implements Serializab
 	 * 
 	 **/
 	public void reset(ActionEvent event) {
-		model.setData(null);
+		model.setIdentifier(null);
+		model.setData(newInstance());
 	}
 
 	/**
@@ -206,17 +124,15 @@ public abstract class AbstractView<M extends BaseResource> implements Serializab
 				return;
 			}
 
-			JavaFacesTool.sendFacesMessage("success of the action " + getAction().name(), 
-					FacesMessage.SEVERITY_INFO,
+			JavaFacesTool.sendFacesMessage("success of the action " + getAction().name(), FacesMessage.SEVERITY_INFO,
 					false);
 		} catch (Exception e) {
 			/**
 			 * Passage de la validation en échec avec création d'un facesMessage. Demande de
 			 * passer à la phase Response, en ignorant les phases non encore exécutées.
 			 */
-			JavaFacesTool.sendFacesMessage("faild of the action " + getAction().name() + e.getMessage(), 
-					FacesMessage.SEVERITY_ERROR,
-					false);
+			JavaFacesTool.sendFacesMessage("faild of the action " + getAction().name() + e.getMessage(),
+					FacesMessage.SEVERITY_ERROR, false);
 		}
 
 	}
@@ -244,21 +160,5 @@ public abstract class AbstractView<M extends BaseResource> implements Serializab
 	 * @return
 	 */
 	public abstract byte[] callServiceFindById(String identifier);
-
-	protected void handleNavigation(String outcome, boolean facesRedirect, String identifier) {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		NavigationHandler myNav = facesContext.getApplication().getNavigationHandler();
-
-		StringBuilder value = new StringBuilder(outcome)
-			.append("?faces-redirect=")
-			.append(facesRedirect);
-		if (identifier != null) {
-			value
-				.append("&id=")
-				.append(identifier);
-		}
-
-		myNav.handleNavigation(facesContext, null, value.toString());
-	}
 
 }

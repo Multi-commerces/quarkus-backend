@@ -31,10 +31,10 @@ public class ProductLangPK implements Serializable {
 	}
 
 	@Column(name = "PRODUCT_ID", length = 10, updatable = false)
-	private Long idProduct;
+	Long idProduct;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "CODE_LANG", length = 10, updatable = true)
-	private LanguageCode language;
+	LanguageCode language;
 
 }

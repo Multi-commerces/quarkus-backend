@@ -16,7 +16,7 @@ import javax.persistence.Transient;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import fr.commerces.microservices.catalog.products.relationships.lang.ProductLangInclusion;
+import fr.commerces.microservices.catalog.products.relations.lang.ProductLangInclusion;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Parameters;
@@ -142,9 +142,17 @@ public class ProductLang extends PanacheEntityBase {
 	 * @param languageCode code langue
 	 * @return
 	 */
-	public static Optional<ProductLang> findByIdProductAndLanguageCode(final Long idProduct,
+	public static Optional<ProductLang> findByProductIdAndLanguageCode(final Long idProduct,
 			final LanguageCode languageCode) {
 		return findByIdOptional(new ProductLangPK(idProduct, languageCode));
+	}
+	
+	public static List<ProductLang> findByProductIdsAndLanguageCode(final Collection<Long> idProduct,
+			final LanguageCode languageCode) {
+		
+		return languageCode != LanguageCode.undefined
+				? find("identity.idProduct in (?1) and identity.language in (?2)", idProduct, languageCode).list()
+				: find("identity.idProduct in (?1)", idProduct).list();
 	}
 
 	/**

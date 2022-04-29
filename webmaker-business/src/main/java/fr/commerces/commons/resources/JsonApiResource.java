@@ -27,6 +27,7 @@ import com.github.jasminb.jsonapi.DeserializationFeature;
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.Link;
 import com.github.jasminb.jsonapi.Links;
+import com.github.jasminb.jsonapi.RelationshipResolver;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import com.github.jasminb.jsonapi.SerializationSettings;
@@ -35,14 +36,10 @@ import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 
 import fr.commerces.microservices.authentification.AuthenticationContextProvider;
 import fr.webmaker.data.BaseResource;
-import fr.webmaker.data.product.ProductCompositeData;
-import fr.webmaker.data.product.ProductData;
-import fr.webmaker.data.product.ProductLangCompositeData;
-import fr.webmaker.data.product.ProductLangData;
-import fr.webmaker.data.product.ProductSeoData;
 import fr.webmaker.restfull.hateos.IInclusion;
 import fr.webmaker.restfull.hateos.RootData;
 import lombok.Getter;
+import lombok.Setter;
 
 @Produces(ConstApi.MEDIA_JSON_API)
 @Consumes(ConstApi.MEDIA_JSON_API)
@@ -63,25 +60,39 @@ public abstract class JsonApiResource<M extends BaseResource> {
 
 	protected ResourceConverter converter;
 
-	protected Class<M> readDocumentClass;
+	@Setter
+	protected Class<? extends BaseResource> readDocumentClass;
+
+	@Setter
 	protected Class<? extends M> writeDocumentClass;
+
+	private List<Class<?>> clazz;
 
 	final protected Map<String, Object> meta = new HashMap<>();
 	final protected Map<String, Link> linkMap = new HashMap<String, Link>();
 	final protected Links links = new Links(linkMap);
-	
+
 	/**
 	 * Toujours vrai pour le moment, on es chargera de le conditionner
 	 */
-	private boolean showLinks = true;
+	private boolean showLinks = false;
 
+	class Teste implements RelationshipResolver {
+
+		@Override
+		public byte[] resolve(String relationshipURL) {
+			return null;
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
 	@PostConstruct
-	public void jsonApiResourcePostConstruct() {	
+	public void jsonApiResourcePostConstruct() {
 		objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
-		
+
 		List<Class<?>> getClazz = getClazz();
 
-		final List<Class<?>> clazz;
 		if (getClazz != null && !getClazz.isEmpty()) {
 			clazz = new ArrayList<Class<?>>(getClazz);
 		} else {
@@ -94,28 +105,26 @@ public abstract class JsonApiResource<M extends BaseResource> {
 		if (writeDocumentClass != null) {
 			clazz.add(writeDocumentClass);
 		}
-		
-		clazz.add(ProductSeoData.class);
-		clazz.add(ProductLangCompositeData.class);
-		clazz.add(ProductCompositeData.class);
-		clazz.add(ProductLangData.class);
-		clazz.add(ProductData.class);
-		
-		if (!clazz.isEmpty()) {
-			converter = new ResourceConverter(objectMapper, clazz.toArray(new Class<?>[clazz.size()]));
+
+		if (getClass().getSuperclass().getGenericSuperclass() instanceof ParameterizedType) {
+			ParameterizedType superClass = ((ParameterizedType) getClass().getSuperclass().getGenericSuperclass());
+			clazz.add((Class<M>) superClass.getActualTypeArguments()[0]);
+		} else if (getClass().getGenericSuperclass() instanceof ParameterizedType) {
+			ParameterizedType superClass = ((ParameterizedType) getClass().getGenericSuperclass());
+			clazz.add((Class<M>) superClass.getActualTypeArguments()[0]);
 		}
-	}
-	
-	public JsonApiResource() {
-		
-	}
-	
-	public JsonApiResource(Class<M> readDocumentClass) {
-		this.readDocumentClass = readDocumentClass;
-		this.writeDocumentClass = readDocumentClass;
+
 	}
 
-	public JsonApiResource(Class<M> readDocumentClass, Class<? extends M> writeDocumentClass) {
+	public JsonApiResource() {
+
+	}
+
+	public JsonApiResource(Class<? extends BaseResource> readDocumentClass) {
+		this.readDocumentClass = readDocumentClass;
+	}
+
+	public JsonApiResource(Class<? extends BaseResource> readDocumentClass, Class<M> writeDocumentClass) {
 		this.readDocumentClass = readDocumentClass;
 		this.writeDocumentClass = writeDocumentClass;
 	}
@@ -134,91 +143,102 @@ public abstract class JsonApiResource<M extends BaseResource> {
 		converter.disableDeserializationOption(DeserializationFeature.REQUIRE_RESOURCE_ID);
 		converter.disableDeserializationOption(DeserializationFeature.ALLOW_UNKNOWN_INCLUSIONS);
 		converter.disableDeserializationOption(DeserializationFeature.ALLOW_UNKNOWN_TYPE_IN_RELATIONSHIP);
-		
-		return converter.readDocumentCollection(data, readDocumentClass).get().stream()
-				.map(o -> Long.valueOf(o.getId()))
-				.collect(Collectors.toList());
-	}
 
-	protected List<M> readCollection(byte[] data) {
-		converter.enableSerializationOption(SerializationFeature.INCLUDE_ID);
-		converter.disableDeserializationOption(DeserializationFeature.REQUIRE_RESOURCE_ID);
-		converter.disableDeserializationOption(DeserializationFeature.ALLOW_UNKNOWN_INCLUSIONS);
-		converter.disableDeserializationOption(DeserializationFeature.ALLOW_UNKNOWN_TYPE_IN_RELATIONSHIP);
-		
-		return converter.readDocumentCollection(data, readDocumentClass).get();
-	}
-	
-	protected M readData(byte[] data) {
-		return readDocument(data).get();
+		return converter.readDocumentCollection(data, readDocumentClass).get().stream()
+				.map(o -> Long.valueOf(o.getId())).collect(Collectors.toList());
 	}
 
 	@SuppressWarnings("unchecked")
-	protected JSONAPIDocument<M> readDocument(byte[] data) {
-		converter.enableSerializationOption(SerializationFeature.INCLUDE_ID);
+	protected <T extends BaseResource> List<T> readCollection(byte[] data) {
 		converter.disableDeserializationOption(DeserializationFeature.REQUIRE_RESOURCE_ID);
 		converter.disableDeserializationOption(DeserializationFeature.ALLOW_UNKNOWN_INCLUSIONS);
 		converter.disableDeserializationOption(DeserializationFeature.ALLOW_UNKNOWN_TYPE_IN_RELATIONSHIP);
-		
-		if(readDocumentClass == null)
-		{
+
+		return converter.readDocumentCollection(data, readDocumentClass).get().stream().map(o -> (T) o)
+				.collect(Collectors.toUnmodifiableList());
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <T extends BaseResource> T readData(byte[] data) {
+
+		if (!clazz.isEmpty()) {
+
+			String location = headers != null ? headers.getHeaderString("Location") : "";
+
+			showLinks = headers != null && headers.getHeaderString("include-Links") != null
+					&& headers.getHeaderString("include-Links").equals("true");
+
+			converter = new ResourceConverter(objectMapper, location != null ? location : "",
+					clazz.toArray(new Class<?>[clazz.size()]));
+		} else {
+			converter = new ResourceConverter(objectMapper);
+		}
+
+		converter.disableDeserializationOption(DeserializationFeature.REQUIRE_RESOURCE_ID);
+		// Désactiver : AUTORISER LES INCLUSIONS INCONNUES
+		converter.disableDeserializationOption(DeserializationFeature.ALLOW_UNKNOWN_INCLUSIONS);
+		// Désactiver : AUTORISER LE TYPE INCONNU DANS LA RELATION
+		converter.disableDeserializationOption(DeserializationFeature.ALLOW_UNKNOWN_TYPE_IN_RELATIONSHIP);
+
+		if (readDocumentClass == null) {
 			java.lang.reflect.Type type = getClass().getGenericSuperclass();
-			if(type instanceof ParameterizedType)
-			{
+			if (type instanceof ParameterizedType) {
 				this.readDocumentClass = (Class<M>) ((ParameterizedType) type).getActualTypeArguments()[0];
 			}
 		}
-		
-		return converter.readDocument(data, readDocumentClass);
+
+		// TODO : Controller
+		// readDocument(flux).getResponseJSONNode().findValues("included");
+
+		return (T) converter.readDocument(data, readDocumentClass).get();
 	}
-	
-	protected  <T> Response writeRootData(List<T> data) {
-		return Response.ok(new RootData<List<T>>(data)).build();
+
+	protected <T> RootData<List<T>> writeRootData(List<T> data) {
+		return new RootData<List<T>>(data);
 	}
-	
-	protected  <T> Response writeRootData(T data) {
-		return Response.ok(new RootData<T>(data)).build();
+
+	protected <T> RootData<T> writeRootData(T data) {
+		return new RootData<T>(data);
 	}
-	
-	protected Response writeResponse(Object data, Collection<? extends IInclusion> relationships) {
-		return Response.ok(writeDocument(data, relationships)).build();
+
+	protected Response writeResponse(Object data, Collection<? extends IInclusion> include) {
+		return Response.ok(writeDocument(data, include)).build();
 	}
-	
+
 	/**
 	 * Utilisation "relationships"
+	 * 
 	 * @param data
 	 * @return
 	 */
 	protected Response writeRelationships(List<? extends BaseResource> data) {
 		// DOCUMENT
 		ObjectNode resultNode = objectMapper.createObjectNode();
-	
+
 		// DOCUMENT->DATA
 		ArrayNode dataNode = resultNode.putArray("data");
 		for (BaseResource resource : data) {
-			String type = resource.getClass()
-					.getAnnotation(Type.class).value();
+			String type = resource.getClass().getAnnotation(Type.class).value();
 			String id = resource.getId();
-			
+
 			ObjectNode relationNode = objectMapper.createObjectNode();
 			relationNode.put("type", type);
 			relationNode.put("id", id);
-			
-			dataNode.add(relationNode);		
+
+			dataNode.add(relationNode);
 		}
-		
+
 		// DOCUMENT->LINKS
-		if(showLinks)
-		{
+		if (showLinks) {
 			String self = uriInfo.getPath();
-			
+
 			linkMap.put("self", new Link(self));
 			linkMap.put("related", new Link(self.replace("relationships/", "")));
 			Links linkss = new Links(linkMap);
-			
+
 			resultNode.set("links", objectMapper.valueToTree(linkss));
 		}
-		
+
 		// RESULTAT (OK)
 		byte[] result = null;
 		try {
@@ -226,11 +246,11 @@ public abstract class JsonApiResource<M extends BaseResource> {
 		} catch (Exception e) {
 			// TODO: Ignore ? gérer à l'avenir l'exception d'écriture du resultat
 		}
-		
+
 		return Response.ok(result).build();
 	}
-	
-	protected Response writeJsonApiResponse(Object data) {
+
+	protected Response writeResponse(Object data) {
 		return Response.ok(writeDocument(data)).build();
 	}
 
@@ -238,15 +258,30 @@ public abstract class JsonApiResource<M extends BaseResource> {
 		return Response.created(uriInfo.getAbsolutePathBuilder().path(id).build()).entity(writeDocument(data)).build();
 	}
 
-	protected byte[] writeDocument(Object data, Collection<? extends IInclusion> relationships) {
-		return writeDocument(data, relationships, true, true, true);
-	}
-	
-	protected byte[] writeDocument(Object data) {
-		return writeDocument(data, Collections.emptyList(), true, true, true);
+	protected byte[] writeDocument(Object data, Collection<? extends IInclusion> include) {
+		return writeDocument(data, include, true, false);
 	}
 
-	protected byte[] writeDocument(Object data, Collection<? extends IInclusion> relationships, boolean includeMeta, boolean includeRelations, boolean includeLinks) {	        
+	protected byte[] writeDocument(Object data) {
+		return writeDocument(data, Collections.emptyList(), true, false);
+	}
+
+	protected byte[] writeDocument(Object data, Collection<? extends IInclusion> include, boolean includeMeta,
+			boolean includeRelations) {
+
+		if (!clazz.isEmpty()) {
+
+			String location = headers != null ? headers.getHeaderString("Location") : "";
+
+			showLinks = headers != null && headers.getHeaderString("include-Links") != null
+					&& headers.getHeaderString("include-Links").equals("true");
+
+			converter = new ResourceConverter(objectMapper, location != null ? location : "",
+					clazz.toArray(new Class<?>[clazz.size()]));
+		} else {
+			converter = new ResourceConverter(objectMapper);
+		}
+
 		if (includeMeta) {
 			// Il faudra permettre la désactivation des méta-données
 			converter.enableSerializationOption(SerializationFeature.INCLUDE_META);
@@ -255,86 +290,86 @@ public abstract class JsonApiResource<M extends BaseResource> {
 			// Plus tard prendre en charge le paramètre include afin de pouvoir
 			// personnaliser la réponse
 			converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
-		}
-		else
-		{
+		} else {
 			converter.disableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
 		}
-		
-		if (includeLinks) {
+
+		if (showLinks) {
 			// Il faudra permettre la désactivation des liens
 			converter.enableSerializationOption(SerializationFeature.INCLUDE_LINKS);
-		}
-		else
-		{
+		} else {
 			converter.disableSerializationOption(SerializationFeature.INCLUDE_LINKS);
 		}
 
 		if (isCollection(data)) {
-			return collection((List<?>) data, relationships);
+			return collection((List<?>) data, include);
 		}
-		return single(data);
+		return single(data, include);
 	}
-	
-	
 
-	private byte[] single(Object data) {
+	private byte[] single(Object data, Collection<? extends IInclusion> include) {
 		try {
-			objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
+//			objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
 			linkMap.put("self", new Link(uriInfo.getPath()));
 			Links linkss = new Links(linkMap);
-			
+
 			if (data == null || (data instanceof Optional && ((Optional<?>) data).isEmpty())) {
 				ObjectNode resultNode = objectMapper.createObjectNode();
 				resultNode.set("data", null);
 				resultNode.set("links", objectMapper.valueToTree(linkss));
-				
+
 				byte[] result = null;
 				try {
 					result = objectMapper.writeValueAsBytes(resultNode);
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
-				
+
 				return result;
 			}
-			
-			if (data instanceof Optional) {
-				return converter.writeDocument(new JSONAPIDocument<>(data, linkss, meta, objectMapper));
+
+			// Serialize included
+			var builder = new SerializationSettings.Builder();
+			builder.serializeLinks(showLinks);
+
+			// Serialize included
+			if (include != null && !include.isEmpty()) {
+				converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
+				List<String> relations = include.stream().map(IInclusion::getType).collect(Collectors.toList());
+
+				builder.includeRelationship(String.join(",", relations));
 			}
 
-			return converter.writeDocument(new JSONAPIDocument<>(data, objectMapper));
+			if (data instanceof Optional) {
+				return converter.writeDocument(new JSONAPIDocument<>(data, linkss, meta, objectMapper),
+						builder.build());
+			}
+
+			return converter.writeDocument(new JSONAPIDocument<>(data, linkss, meta, objectMapper), builder.build());
 		} catch (DocumentSerializationException e) {
 			// TODO Ignore
 		}
 		return null;
 	}
-	
-	
 
-	private byte[] collection(List<?> data, Collection<? extends IInclusion> relationships) {
-		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+	private byte[] collection(List<?> data, Collection<? extends IInclusion> include) {
 		try {
 			linkMap.put("self", new Link(uriInfo.getPath()));
-			
+
 			Links linkss = new Links(linkMap);
 			var builder = new SerializationSettings.Builder();
 			builder.serializeLinks(showLinks);
-			
+
 			// Serialize included
-			if(relationships == null || relationships.isEmpty())
-			{
+			if (include != null && !include.isEmpty()) {
 				converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
-				List<CharSequence> relations = relationships.stream()
-						.map(o -> new StringBuffer(o.getType()))
-						.collect(Collectors.toList());
-					
-					builder.includeRelationship(String.join(",", relations));	
+				List<String> relations = include.stream().map(IInclusion::getType).collect(Collectors.toList());
+
+				builder.includeRelationship(String.join(",", relations));
 			}
-			
-			
-			
-			return converter.writeDocumentCollection(new JSONAPIDocument<>(data, linkss, meta, objectMapper), builder.build());
+
+			return converter.writeDocumentCollection(new JSONAPIDocument<>(data, linkss, meta, objectMapper),
+					builder.build());
 		} catch (DocumentSerializationException e) {
 			throw new RuntimeException(e);
 		}

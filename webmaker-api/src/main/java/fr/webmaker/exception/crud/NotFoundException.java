@@ -23,8 +23,8 @@ public class NotFoundException extends RuntimeException {
 	}
 
 	public NotFoundException(CrudExceptionType crudType, Object identifier) {
-		super(String.format("Opération de " + crudType.getSummary() + " impossible car l'occurence à "
-				+ crudType.getVerb() + " est introuvable."));
+		super(String.format("Opération de " + crudType.getSummary() + " impossible car l'occurence portant l'identifiant " + identifier.toString() + " à "
+				+ " est introuvable."));
 
 		identifierDebug = String.format("%s",
 				identifier != null ? identifier.toString() : "identifier non fourni (null)");

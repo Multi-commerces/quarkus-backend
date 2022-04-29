@@ -12,7 +12,7 @@ import fr.webmaker.data.BaseResource;
 @JsonPropertyOrder({ "id", "type", "attributes", "relationships" })
 public interface IShemaData<T extends BaseResource> {
 
-	@Schema(description = "Identifiant de la ressource", example = "1000000001", implementation = String.class)
+	@Schema(description = "Identifiant de la ressource", example = "10000001", implementation = String.class)
 	public String getId();
 	
 	@Schema(description = "Type de la ressource", example = "type", implementation = String.class, required = true)

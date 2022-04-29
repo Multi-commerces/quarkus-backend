@@ -13,13 +13,13 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @Dependent
 @Produces("application/vnd.api+json")
 @Consumes("application/vnd.api+json")
-@Path("products/{productId}/stock")
+@Path("/products/{productId}/stock")
 @RegisterRestClient(configKey = "mycommerce-api")
 public interface ProductStockRestClient {
 
 	@GET
 	@Path("/")
-	byte[] get(@PathParam("productId") Long id);
+	byte[] get(@PathParam("productId") Long productId);
 
 	@PATCH
 	@Path("/")
