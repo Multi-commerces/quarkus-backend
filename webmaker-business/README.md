@@ -91,6 +91,9 @@ docker build -f src/main/docker/Dockerfile.fast-jar -t quarkus/api-fast-jar .
 docker save quarkus/api-fast-jar > ./target/docker-image-quarkus-webmaker-api.tar
 ```
 
+Pour charger image sur le serveur cible 
+=> docker load < docker-image-quarkus-webmaker-api.tar
+
 ##### 5) Copier l'image docker sur le raspberry (à venir deploiement sur vps ionos)
 
 ```shell script
