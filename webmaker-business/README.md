@@ -3,20 +3,6 @@
 Le projet utilise Quarkus, Le Framework Java Supersonic Subatomic. <br />
 Website: https://quarkus.io/ . <br />
 
-# Installation Docker
-
-Suivre le guide d'installation https://docs.docker.com/engine/install/ubuntu/
-
-Il faut également faire l'installation de docker-compose.
-
-Services dans le fichier docker-compose.yum
-
-- Postgres
-- Keycloak
-- apache (production seulement)
-- nginx (production seulement)
-
-
 # Mode développement en local (localhost)
 
 Dans une invite de commande, etre positionné sur le répertoire du projet.
