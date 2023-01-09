@@ -3,20 +3,6 @@
 Le projet utilise Quarkus, Le Framework Java Supersonic Subatomic. <br />
 Website: https://quarkus.io/ . <br />
 
-# Installation Docker
-
-Suivre le guide d'installation https://docs.docker.com/engine/install/ubuntu/
-
-Il faut également faire l'installation de docker-compose.
-
-Services dans le fichier docker-compose.yum
-
-- Postgres
-- Keycloak
-- apache (production seulement)
-- nginx (production seulement)
-
-
 # Mode développement en local (localhost)
 
 Dans une invite de commande, etre positionné sur le répertoire du projet.
@@ -79,12 +65,12 @@ docker-compose -f docker.compose.yml --env-file .env up -d
 ```
 
 
-# PRODCUTION
+# PRODCUTION (en-cours de modification)
 
 ##### 1) Compiler l'appication
 
 ```shell script
-./mvnw compile
+./mvnw package -Dquarkus.package.type=fast-jar -DskipTests
 ```
 
 ##### 2) Copier l'application sur le raspberry
@@ -96,19 +82,30 @@ scp -r ./target/quarkus-app  pi@192.168.1.67:/home/pi/workspace/
 ##### 3) Construire l'image docker
 
 ```shell script
-docker build -f src/main/docker/Dockerfile.fast-jar -t quarkus/webmaker-api .
+docker build -f src/main/docker/Dockerfile.fast-jar -t quarkus/api-fast-jar .
 ```
 
 ##### 4) Créer une archive "tar" de l'image docker
 
 ```shell script
-docker save quarkus/webmaker-api > ./target/docker-image-quarkus-webmaker-api.tar
+docker save quarkus/api-fast-jar > ./target/docker-image-quarkus-webmaker-api.tar
 ```
 
-##### 5) Copier l'image docker sur le raspberry
+Pour charger image sur le serveur cible 
+	
+=> docker load < sudo docker load --input docker-image-quarkus-webmaker-api.tar 
+
+##### 5) Copier l'image docker sur le raspberry (à venir deploiement sur vps ionos)
 
 ```shell script
 scp ./target/docker-image-quarkus-webmaker-api.tar pi@192.168.1.67:/home/workspace/
+```
+
+#####  Lancement (avec docker-compose)
+Attention ne pas oublier le fichier .env
+
+```shell script
+docker-compose -f docker.compose.yml --env-file .env up -d
 ```
 
 ##### Toutes les étapes (shell script) :
