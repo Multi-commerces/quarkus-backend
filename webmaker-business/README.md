@@ -113,8 +113,8 @@ docker-compose -f docker.compose.yml --env-file .env up -d
 ```shell script
 ./mvnw package -Dquarkus.package.type=fast-jar -DskipTests && \
 sudo docker build -f src/main/docker/Dockerfile.fast-jar -t quarkus/api-fast-jar . && \
-docker save quarkus/api-fast-jar > ./target/docker-image-quarkus-webmaker-api.tar && \
-scp ./target/docker-image-quarkus-webmaker-api.tar root@192.168.1.67:~/workspace/rest-api/ && \
+sudo docker save quarkus/api-fast-jar > ./target/docker-image-quarkus-webmaker-api.tar && \
+scp ./target/docker-image-quarkus-webmaker-api.tar root@web-maker.fr:~/rest-api/
 ```
 old
 scp -r ./target/quarkus-app  pi@192.168.1.67:/home/pi/workspace/
