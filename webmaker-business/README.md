@@ -111,13 +111,13 @@ docker-compose -f docker.compose.yml --env-file .env up -d
 ##### Toutes les étapes (shell script) :
 
 ```shell script
-./mvnw package && \
-docker build -f src/main/docker/Dockerfile.fast-jar -t quarkus/webmaker-api . && \
-docker save quarkus/webmaker-api > ./target/docker-image-quarkus-webmaker-api.tar && \
-scp ./target/docker-image-quarkus-webmaker-api.tar pi@192.168.1.67:/home/workspace/ && \
-scp -r ./target/quarkus-app  pi@192.168.1.67:/home/pi/workspace/
+./mvnw package -Dquarkus.package.type=fast-jar -DskipTests && \
+sudo docker build -f src/main/docker/Dockerfile.fast-jar -t quarkus/api-fast-jar . && \
+docker save quarkus/api-fast-jar > ./target/docker-image-quarkus-webmaker-api.tar && \
+scp ./target/docker-image-quarkus-webmaker-api.tar root@192.168.1.67:~/workspace/rest-api/ && \
 ```
-
+old
+scp -r ./target/quarkus-app  pi@192.168.1.67:/home/pi/workspace/
 
 # ACCESS TOKEN
 
