@@ -116,6 +116,8 @@ sudo docker build -f src/main/docker/Dockerfile.fast-jar -t quarkus/api-fast-jar
 sudo docker save quarkus/api-fast-jar > ./target/docker-image-quarkus-webmaker-api.tar && \
 scp ./target/docker-image-quarkus-webmaker-api.tar root@web-maker.fr:~/rest-api/
 ```
+en-cours d'intégration 
+ssh root@web-maker.fr 'df -h cd rest-api && docker load --input docker-image-quarkus-webmaker-api.tar'
 old
 scp -r ./target/quarkus-app  pi@192.168.1.67:/home/pi/workspace/
 
