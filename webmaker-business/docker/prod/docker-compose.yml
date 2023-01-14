@@ -5,18 +5,23 @@ volumes:
    postgres_data:
       driver: local
 services:
-   apache:
-      image: httpd:latest
-      container_name: apache
-      ports:
-      - 9080:80
-      - 9443:443
+   nginx:
+      image: nginx
+      container_name: nginx
+      restart: on-failure
       volumes:
-      - /home/pi/workspace/www:/usr/local/apache2/htdocs/
+      - /etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/nginx/ssl:/etc/nginx/ssl
+      - /etc/nginx/log:/var/log/nginx
+      ports:
+      - 80:80
+      - 443:443
    postgres:
       image: postgres
+      networks:
+      - default
       restart: always
-      container_name: postgres-dev
+      container_name: postgres
       volumes:
       - /var/lib/docker/volumes/postgresql/data:/var/lib/postgresql/data
       environment:
@@ -25,19 +30,9 @@ services:
          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
          POSTGRES_HOST_AUTH_METHOD: ${POSTGRES_HOST_AUTH_METHOD}
       ports:
-      - 5435:5432
-   nginx:
-      image: nginx
-      container_name: nginx
-      restart: on-failure
-#Dockerfile: "Dockerfile"
-      volumes:
-      - /home/pi/workspace/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /home/pi/workspace/nginx/certs:/etc/nginx/certs
-      - /home/pi/workspace/nginx/log:/var/log/nginx
-      ports:
-      - 80:80
-      - 443:443
+      - 5432:5432
+      depends_on:
+      - nginx
    keycloak:
       image: mihaibob/keycloak:14.0.0
       environment:
@@ -47,13 +42,41 @@ services:
          DB_SCHEMA: public
          DB_USER: ${POSTGRES_USER}
          DB_PASSWORD: ${POSTGRES_PASSWORD}
-#KEYCLOAK_USER: webmaker
          JDBC_PARAMS: serverTimezone=UTC
       command: -b 0.0.0.0 -Djboss.http.port=8080 -Djboss.https.port=8443
-#KEYCLOAK_PASSWORD: C0rn2par0l
       depends_on:
+      - nginx
       - postgres
       ports:
       - 8080:8080
       - 8443:8443
       privileged: true
+   quarkus-api:
+      image: quarkus/api-fast-jar:latest
+      container_name: quarkus-api
+      environment:
+         POSTGRES_HOST: postgres 
+         POSTGRES_DB: ${POSTGRES_DB}
+         POSTGRES_PORT: 5432
+         POSTGRES_USER: ${POSTGRES_USER}
+         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+         JAVA_ENABLE_DEBUG: "false"
+         #QUARKUS_PROFILE: prod
+         #QUARKUS_HTTP_SSL_PORT: 8444 
+         #QUARKUS_HTTP_SSL_CERTIFICATE_FILE: /etc/quarkus/ssl/web-maker.fr_ssl_certificate.cer
+         #QUARKUS_HTTP_SSL_CERTIFICATE_KEY_FILE: /etc/quarkus/ssl/_.web-maker.fr_private_key.key
+         #QUARKUS_HTTP_INSECURE_REQUESTS: redirect
+      command: -Dquarkus.log.level=INFO -Dquarkus.http.cors=false
+      #volumes:
+      #- /home/root/rest-api/ssl:/etc/quarkus/ssl
+      ports:
+      - 8081:8081
+      depends_on:
+      - nginx
+      - postgres
+      - keycloak
+      networks:
+      - default
+networks:
+  default:
+    driver: bridge

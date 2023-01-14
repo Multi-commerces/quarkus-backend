@@ -31,7 +31,6 @@ import fr.commerces.microservices.catalog.images.enums.ShopImageDirectoryType;
 import fr.commerces.microservices.catalog.images.exceptions.StorageException;
 import fr.commerces.microservices.catalog.products.entity.Product;
 import fr.commerces.microservices.catalog.products.entity.ProductImage;
-import fr.webmaker.annotation.ManagerInterceptor;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.ShutdownEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-@ManagerInterceptor
+//@ManagerInterceptor
 //@Startup
 //@ApplicationScoped
 public class CatalogStorageManager {
@@ -69,6 +68,10 @@ public class CatalogStorageManager {
 	private final static Map<ShopImageDirectoryType, Path> pathSynchroByDirectoryType = new HashMap<>();
 	private final static Map<ShopImageDirectoryType, Path> pathResizingByImageType = new HashMap<>();
 
+	/**
+	 * 
+	 * @param ev
+	 */
 	void onStop(@Observes ShutdownEvent ev) {
 		if (LaunchMode.current() == LaunchMode.DEVELOPMENT) {
 			log.info("(ShutdownEvent) Opération de nétoyage pour le mode DEVELOPMENT...");
@@ -170,6 +173,12 @@ public class CatalogStorageManager {
 		return UtilityStorage.copy(path, fileName.toString(), inputStream).toString();
 	}
 
+	/**
+	 * 
+	 * @param imageTypes
+	 * @param path
+	 * @return
+	 */
 	public Map<ShopImageDirectoryType, Path> generateImages(List<ShopImageDirectoryType> imageTypes, Path path) {
 		final Map<ShopImageDirectoryType, Path> pathByImageType = new HashMap<>();
 
@@ -199,7 +208,9 @@ public class CatalogStorageManager {
 
 			final String[] fileNameSplit = split(fileName, '.');
 			if (fileNameSplit.length < 2)
+			{
 				return;
+			}
 			final String[] fileNameTab = split(fileNameSplit[0], '-');
 			final String extensionFileName = fileNameSplit[1];
 
@@ -249,7 +260,9 @@ public class CatalogStorageManager {
 								final byte[] compressed = UtilityStorage.compressingImages(originalImage,
 										config.getWidth(), config.getHeight());
 								if (compressed == null)
+								{
 									return;
+								}
 
 								/*
 								 * Enregistrement du fichier compressé.
