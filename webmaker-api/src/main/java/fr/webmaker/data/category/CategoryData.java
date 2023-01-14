@@ -9,13 +9,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.jasminb.jsonapi.annotations.Type;
 
 import fr.webmaker.data.BaseResource;
-import fr.webmaker.restfull.databind.LocalDateTimeDeserializer;
-import fr.webmaker.restfull.databind.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

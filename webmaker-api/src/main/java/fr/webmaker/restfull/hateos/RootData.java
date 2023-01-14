@@ -3,6 +3,7 @@ package fr.webmaker.restfull.hateos;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class RootData<T>
 	 */
 	public RootData()
 	{
-		this.nagigation = new HashMap<>();
+		this.nagigation = new EnumMap<>(REL.class);
 		this.errors = new ArrayList<>();
 		this.meta = new HashMap<>();
 	}
@@ -117,7 +118,7 @@ public class RootData<T>
 		this();
 		this.status = Objects.requireNonNull(status);
 		this.message = Objects.requireNonNull(message);
-		this.nagigation = new HashMap<>();
+		this.nagigation = new EnumMap<>(REL.class);
 	}
 
 	/**
@@ -128,7 +129,7 @@ public class RootData<T>
 	{
 		this();
 		this.data = data;
-		this.nagigation = new HashMap<>();
+		this.nagigation = new EnumMap<>(REL.class);
 		
 		nagigation.put(REL.FIRST, null);
 		nagigation.put(REL.NEXT, null);
@@ -148,7 +149,7 @@ public class RootData<T>
 		this.data = data;
 		this.status = Objects.requireNonNull(status);
 		this.message = Objects.requireNonNull(message);
-		this.nagigation = new HashMap<>();
+		this.nagigation = new EnumMap<>(REL.class);
 	}
 
 	/**
@@ -164,7 +165,7 @@ public class RootData<T>
 		this.status = Objects.requireNonNull(status);
 		this.message = Objects.requireNonNull(message);
 		this.errors = Objects.requireNonNull(errors);
-		this.nagigation = new HashMap<>();
+		this.nagigation = new EnumMap<>(REL.class);
 	}
 
 	@JsonIgnore

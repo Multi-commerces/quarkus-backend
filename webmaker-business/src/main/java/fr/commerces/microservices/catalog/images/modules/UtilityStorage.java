@@ -1,6 +1,6 @@
 package fr.commerces.microservices.catalog.images.modules;
 
-import static fr.webmaker.exception.UtilityException.requireNonNull;
+import static fr.webmaker.exception.ExceptionUtility.requireNonNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

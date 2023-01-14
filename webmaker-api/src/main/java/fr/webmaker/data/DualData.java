@@ -1,9 +1,6 @@
 package fr.webmaker.data;
 
-import java.io.Serializable;
-
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
 /**
  * Simple Container Class
@@ -13,14 +10,32 @@ import lombok.Data;
  * @param <A> Data A
  * @param <B> Data B
  */
-@Data
 @AllArgsConstructor
-public class DualData<A, B> implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class DualData<A, B>
+{
 
 	protected A dataA;
 
 	protected B dataB;
+
+	public A getDataA()
+	{
+		return dataA;
+	}
+
+	public void setDataA(A dataA)
+	{
+		this.dataA = dataA;
+	}
+
+	public B getDataB()
+	{
+		return dataB;
+	}
+
+	public void setDataB(B dataB)
+	{
+		this.dataB = dataB;
+	}
 
 }
